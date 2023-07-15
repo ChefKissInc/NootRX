@@ -48,16 +48,19 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
         static uint8_t builtin[] = {0x00};
         this->GPU->setProperty("built-in", builtin, arrsize(builtin));
         this->deviceId = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigDeviceID);
+		auto model = "AMD Radeon Graphics" // fallback value
         switch (this->deviceId) {
 			case 0x73AF:
-				auto model = "AMD Radeon RX 6900 XTXH";
+				model = "AMD Radeon RX 6900 XTXH";
 				break;
 			case 0x73A5:
-				auto model = "AMD Radeon RX 6950 XT";
+				model = "AMD Radeon RX 6950 XT";
 				break;
 			case 0x73EF:
-				auto model = "AMD Radeon RX 6650 XT";
+				model = "AMD Radeon RX 6650 XT";
 				break;
+			default:
+				PANIC("x6000p", "Unknown device ID")
 		}
 		
 		if (model) {

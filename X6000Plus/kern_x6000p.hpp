@@ -61,7 +61,7 @@ class X6000P {
 	uint16_t enumRevision {0};
 	uint16_t revision {0};
 	uint32_t pciRevision {0};
-	IOPCIDevice *iGPU {nullptr};
+	IOPCIDevice *GPU {nullptr};
 	OSMetaClass *metaClassMap[4][2] = {{nullptr}};
 	mach_vm_address_t orgSafeMetaCast {0};
 
