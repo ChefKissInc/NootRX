@@ -48,7 +48,7 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
         static uint8_t builtin[] = {0x00};
         this->GPU->setProperty("built-in", builtin, arrsize(builtin));
         this->deviceId = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigDeviceID);
-		auto model = "AMD Radeon Graphics" // fallback value
+		auto model = "AMD Radeon Graphics"; // fallback value
         switch (this->deviceId) {
 			case 0x73AF:
 				model = "AMD Radeon RX 6900 XTXH";
@@ -60,7 +60,7 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
 				model = "AMD Radeon RX 6650 XT";
 				break;
 			default:
-				PANIC("x6000p", "Unknown device ID")
+				PANIC("x6000p", "Unknown device ID");
 		}
 		
 		if (model) {
@@ -76,11 +76,23 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
 }
 
 void X6000P::processKext(KernelPatcher &patcher, size_t index, mach_vm_address_t address, size_t size) {
+	auto boardId = BaseDeviceInfo::get().boardIdentifier;
+	bool agdpboardid = true;
+	const char *compatibleBoards[] {
+		"Mac-27AD2F918AE68F61", // MacPro7,1
+		"Mac-7BA5B2D9E42DDD94" // iMacPro1,1
+	};
+	for (size_t i = 0; i < arrsize(compatibleBoards); i++) {
+		if (!strcmp(compatibleBoards[i], boardId)) {
+			agdpboardid = false;
+		}
+	}
+
 	static const uint8_t kAGDPBoardIDKeyOriginal[] = "board-id";
 	static const uint8_t kAGDPBoardIDKeyPatched[] = "applehax";
     if (kextAGDP.loadIndex == index) {
         const LookupPatchPlus patches[] = {
-            {&kextAGDP, kAGDPBoardIDKeyOriginal, kAGDPBoardIDKeyPatched, 1},
+            {&kextAGDP, kAGDPBoardIDKeyOriginal, kAGDPBoardIDKeyPatched, 1, agdpboardid},
         };
         PANIC_COND(!LookupPatchPlus::applyAll(&patcher, patches, address, size), "x6000p",
             "Failed to apply AGDP patches: %d", patcher.getError());
