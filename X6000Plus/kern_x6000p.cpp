@@ -27,11 +27,20 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
 	auto *devInfo = DeviceInfo::create();
 	if (devInfo) {
 		devInfo->processSwitchOff();
+        char name[256] = {0};
+        for (size_t i = 0, ii = 0; i < devInfo->videoExternal.size(); i++) {
+            auto *device = OSDynamicCast(IOPCIDevice, devInfo->videoExternal[i].video);
+            if (device) {
+                snprintf(name, arrsize(name), "GFX%zu", ii++);
+                WIOKit::renameDevice(device, name);
+                WIOKit::awaitPublishing(device);
+            }
+        }
 
-		static uint8_t builtin[] = {0x01};
-		this->iGPU->setProperty("built-in", builtin, arrsize(builtin));
-		this->deviceId = WIOKit::readPCIConfigValue(this->iGPU, WIOKit::kIOPCIConfigDeviceID);
-		this->pciRevision = WIOKit::readPCIConfigValue(X6000P::callback->iGPU, WIOKit::kIOPCIConfigRevisionID);
+        static uint8_t builtin[] = {0x00};
+        this->GPU->setProperty("built-in", builtin, arrsize(builtin));
+        this->deviceId = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigDeviceID);
+        this->pciRevision = WIOKit::readPCIConfigValue(NRed::callback->GPU, WIOKit::kIOPCIConfigRevisionID);
 		
 		DeviceInfo::deleter(devInfo);
 	} else {
