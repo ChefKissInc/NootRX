@@ -9,9 +9,15 @@
 
 static const char *pathAGDP = "/System/Library/Extensions/AppleGraphicsControl.kext/Contents/PlugIns/"
                               "AppleGraphicsDevicePolicy.kext/Contents/MacOS/AppleGraphicsDevicePolicy";
-							  
+
+static const char *pathRadeonX6000Framebuffer =
+    "/System/Library/Extensions/AMDRadeonX6000Framebuffer.kext/Contents/MacOS/AMDRadeonX6000Framebuffer";
+
 static KernelPatcher::KextInfo kextAGDP {"com.apple.driver.AppleGraphicsDevicePolicy", &pathAGDP, 1, {true}, {},
     KernelPatcher::KextInfo::Unloaded};
+
+static KernelPatcher::KextInfo kextRadeonX6000Framebuffer {"com.apple.kext.AMDRadeonX6000Framebuffer",
+    &pathRadeonX6000Framebuffer, 1, {}, {}, KernelPatcher::KextInfo::Unloaded};
 
 X6000P *X6000P::callback = nullptr;
 
@@ -48,16 +54,28 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
         static uint8_t builtin[] = {0x00};
         this->GPU->setProperty("built-in", builtin, arrsize(builtin));
         this->deviceId = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigDeviceID);
-		auto model = "AMD Radeon Graphics"; // fallback value
+		this->pciRevision = WIOKit::readPCIConfigValue(NRed::callback->iGPU, WIOKit::kIOPCIConfigRevisionID);
+
+        this->rmmio = this->GPU->mapDeviceMemoryWithRegister(kIOPCIConfigBaseAddress5);
+        PANIC_COND(UNLIKELY(!this->rmmio || !this->rmmio->getLength()), "x6000p", "Failed to map RMMIO");
+        this->rmmioPtr = reinterpret_cast<uint32_t *>(this->rmmio->getVirtualAddress());
+
+        this->revision = (this->readReg32(0xD31) & 0xF000000) >> 0x18;
         switch (this->deviceId) {
 			case 0x73AF:
-				model = "AMD Radeon RX 6900 XTXH";
+				this->chipType = ChipType::Navi21;
+				this->enumRevision = 0x28; // NV_SIENNA_CICHLID_P_A0 = 40
+				auto model = "AMD Radeon RX 6900 XTXH";
 				break;
 			case 0x73A5:
-				model = "AMD Radeon RX 6950 XT";
+				this->chipType = ChipType::Navi21;
+				this->enumRevision = 0x28; // NV_SIENNA_CICHLID_P_A0 = 40
+				auto model = "AMD Radeon RX 6950 XT";
 				break;
 			case 0x73EF:
-				model = "AMD Radeon RX 6650 XT";
+				this->chipType = ChipType::Navi23;
+				this->enumRevision = 0x3c; // NV_DIMGREY_CAVEFISH_P_A0 = 60
+				auto model = "AMD Radeon RX 6650 XT";
 				break;
 			default:
 				PANIC("x6000p", "Unknown device ID");
@@ -95,6 +113,29 @@ void X6000P::processKext(KernelPatcher &patcher, size_t index, mach_vm_address_t
             {&kextAGDP, kAGDPBoardIDKeyOriginal, kAGDPBoardIDKeyPatched, 1, agdpboardid},
         };
         PANIC_COND(!LookupPatchPlus::applyAll(&patcher, patches, address, size), "x6000p",
-            "Failed to apply AGDP patches: %d", patcher.getError());
+            "Failed to apply AGDP patch: %d", patcher.getError());
+	}
+	else if (kextRadeonX6000Framebuffer.loadIndex == index) {
+		CAILAsicCapsEntry *orgAsicCapsTable = nullptr;
+
+        SolveRequestPlus solveRequests[] = {
+            {"__ZL20CAIL_ASIC_CAPS_TABLE", orgAsicCapsTable, kCailAsicCapsTablePattern},
+        };
+        PANIC_COND(!SolveRequestPlus::solveAll(&patcher, index, solveRequests, address, size), "x6000p",
+            "Failed to resolve symbols");
+
+		PANIC_COND(MachInfo::setKernelWriting(true, KernelPatcher::kernelWriteLock) != KERN_SUCCESS, "x6000p",
+            "Failed to enable kernel writing");
+
+        *orgAsicCapsTable = {
+            .familyId = 0x0F,
+            .caps = this->chipType == ChipType::Navi21 ? ddiCapsNavi21 : ddiCapsNavi22, // Navi 23 uses Navi 22 caps
+            .deviceId = this->deviceId,
+            .revision = this->revision,
+            .extRevision = static_cast<uint32_t>(this->enumRevision) + this->revision,
+            .pciRevision = this->pciRevision,
+        };
+		MachInfo::setKernelWriting(false, KernelPatcher::kernelWriteLock);
+        DBGLOG("x6000p", "Applied DDI Caps patches");
 	}
 }
