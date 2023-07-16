@@ -54,7 +54,6 @@ class X6000P {
 		}
 	}
 
-	auto model;
 	ChipType chipType {ChipType::Unknown};
 	IOMemoryMap *rmmio {nullptr};
 	volatile uint32_t *rmmioPtr {nullptr};

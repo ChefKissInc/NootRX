@@ -59,8 +59,8 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
         this->rmmio = this->GPU->mapDeviceMemoryWithRegister(kIOPCIConfigBaseAddress5);
         PANIC_COND(UNLIKELY(!this->rmmio || !this->rmmio->getLength()), "x6000p", "Failed to map RMMIO");
         this->rmmioPtr = reinterpret_cast<uint32_t *>(this->rmmio->getVirtualAddress());
-
         this->revision = (this->readReg32(0xD31) & 0xF000000) >> 0x18;
+		auto model = "AMD Radeon Graphics"
         switch (this->deviceId) {
 			case 0x73A5:
 				this->chipType = ChipType::Navi21;
