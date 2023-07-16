@@ -4,6 +4,7 @@
 #include "kern_x6000p.hpp"
 #include "kern_patcherplus.hpp"
 #include "kern_patches.hpp"
+#include "kern_patterns.hpp"
 #include <Headers/kern_api.hpp>
 #include <Headers/kern_devinfo.hpp>
 
