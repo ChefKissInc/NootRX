@@ -123,7 +123,7 @@ void X6000P::processKext(KernelPatcher &patcher, size_t index, mach_vm_address_t
             "Failed to enable kernel writing");
 
         *orgAsicCapsTable = {
-            .familyId = 0x0F,
+            .familyId = 0x8F,
             .caps = this->chipType == ChipType::Navi21 ? ddiCapsNavi21 : ddiCapsNavi22, // Navi 23 uses Navi 22 caps
             .deviceId = this->deviceId,
             .revision = this->revision,
