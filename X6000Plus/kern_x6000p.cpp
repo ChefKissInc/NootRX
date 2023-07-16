@@ -62,11 +62,6 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
 
         this->revision = (this->readReg32(0xD31) & 0xF000000) >> 0x18;
         switch (this->deviceId) {
-			case 0x73AF:
-				this->chipType = ChipType::Navi21;
-				this->enumRevision = 0x28; // NV_SIENNA_CICHLID_P_A0 = 40
-				auto model = "AMD Radeon RX 6900 XTXH";
-				break;
 			case 0x73A5:
 				this->chipType = ChipType::Navi21;
 				this->enumRevision = 0x28; // NV_SIENNA_CICHLID_P_A0 = 40
