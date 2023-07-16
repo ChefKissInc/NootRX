@@ -9,9 +9,9 @@
 
 static X6000P x6000p;
 
-static const char *bootargOff = "-x6000poff";
-static const char *bootargDebug = "-x6000pdbg";
-static const char *bootargBeta = "-x6000pbeta";
+static const char *bootargOff = "-x6kpoff";
+static const char *bootargDebug = "-x6kpdbg";
+static const char *bootargBeta = "-x6kpbeta";
 
 PluginConfiguration ADDPR(config) {
     xStringify(PRODUCT_NAME),
@@ -43,7 +43,7 @@ bool PRODUCT_NAME::start(IOService *provider) {
         return false;
     }
 
-    if (!(lilu.getRunMode() & LiluAPI::RunningInstallerRecovery)) {
+    if (!(lilu.getRunMode() & LiluAPI::RunningInstallerRecovery) && !checkKernelArgument("-x6kpfbonly")) {
         auto *prop = OSDynamicCast(OSArray, this->getProperty("Drivers"));
         if (!prop) {
             SYSLOG("init", "Failed to get Drivers property");
