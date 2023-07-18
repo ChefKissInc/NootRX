@@ -18,7 +18,9 @@ class EXPORT PRODUCT_NAME : public IOService {
 
 enum struct ChipType : uint32_t {
     Navi21 = 0,
+    Navi22,
     Navi23,
+    Navi24,
     Unknown,
 };
 

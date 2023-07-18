@@ -68,6 +68,11 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
                 this->enumRevision = 0x28;    // NV_SIENNA_CICHLID_P_A0 = 40
                 model = "AMD Radeon RX 6950 XT";
                 break;
+            case 0x73DF:
+                this->chipType = ChipType::Navi22;
+                this->enumRevision = 0x3c;    // NV_DIMGREY_CAVEFISH_P_A0 = 60
+                model = "AMD Radeon RX 6700 XT";
+                break;
             case 0x73EF:
                 this->chipType = ChipType::Navi23;
                 this->enumRevision = 0x3c;    // NV_DIMGREY_CAVEFISH_P_A0 = 60
@@ -122,7 +127,7 @@ void X6000P::processKext(KernelPatcher &patcher, size_t index, mach_vm_address_t
 
         *orgAsicCapsTable = {
             .familyId = 0x8F,
-            .caps = this->chipType == ChipType::Navi21 ? ddiCapsNavi21 : ddiCapsNavi22,    // Navi 23 uses Navi 22 caps
+            .caps = this->chipType == ChipType::Navi21 ? ddiCapsNavi21 : ddiCapsNavi22,    // Navi 23 uses Navi 22 caps, we also assume the same for Navi 24 here
             .deviceId = this->deviceId,
             .revision = this->revision,
             .extRevision = static_cast<uint32_t>(this->enumRevision) + this->revision,
