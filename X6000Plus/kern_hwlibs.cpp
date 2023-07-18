@@ -1,0 +1,69 @@
+//  Copyright © 2022-2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.0. See LICENSE for
+//  details.
+
+#include "kern_hwlibs.hpp"
+#include "kern_x6000p.hpp"
+#include "kern_patterns.hpp"
+#include <Headers/kern_api.hpp>
+
+static const char *pathRadeonX6800HWLibs = "/System/Library/Extensions/AMDRadeonX6000HWServices.kext/Contents/PlugIns/"
+                                           "AMDRadeonX6800HWLibs.kext/Contents/MacOS/AMDRadeonX6800HWLibs";
+
+static KernelPatcher::KextInfo kextRadeonX6800HWLibs {"com.apple.kext.AMDRadeonX6800HWLibs", &pathRadeonX6800HWLibs, 1,
+    {}, {}, KernelPatcher::KextInfo::Unloaded};
+
+HWLibs *HWLibs::callback = nullptr;
+
+void HWLibs::init() {
+    callback = this;
+    lilu.onKextLoadForce(&kextRadeonX6800HWLibs);
+}
+
+bool HWLibs::processKext(KernelPatcher &patcher, size_t index, mach_vm_address_t address, size_t size) {
+    if (kextRadeonX6800HWLibs.loadIndex == index) {
+        X6000P::callback->setRMMIOIfNecessary();
+
+        CAILAsicCapsEntry *orgCapsTable = nullptr;
+        CAILAsicCapsInitEntry *orgCapsInitTable = nullptr;
+
+        SolveRequestPlus solveRequests[] = {
+            {"__ZL20CAIL_ASIC_CAPS_TABLE", orgCapsTable},
+            {"_CAILAsicCapsInitTable", orgCapsInitTable, kCAILAsicCapsInitTablePattern},
+        };
+        PANIC_COND(!SolveRequestPlus::solveAll(&patcher, index, solveRequests, address, size), "hwlibs",
+            "Failed to resolve symbols");
+
+        PANIC_COND(MachInfo::setKernelWriting(true, KernelPatcher::kernelWriteLock) != KERN_SUCCESS, "hwlibs",
+            "Failed to enable kernel writing");
+
+        auto found = false;
+        auto targetDeviceId = X6000P::callback->deviceId;
+
+        while (orgCapsInitTable->deviceId != 0xFFFFFFFF) {
+            if (orgCapsInitTable->familyId == 8F && orgCapsInitTable->deviceId == targetDeviceId) {
+                orgCapsInitTable->deviceId = X6000P::callback->deviceId;
+                orgCapsInitTable->revision = X6000P::callback->revision;
+                orgCapsInitTable->extRevision = static_cast<uint64_t>(X6000P::callback->enumRevision) + X6000P::callback->revision;
+                orgCapsInitTable->pciRevision = X6000P::callback->pciRevision;
+                *orgCapsTable = {
+                    .familyId = 8F,
+                    .deviceId = X6000P::callback->deviceId,
+                    .revision = X6000P::callback->revision,
+                    .extRevision = static_cast<uint64_t>(X6000P::callback->enumRevision) + X6000P::callback->revision,
+                    .pciRevision = 0xFFFFFFFF,
+                };
+                found = true;
+                break;
+            }
+            orgCapsInitTable++;
+        }
+        PANIC_COND(!found, "hwlibs", "Failed to find caps init table entry");
+
+        MachInfo::setKernelWriting(false, KernelPatcher::kernelWriteLock);
+        DBGLOG("hwlibs", "Applied DDI Caps patches");
+
+        return true;
+    }
+
+    return false;
+}
