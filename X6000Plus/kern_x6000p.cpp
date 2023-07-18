@@ -127,7 +127,9 @@ void X6000P::processKext(KernelPatcher &patcher, size_t index, mach_vm_address_t
 
         *orgAsicCapsTable = {
             .familyId = 0x8F,
-            .caps = this->chipType == ChipType::Navi21 ? ddiCapsNavi21 : ddiCapsNavi22,    // Navi 23 uses Navi 22 caps, we also assume the same for Navi 24 here
+            .caps = this->chipType == ChipType::Navi21 ?
+                        ddiCapsNavi21 :
+                        ddiCapsNavi22,    // Navi 23 uses Navi 22 caps, we also assume the same for Navi 24 here
             .deviceId = this->deviceId,
             .revision = this->revision,
             .extRevision = static_cast<uint32_t>(this->enumRevision) + this->revision,
