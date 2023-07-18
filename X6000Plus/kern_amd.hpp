@@ -88,51 +88,51 @@ constexpr uint32_t mmMP1_SMN_C2PMSG_82 = 0x292;
 constexpr uint32_t mmMP1_SMN_C2PMSG_66 = 0x282;
 
 struct CommonFirmwareHeader {
-	uint32_t size;
-	uint32_t headerSize;
-	uint16_t headerMajor;
-	uint16_t headerMinor;
-	uint16_t ipMajor;
-	uint16_t ipMinor;
-	uint32_t ucodeVer;
-	uint32_t ucodeSize;
-	uint32_t ucodeOff;
-	uint32_t crc32;
+    uint32_t size;
+    uint32_t headerSize;
+    uint16_t headerMajor;
+    uint16_t headerMinor;
+    uint16_t ipMajor;
+    uint16_t ipMinor;
+    uint32_t ucodeVer;
+    uint32_t ucodeSize;
+    uint32_t ucodeOff;
+    uint32_t crc32;
 } PACKED;
 
 struct GPUInfoFirmware {
-	uint32_t gcNumSe;
-	uint32_t gcNumCuPerSh;
-	uint32_t gcNumShPerSe;
-	uint32_t gcNumRbPerSe;
-	uint32_t gcNumTccs;
-	uint32_t gcNumGprs;
-	uint32_t gcNumMaxGsThds;
-	uint32_t gcGsTableDepth;
-	uint32_t gcGsPrimBuffDepth;
-	uint32_t gcParameterCacheDepth;
-	uint32_t gcDoubleOffchipLdsBuffer;
-	uint32_t gcWaveSize;
-	uint32_t gcMaxWavesPerSimd;
-	uint32_t gcMaxScratchSlotsPerCu;
-	uint32_t gcLdsSize;
+    uint32_t gcNumSe;
+    uint32_t gcNumCuPerSh;
+    uint32_t gcNumShPerSe;
+    uint32_t gcNumRbPerSe;
+    uint32_t gcNumTccs;
+    uint32_t gcNumGprs;
+    uint32_t gcNumMaxGsThds;
+    uint32_t gcGsTableDepth;
+    uint32_t gcGsPrimBuffDepth;
+    uint32_t gcParameterCacheDepth;
+    uint32_t gcDoubleOffchipLdsBuffer;
+    uint32_t gcWaveSize;
+    uint32_t gcMaxWavesPerSimd;
+    uint32_t gcMaxScratchSlotsPerCu;
+    uint32_t gcLdsSize;
 } PACKED;
 
 struct CAILAsicCapsEntry {
-	uint32_t familyId, deviceId;
-	uint32_t revision, extRevision;
-	uint32_t pciRevision;
-	uint32_t _reserved;
-	const uint32_t *caps;
-	const uint32_t *skeleton;
+    uint32_t familyId, deviceId;
+    uint32_t revision, extRevision;
+    uint32_t pciRevision;
+    uint32_t _reserved;
+    const uint32_t *caps;
+    const uint32_t *skeleton;
 } PACKED;
 
 struct CAILAsicCapsInitEntry {
-	uint64_t familyId, deviceId;
-	uint64_t revision, extRevision;
-	uint64_t pciRevision;
-	const uint32_t *caps;
-	const void *goldenCaps;
+    uint64_t familyId, deviceId;
+    uint64_t revision, extRevision;
+    uint64_t pciRevision;
+    const uint32_t *caps;
+    const void *goldenCaps;
 } PACKED;
 
 static const uint32_t ddiCapsNavi21[16] = {0x800001U, 0x1FEU, 0x0U, 0x0U, 0x200U, 0x8000000U, 0x8000000, 0x2U,
@@ -140,37 +140,37 @@ static const uint32_t ddiCapsNavi21[16] = {0x800001U, 0x1FEU, 0x0U, 0x0U, 0x200U
 
 static const uint32_t ddiCapsNavi22[16] = {0x800001U, 0x1FEU, 0x0U, 0x0U, 0x200U, 0x8000000, 0x8000000, 0x2U,
     0x200A0101U, 0xA20600U, 0x42000020U, 0x0U, 0x0U, 0x0U, 0x0U, 0x0U};
-	
+
 enum CAILResult : uint32_t {
-	kCAILResultSuccess = 0,
-	kCAILResultInvalidArgument,
-	kCAILResultGeneralFailure,
-	kCAILResultResourcesExhausted,
-	kCAILResultUnsupported,
+    kCAILResultSuccess = 0,
+    kCAILResultInvalidArgument,
+    kCAILResultGeneralFailure,
+    kCAILResultResourcesExhausted,
+    kCAILResultUnsupported,
 };
 
 struct CAILDeviceTypeEntry {
-	uint32_t deviceId;
-	uint32_t deviceType;
+    uint32_t deviceId;
+    uint32_t deviceType;
 } PACKED;
 
 static const uint32_t ravenDevAttrFlags = 0x49;
 
 struct DeviceCapabilityEntry {
-	uint64_t familyId, extRevision;
-	uint64_t deviceId, revision, enumRevision;
-	const void *swipInfo, *swipInfoMinimal;
-	const uint32_t *devAttrFlags;
-	const void *goldenRegisterSetings, *doorbellRange;
+    uint64_t familyId, extRevision;
+    uint64_t deviceId, revision, enumRevision;
+    const void *swipInfo, *swipInfoMinimal;
+    const uint32_t *devAttrFlags;
+    const void *goldenRegisterSetings, *doorbellRange;
 } PACKED;
 
 constexpr uint64_t DEVICE_CAP_ENTRY_REV_DONT_CARE = 0xDEADCAFEU;
 
 enum VideoMemoryType : uint32_t {
-	kVideoMemoryTypeUnknown,
-	kVideoMemoryTypeDDR2,
-	kVideoMemoryTypeDDR3 = 3,
-	kVideoMemoryTypeDDR4,
+    kVideoMemoryTypeUnknown,
+    kVideoMemoryTypeDDR2,
+    kVideoMemoryTypeDDR3 = 3,
+    kVideoMemoryTypeDDR4,
 };
 
 constexpr uint32_t PP_RESULT_OK = 1;
