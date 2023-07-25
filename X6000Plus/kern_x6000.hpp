@@ -6,8 +6,10 @@
 #include "kern_amd.hpp"
 #include "kern_patcherplus.hpp"
 #include "kern_x6000p.hpp"
+#include <Headers/kern_patcher.hpp>
 #include <Headers/kern_util.hpp>
 #include <IOKit/IOService.h>
+#include <IOKit/graphics/IOGraphicsTypes.h>
 
 class X6000 {
     public:
@@ -18,7 +20,7 @@ class X6000 {
     private:
     mach_vm_address_t orgGetHWInfo {0};
 
-    static void wrapGetHWInfo(IOService *accelVideoCtx, void *hwInfo);
+    static IOReturn wrapGetHWInfo(IOService *accelVideoCtx, void *hwInfo);
 };
 
 #endif /* kern_x6000_hpp */
