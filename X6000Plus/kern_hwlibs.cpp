@@ -40,7 +40,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         PANIC_COND(MachInfo::setKernelWriting(true, KernelPatcher::kernelWriteLock) != KERN_SUCCESS, "hwlibs",
             "Failed to enable kernel writing");
 
-        *orgDeviceTypeTable = {.deviceId = X6000P::callback->deviceId, .deviceType = 1};
+        *orgDeviceTypeTable = {.deviceId = X6000P::callback->deviceId, .deviceType = 8};
         auto found = false;
         if (X6000P::callback->chipType == ChipType::Navi21) {targetDeviceId = 0x73BF;}
         else if (X6000P::callback->chipType == ChipType::Navi22) {targetDeviceId = 0x73DF;}
