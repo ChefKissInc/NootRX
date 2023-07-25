@@ -30,6 +30,15 @@ void X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t s
         PANIC_COND(!SolveRequestPlus::solveAll(patcher, id, solveRequests, slide, size), "x6000fb",
             "Failed to resolve symbols");
 
+        RouteRequestPlus requests[] = {
+            {"__ZN24AMDRadeonX6000_AmdLogger15initWithPciInfoEP11IOPCIDevice", wrapInitWithPciInfo,
+                this->orgInitWithPciInfo, ADDPR(debugEnabled)},
+            {"__ZN34AMDRadeonX6000_AmdRadeonController10doGPUPanicEPKcz", wrapDoGPUPanic, ADDPR(debugEnabled)},
+            {"_dm_logger_write", wrapDmLoggerWrite, kDmLoggerWritePattern, ADDPR(debugEnabled)},
+        };
+        PANIC_COND(!RouteRequestPlus::routeAll(patcher, id, requests, slide, size), "x6000fb",
+            "Failed to route symbols");
+
         PANIC_COND(MachInfo::setKernelWriting(true, KernelPatcher::kernelWriteLock) != KERN_SUCCESS, "x6000fb",
             "Failed to enable kernel writing");
 
@@ -46,4 +55,33 @@ void X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t s
         MachInfo::setKernelWriting(false, KernelPatcher::kernelWriteLock);
         DBGLOG("x6000fb", "Applied DDI Caps patches");
     }
+}
+
+bool X6000FB::wrapInitWithPciInfo(void *that, void *param1) {
+    auto ret = FunctionCast(wrapInitWithPciInfo, callback->orgInitWithPciInfo)(that, param1);
+    // Hack AMDRadeonX6000_AmdLogger to log everything
+    getMember<uint64_t>(that, 0x28) = ~0ULL;
+    getMember<uint32_t>(that, 0x30) = 0xFF;
+    return ret;
+}
+
+void X6000FB::wrapDoGPUPanic() {
+    DBGLOG("x6000fb", "doGPUPanic << ()");
+    while (true) { IOSleep(3600000); }
+}
+
+constexpr static const char *LogTypes[] = {"Error", "Warning", "Debug", "DC_Interface", "DTN", "Surface", "HW_Hotplug",
+    "HW_LKTN", "HW_Mode", "HW_Resume", "HW_Audio", "HW_HPDIRQ", "MST", "Scaler", "BIOS", "BWCalcs", "BWValidation",
+    "I2C_AUX", "Sync", "Backlight", "Override", "Edid", "DP_Caps", "Resource", "DML", "Mode", "Detect", "LKTN",
+    "LinkLoss", "Underflow", "InterfaceTrace", "PerfTrace", "DisplayStats"};
+
+void X6000FB::wrapDmLoggerWrite(void *, uint32_t logType, char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    auto *ns = new char[0x10000];
+    vsnprintf(ns, 0x10000, fmt, args);
+    va_end(args);
+    const char *logTypeStr = arrsize(LogTypes) > logType ? LogTypes[logType] : "Info";
+    kprintf("[%s] %s", logTypeStr, ns);
+    delete[] ns;
 }
