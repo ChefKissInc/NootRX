@@ -29,6 +29,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         DeviceCapabilityEntry *orgDevCapTable = nullptr;
 
         SolveRequestPlus solveRequests[] = {
+            {"__ZL15deviceTypeTable", orgDeviceTypeTable, kDeviceTypeTablePattern},
             {"__ZL20CAIL_ASIC_CAPS_TABLE", orgCapsTable, kCailAsicCapsTableHWLibsPattern},
             {"_CAILAsicCapsInitTable", orgCapsInitTable, kCAILAsicCapsInitTablePattern},
             {"_DeviceCapabilityTbl", orgDevCapTable, kDeviceCapabilityTblPattern},
@@ -41,7 +42,6 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
 
         *orgDeviceTypeTable = {.deviceId = X6000P::callback->deviceId, .deviceType = 1};
         auto found = false;
-        auto targetDeviceId = X6000P::callback->deviceId;
         if (X6000P::callback->chipType == ChipType::Navi21) {targetDeviceId = 0x73BF;}
         else if (X6000P::callback->chipType == ChipType::Navi22) {targetDeviceId = 0x73DF;}
         else {targetDeviceId = 0x73FF;}

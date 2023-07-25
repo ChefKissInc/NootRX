@@ -13,6 +13,9 @@ class HWLibs {
     static HWLibs *callback;
     void init();
     bool processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size);
+
+    private:
+    int targetDeviceId;
 };
 
 #endif /* kern_hwlibs_hpp */
