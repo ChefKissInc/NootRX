@@ -27,7 +27,7 @@ void X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t s
         SolveRequestPlus solveRequests[] = {
             {"__ZL20CAIL_ASIC_CAPS_TABLE", orgAsicCapsTable, kCailAsicCapsTablePattern},
         };
-        PANIC_COND(!SolveRequestPlus::solveAll(&patcher, id, solveRequests, slide, size), "x6000fb",
+        PANIC_COND(!SolveRequestPlus::solveAll(patcher, id, solveRequests, slide, size), "x6000fb",
             "Failed to resolve symbols");
 
         PANIC_COND(MachInfo::setKernelWriting(true, KernelPatcher::kernelWriteLock) != KERN_SUCCESS, "x6000fb",

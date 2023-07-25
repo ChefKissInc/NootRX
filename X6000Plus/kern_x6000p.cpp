@@ -34,7 +34,7 @@ void X6000P::init() {
     lilu.onKextLoadForce(
         nullptr, 0,
         [](void *user, KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size) {
-            static_cast<X6000P *>(user)->processKext(patcher, index, slide, size);
+            static_cast<X6000P *>(user)->processKext(patcher, id, slide, size);
         },
         this);
 }
