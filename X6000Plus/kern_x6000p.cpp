@@ -106,19 +106,19 @@ void X6000P::setRMMIOIfNecessary() {
 }
 
 void X6000P::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size) {
-    auto boardId = BaseDeviceInfo::get().boardIdentifier;
-    bool agdpboardid = true;
-    const char *compatibleBoards[] {
-        "Mac-27AD2F918AE68F61",    // MacPro7,1
-        "Mac-7BA5B2D9E42DDD94"     // iMacPro1,1
-    };
-    for (size_t i = 0; i < arrsize(compatibleBoards); i++) {
-        if (!strcmp(compatibleBoards[i], boardId)) { agdpboardid = false; }
-    }
-
-    static const uint8_t kAGDPBoardIDKeyOriginal[] = "board-id";
-    static const uint8_t kAGDPBoardIDKeyPatched[] = "applehax";
     if (kextAGDP.loadIndex == id) {
+        auto boardId = BaseDeviceInfo::get().boardIdentifier;
+        bool agdpboardid = true;
+        const char *compatibleBoards[] {
+            "Mac-27AD2F918AE68F61",    // MacPro7,1
+            "Mac-7BA5B2D9E42DDD94"     // iMacPro1,1
+        };
+        for (size_t i = 0; i < arrsize(compatibleBoards); i++) {
+            if (!strcmp(compatibleBoards[i], boardId)) { agdpboardid = false; }
+        }
+
+        static const uint8_t kAGDPBoardIDKeyOriginal[] = "board-id";
+        static const uint8_t kAGDPBoardIDKeyPatched[] = "applehax";
         const LookupPatchPlus patches[] = {
             {&kextAGDP, kAGDPBoardIDKeyOriginal, kAGDPBoardIDKeyPatched, 1, agdpboardid},
         };
