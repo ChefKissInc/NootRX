@@ -64,8 +64,4 @@ class X6000P {
     uint16_t revision {0};
     uint32_t pciRevision {0};
     IOPCIDevice *GPU {nullptr};
-    OSMetaClass *metaClassMap[4][2] = {{nullptr}};
-    mach_vm_address_t orgSafeMetaCast {0};
-
-    static OSMetaClassBase *wrapSafeMetaCast(const OSMetaClassBase *anObject, const OSMetaClass *toMeta);
 };
