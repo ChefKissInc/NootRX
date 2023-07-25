@@ -33,8 +33,8 @@ void X6000P::init() {
         [](void *user, KernelPatcher &patcher) { static_cast<X6000P *>(user)->processPatcher(patcher); }, this);
     lilu.onKextLoadForce(
         nullptr, 0,
-        [](void *user, KernelPatcher &patcher, size_t index, mach_vm_address_t address, size_t size) {
-            static_cast<X6000P *>(user)->processKext(patcher, index, address, size);
+        [](void *user, KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size) {
+            static_cast<X6000P *>(user)->processKext(patcher, index, slide, size);
         },
         this);
 }
@@ -98,7 +98,7 @@ void X6000P::setRMMIOIfNecessary() {
     }
 }
 
-void X6000P::processKext(KernelPatcher &patcher, size_t index, mach_vm_address_t address, size_t size) {
+void X6000P::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size) {
     auto boardId = BaseDeviceInfo::get().boardIdentifier;
     bool agdpboardid = true;
     const char *compatibleBoards[] {
@@ -111,11 +111,11 @@ void X6000P::processKext(KernelPatcher &patcher, size_t index, mach_vm_address_t
 
     static const uint8_t kAGDPBoardIDKeyOriginal[] = "board-id";
     static const uint8_t kAGDPBoardIDKeyPatched[] = "applehax";
-    if (kextAGDP.loadIndex == index) {
+    if (kextAGDP.loadIndex == id) {
         const LookupPatchPlus patches[] = {
             {&kextAGDP, kAGDPBoardIDKeyOriginal, kAGDPBoardIDKeyPatched, 1, agdpboardid},
         };
-        PANIC_COND(!LookupPatchPlus::applyAll(&patcher, patches, address, size), "x6000p",
+        PANIC_COND(!LookupPatchPlus::applyAll(patcher, patches, slide, size), "x6000p",
             "Failed to apply AGDP patch: %d", patcher.getError());
     }
 }

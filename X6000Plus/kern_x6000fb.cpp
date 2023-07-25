@@ -19,15 +19,15 @@ void X6000FB::init() {
     lilu.onKextLoadForce(&kextRadeonX6000Framebuffer);
 }
 
-void X6000FB::processKext(KernelPatcher &patcher, size_t index, mach_vm_address_t address, size_t size) {
-    if (kextRadeonX6000Framebuffer.loadIndex == index) {
+void X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size) {
+    if (kextRadeonX6000Framebuffer.loadIndex == id) {
         X6000P::callback->setRMMIOIfNecessary();
         CAILAsicCapsEntry *orgAsicCapsTable = nullptr;
 
         SolveRequestPlus solveRequests[] = {
             {"__ZL20CAIL_ASIC_CAPS_TABLE", orgAsicCapsTable, kCailAsicCapsTablePattern},
         };
-        PANIC_COND(!SolveRequestPlus::solveAll(&patcher, index, solveRequests, address, size), "x6000fb",
+        PANIC_COND(!SolveRequestPlus::solveAll(&patcher, id, solveRequests, slide, size), "x6000fb",
             "Failed to resolve symbols");
 
         PANIC_COND(MachInfo::setKernelWriting(true, KernelPatcher::kernelWriteLock) != KERN_SUCCESS, "x6000fb",

@@ -19,8 +19,8 @@ void HWLibs::init() {
     lilu.onKextLoadForce(&kextRadeonX6800HWLibs);
 }
 
-bool HWLibs::processKext(KernelPatcher &patcher, size_t index, mach_vm_address_t address, size_t size) {
-    if (kextRadeonX6800HWLibs.loadIndex == index) {
+bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size) {
+    if (kextRadeonX6800HWLibs.loadIndex == id) {
         X6000P::callback->setRMMIOIfNecessary();
 
         CAILAsicCapsEntry *orgCapsTable = nullptr;
@@ -30,7 +30,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t index, mach_vm_address_t
             {"__ZL20CAIL_ASIC_CAPS_TABLE", orgCapsTable, kCailAsicCapsTableHWLibsPattern},
             {"_CAILAsicCapsInitTable", orgCapsInitTable, kCAILAsicCapsInitTablePattern},
         };
-        PANIC_COND(!SolveRequestPlus::solveAll(&patcher, index, solveRequests, address, size), "hwlibs",
+        PANIC_COND(!SolveRequestPlus::solveAll(&patcher, id, solveRequests, slide, size), "hwlibs",
             "Failed to resolve symbols");
 
         PANIC_COND(MachInfo::setKernelWriting(true, KernelPatcher::kernelWriteLock) != KERN_SUCCESS, "hwlibs",

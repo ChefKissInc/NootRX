@@ -36,7 +36,7 @@ class X6000P {
     void init();
     void processPatcher(KernelPatcher &patcher);
     void setRMMIOIfNecessary();
-    void processKext(KernelPatcher &patcher, size_t index, mach_vm_address_t address, size_t size);
+    void processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size);
 
     uint32_t readReg32(uint32_t reg) {
         if (reg * 4 < this->rmmio->getLength()) {
