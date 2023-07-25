@@ -4,8 +4,8 @@
 #ifndef kern_hwlibs_hpp
 #define kern_hwlibs_hpp
 #include "kern_amd.hpp"
-#include "kern_x6000p.hpp"
 #include "kern_patcherplus.hpp"
+#include "kern_x6000p.hpp"
 #include <Headers/kern_util.hpp>
 
 class HWLibs {

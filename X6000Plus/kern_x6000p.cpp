@@ -2,12 +2,12 @@
 //  details.
 
 #include "kern_x6000p.hpp"
+#include "kern_hwlibs.hpp"
+#include "kern_model.hpp"
 #include "kern_patcherplus.hpp"
 #include "kern_patches.hpp"
 #include "kern_patterns.hpp"
 #include "kern_x6000fb.hpp"
-#include "kern_model.hpp"
-#include "kern_hwlibs.hpp"
 #include <Headers/kern_api.hpp>
 #include <Headers/kern_devinfo.hpp>
 
@@ -27,7 +27,7 @@ void X6000P::init() {
     callback = this;
 
     lilu.onKextLoadForce(&kextAGDP);
-	x6000fb.init();
+    x6000fb.init();
 
     lilu.onPatcherLoadForce(
         [](void *user, KernelPatcher &patcher) { static_cast<X6000P *>(user)->processPatcher(patcher); }, this);
@@ -44,17 +44,18 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
     if (devInfo) {
         devInfo->processSwitchOff();
         char name[256] = {0};
-		for (size_t i = 0, ii = 0; i < devInfo->videoExternal.size(); i++) {
-			auto *device = OSDynamicCast(IOPCIDevice, devInfo->videoExternal[i].video);
-			if (!device) { continue; }
-			auto devid = WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigDeviceID) & 0xFF00;
-			if (WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigVendorID) == WIOKit::VendorID::ATIAMD && devid == 0x7300) {
-				this->GPU = device;
-				snprintf(name, arrsize(name), "GFX%zu", ii++);
-				WIOKit::renameDevice(device, name);
-				WIOKit::awaitPublishing(device);
-				break;
-			}
+        for (size_t i = 0, ii = 0; i < devInfo->videoExternal.size(); i++) {
+            auto *device = OSDynamicCast(IOPCIDevice, devInfo->videoExternal[i].video);
+            if (!device) { continue; }
+            auto devid = WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigDeviceID) & 0xFF00;
+            if (WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigVendorID) == WIOKit::VendorID::ATIAMD &&
+                devid == 0x7300) {
+                this->GPU = device;
+                snprintf(name, arrsize(name), "GFX%zu", ii++);
+                WIOKit::renameDevice(device, name);
+                WIOKit::awaitPublishing(device);
+                break;
+            }
         }
 
         static uint8_t builtin[] = {0x00};
@@ -66,10 +67,10 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
         PANIC_COND(UNLIKELY(!this->rmmio || !this->rmmio->getLength()), "x6000p", "Failed to map RMMIO");
         this->rmmioPtr = reinterpret_cast<uint32_t *>(this->rmmio->getVirtualAddress());
         this->revision = (this->readReg32(0xD31) & 0xF000000) >> 0x18;
-		if (!this->GPU->getProperty("model")) {
-			auto *model = getBranding(this->deviceId, this->pciRevision);
-			this->GPU->setProperty("model", const_cast<char *>(model), static_cast<uint32_t>(strlen(model) + 1));
-		}
+        if (!this->GPU->getProperty("model")) {
+            auto *model = getBranding(this->deviceId, this->pciRevision);
+            this->GPU->setProperty("model", const_cast<char *>(model), static_cast<uint32_t>(strlen(model) + 1));
+        }
         DeviceInfo::deleter(devInfo);
     } else {
         SYSLOG("x6000p", "Failed to create DeviceInfo");
@@ -77,29 +78,29 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
 }
 
 void X6000P::setRMMIOIfNecessary() {
-	if (UNLIKELY(!this->rmmio || !this->rmmio->getLength())) {
-		this->rmmio = this->GPU->mapDeviceMemoryWithRegister(kIOPCIConfigBaseAddress5);
-		PANIC_COND(UNLIKELY(!this->rmmio || !this->rmmio->getLength()), "x6000p", "Failed to map RMMIO");
-		this->rmmioPtr = reinterpret_cast<uint32_t *>(this->rmmio->getVirtualAddress());
+    if (UNLIKELY(!this->rmmio || !this->rmmio->getLength())) {
+        this->rmmio = this->GPU->mapDeviceMemoryWithRegister(kIOPCIConfigBaseAddress5);
+        PANIC_COND(UNLIKELY(!this->rmmio || !this->rmmio->getLength()), "x6000p", "Failed to map RMMIO");
+        this->rmmioPtr = reinterpret_cast<uint32_t *>(this->rmmio->getVirtualAddress());
 
-		this->revision = (this->readReg32(0xD31) & 0xF000000) >> 0x18;
-		switch (this->deviceId) {
-			case 0x73A5:
-				this->chipType = ChipType::Navi21;
-				this->enumRevision = 0x28;    // NV_SIENNA_CICHLID_P_A0 = 40
-				break;
-			case 0x73DF:
-				this->chipType = ChipType::Navi22;
-				this->enumRevision = 0x3c;    // NV_DIMGREY_CAVEFISH_P_A0 = 60
-				break;
-			case 0x73EF:
-				this->chipType = ChipType::Navi23;
-				this->enumRevision = 0x3c;    // NV_DIMGREY_CAVEFISH_P_A0 = 60
-				break;
-			default:
-				PANIC("x6000p", "Unknown device ID");
-		}
-	}
+        this->revision = (this->readReg32(0xD31) & 0xF000000) >> 0x18;
+        switch (this->deviceId) {
+            case 0x73A5:
+                this->chipType = ChipType::Navi21;
+                this->enumRevision = 0x28;    // NV_SIENNA_CICHLID_P_A0 = 40
+                break;
+            case 0x73DF:
+                this->chipType = ChipType::Navi22;
+                this->enumRevision = 0x3c;    // NV_DIMGREY_CAVEFISH_P_A0 = 60
+                break;
+            case 0x73EF:
+                this->chipType = ChipType::Navi23;
+                this->enumRevision = 0x3c;    // NV_DIMGREY_CAVEFISH_P_A0 = 60
+                break;
+            default:
+                PANIC("x6000p", "Unknown device ID");
+        }
+    }
 }
 
 void X6000P::processKext(KernelPatcher &patcher, size_t index, mach_vm_address_t address, size_t size) {
@@ -115,11 +116,11 @@ void X6000P::processKext(KernelPatcher &patcher, size_t index, mach_vm_address_t
 
     static const uint8_t kAGDPBoardIDKeyOriginal[] = "board-id";
     static const uint8_t kAGDPBoardIDKeyPatched[] = "applehax";
-	if (kextAGDP.loadIndex == index) {
-		const LookupPatchPlus patches[] = {
-			{&kextAGDP, kAGDPBoardIDKeyOriginal, kAGDPBoardIDKeyPatched, 1, agdpboardid},
-		};
-		PANIC_COND(!LookupPatchPlus::applyAll(&patcher, patches, address, size), "x6000p",
-				   "Failed to apply AGDP patch: %d", patcher.getError());
-	}
+    if (kextAGDP.loadIndex == index) {
+        const LookupPatchPlus patches[] = {
+            {&kextAGDP, kAGDPBoardIDKeyOriginal, kAGDPBoardIDKeyPatched, 1, agdpboardid},
+        };
+        PANIC_COND(!LookupPatchPlus::applyAll(&patcher, patches, address, size), "x6000p",
+            "Failed to apply AGDP patch: %d", patcher.getError());
+    }
 }

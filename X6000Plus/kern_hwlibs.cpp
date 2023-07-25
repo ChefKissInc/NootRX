@@ -2,8 +2,8 @@
 //  details.
 
 #include "kern_hwlibs.hpp"
-#include "kern_x6000p.hpp"
 #include "kern_patterns.hpp"
+#include "kern_x6000p.hpp"
 #include <Headers/kern_api.hpp>
 
 static const char *pathRadeonX6800HWLibs = "/System/Library/Extensions/AMDRadeonX6000HWServices.kext/Contents/PlugIns/"
@@ -43,7 +43,8 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t index, mach_vm_address_t
             if (orgCapsInitTable->familyId == 0x8F && orgCapsInitTable->deviceId == targetDeviceId) {
                 orgCapsInitTable->deviceId = X6000P::callback->deviceId;
                 orgCapsInitTable->revision = X6000P::callback->revision;
-                orgCapsInitTable->extRevision = static_cast<uint64_t>(X6000P::callback->enumRevision) + X6000P::callback->revision;
+                orgCapsInitTable->extRevision =
+                    static_cast<uint64_t>(X6000P::callback->enumRevision) + X6000P::callback->revision;
                 orgCapsInitTable->pciRevision = X6000P::callback->pciRevision;
                 *orgCapsTable = {
                     .familyId = 0x8F,

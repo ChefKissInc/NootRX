@@ -27,9 +27,7 @@ static constexpr Model dev73DF[] = {
     {0xFF, "AMD Radeon RX 6700"},
 };
 
-static constexpr Model dev73E1[] {
-    {0x00, "AMD Radeon PRO W6600M"}
-};
+static constexpr Model dev73E1[] {{0x00, "AMD Radeon PRO W6600M"}};
 
 static constexpr Model dev73EF[] = {
     {0xC0, "AMD Radeon RX 6800S"},
