@@ -25,10 +25,12 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
 
         CAILAsicCapsEntry *orgCapsTable = nullptr;
         CAILAsicCapsInitEntry *orgCapsInitTable = nullptr;
+        DeviceCapabilityEntry *orgDevCapTable = nullptr;
 
         SolveRequestPlus solveRequests[] = {
             {"__ZL20CAIL_ASIC_CAPS_TABLE", orgCapsTable, kCailAsicCapsTableHWLibsPattern},
             {"_CAILAsicCapsInitTable", orgCapsInitTable, kCAILAsicCapsInitTablePattern},
+            {"_DeviceCapabilityTbl", orgDevCapTable, kDeviceCapabilityTblPattern},
         };
         PANIC_COND(!SolveRequestPlus::solveAll(patcher, id, solveRequests, slide, size), "hwlibs",
             "Failed to resolve symbols");
@@ -63,6 +65,20 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         }
         PANIC_COND(!found, "hwlibs", "Failed to find caps init table entry");
 
+        found = false;
+        while (orgDevCapTable->familyId) {
+            if (orgDevCapTable->familyId == 0x8F && orgDevCapTable->deviceId == targetDeviceId) {
+                orgDevCapTable->deviceId = X6000P::callback->deviceId;
+                orgDevCapTable->extRevision =
+                    static_cast<uint64_t>(X6000P::callback->enumRevision) + X6000P::callback->revision;
+                orgDevCapTable->revision = DEVICE_CAP_ENTRY_REV_DONT_CARE;
+                orgDevCapTable->enumRevision = DEVICE_CAP_ENTRY_REV_DONT_CARE;
+                found = true;
+                break;
+            }
+            orgDevCapTable++;
+        }
+        PANIC_COND(!found, "hwlibs", "Failed to find device capability table entry");
         MachInfo::setKernelWriting(false, KernelPatcher::kernelWriteLock);
         DBGLOG("hwlibs", "Applied DDI Caps patches");
 
