@@ -49,7 +49,7 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
             if (!device) { continue; }
             auto devid = WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigDeviceID) & 0xFF00;
             if (WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigVendorID) == WIOKit::VendorID::ATIAMD &&
-                devid == 0x7300 || devId == 0x7400) {
+                (devid == 0x7300 || devid == 0x7400)) {
                 this->GPU = device;
                 snprintf(name, arrsize(name), "GFX%zu", ii++);
                 WIOKit::renameDevice(device, name);
