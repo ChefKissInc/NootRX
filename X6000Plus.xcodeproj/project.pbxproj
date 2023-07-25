@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,6 +13,13 @@
 		40A07FAD2A22A13600499F02 /* kern_patterns.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 40A07FAC2A22A13600499F02 /* kern_patterns.hpp */; };
 		CE405ED91E4A080700AA0B3D /* plugin_start.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE405ED81E4A080700AA0B3D /* plugin_start.cpp */; };
 		CE8DA0832517C41A008C44E8 /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8DA0822517C41A008C44E8 /* libkmod.a */; };
+		D51187E82A6FB66800F23522 /* kern_hwlibs.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D51187E52A6FB66800F23522 /* kern_hwlibs.hpp */; };
+		D51187E92A6FB66800F23522 /* kern_hwlibs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D51187E62A6FB66800F23522 /* kern_hwlibs.cpp */; };
+		D51187EA2A6FB66800F23522 /* kern_model.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D51187E72A6FB66800F23522 /* kern_model.hpp */; };
+		D51187ED2A6FB70700F23522 /* kern_x6000fb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D51187EB2A6FB70700F23522 /* kern_x6000fb.cpp */; };
+		D51187EE2A6FB70700F23522 /* kern_x6000fb.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D51187EC2A6FB70700F23522 /* kern_x6000fb.hpp */; };
+		D51187F12A6FBA3B00F23522 /* kern_x6000.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D51187EF2A6FBA3B00F23522 /* kern_x6000.cpp */; };
+		D51187F22A6FBA3B00F23522 /* kern_x6000.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D51187F02A6FBA3B00F23522 /* kern_x6000.hpp */; };
 		D51217872A62008A00EC0BEB /* kern_amd.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D51217862A62008A00EC0BEB /* kern_amd.hpp */; };
 		D579D09E2A629F5300A4BCCE /* kern_x6000p.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D579D09C2A629F5300A4BCCE /* kern_x6000p.cpp */; };
 		D579D09F2A629F5300A4BCCE /* kern_x6000p.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D579D09D2A629F5300A4BCCE /* kern_x6000p.hpp */; };
@@ -53,6 +60,13 @@
 		CE405ED81E4A080700AA0B3D /* plugin_start.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = plugin_start.cpp; sourceTree = "<group>"; };
 		CE405EDA1E4A080F00AA0B3D /* plugin_start.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = plugin_start.hpp; sourceTree = "<group>"; };
 		CE8DA0822517C41A008C44E8 /* libkmod.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkmod.a; path = ../Lilu/MacKernelSDK/Library/x86_64/libkmod.a; sourceTree = "<group>"; };
+		D51187E52A6FB66800F23522 /* kern_hwlibs.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = kern_hwlibs.hpp; sourceTree = "<group>"; };
+		D51187E62A6FB66800F23522 /* kern_hwlibs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = kern_hwlibs.cpp; sourceTree = "<group>"; };
+		D51187E72A6FB66800F23522 /* kern_model.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = kern_model.hpp; sourceTree = "<group>"; };
+		D51187EB2A6FB70700F23522 /* kern_x6000fb.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = kern_x6000fb.cpp; sourceTree = "<group>"; };
+		D51187EC2A6FB70700F23522 /* kern_x6000fb.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = kern_x6000fb.hpp; sourceTree = "<group>"; };
+		D51187EF2A6FBA3B00F23522 /* kern_x6000.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = kern_x6000.cpp; sourceTree = "<group>"; };
+		D51187F02A6FBA3B00F23522 /* kern_x6000.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = kern_x6000.hpp; sourceTree = "<group>"; };
 		D51217862A62008A00EC0BEB /* kern_amd.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = kern_amd.hpp; sourceTree = "<group>"; };
 		D579D09C2A629F5300A4BCCE /* kern_x6000p.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = kern_x6000p.cpp; sourceTree = "<group>"; };
 		D579D09D2A629F5300A4BCCE /* kern_x6000p.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = kern_x6000p.hpp; sourceTree = "<group>"; };
@@ -92,6 +106,9 @@
 		1C748C291C21952C0024EED2 /* X6000Plus */ = {
 			isa = PBXGroup;
 			children = (
+				D51187E62A6FB66800F23522 /* kern_hwlibs.cpp */,
+				D51187E52A6FB66800F23522 /* kern_hwlibs.hpp */,
+				D51187E72A6FB66800F23522 /* kern_model.hpp */,
 				1C748C2E1C21952C0024EED2 /* Info.plist */,
 				406889892A229BF600028D22 /* kern_patcherplus.cpp */,
 				4068898A2A229BF600028D22 /* kern_patcherplus.hpp */,
@@ -100,6 +117,10 @@
 				1C748C2C1C21952C0024EED2 /* kern_start.cpp */,
 				D51217862A62008A00EC0BEB /* kern_amd.hpp */,
 				D579D09C2A629F5300A4BCCE /* kern_x6000p.cpp */,
+				D51187EF2A6FBA3B00F23522 /* kern_x6000.cpp */,
+				D51187F02A6FBA3B00F23522 /* kern_x6000.hpp */,
+				D51187EB2A6FB70700F23522 /* kern_x6000fb.cpp */,
+				D51187EC2A6FB70700F23522 /* kern_x6000fb.hpp */,
 				D579D09D2A629F5300A4BCCE /* kern_x6000p.hpp */,
 			);
 			path = X6000Plus;
@@ -159,8 +180,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				D579D09F2A629F5300A4BCCE /* kern_x6000p.hpp in Headers */,
+				D51187F22A6FBA3B00F23522 /* kern_x6000.hpp in Headers */,
+				D51187E82A6FB66800F23522 /* kern_hwlibs.hpp in Headers */,
+				D51187EA2A6FB66800F23522 /* kern_model.hpp in Headers */,
 				40A07FAD2A22A13600499F02 /* kern_patterns.hpp in Headers */,
 				D51217872A62008A00EC0BEB /* kern_amd.hpp in Headers */,
+				D51187EE2A6FB70700F23522 /* kern_x6000fb.hpp in Headers */,
 				4068898C2A229BF600028D22 /* kern_patcherplus.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -203,7 +228,7 @@
 				};
 			};
 			buildConfigurationList = 1C748C211C21952C0024EED2 /* Build configuration list for PBXProject "X6000Plus" */;
-			compatibilityVersion = "Xcode 14.0";
+			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -242,10 +267,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D51187ED2A6FB70700F23522 /* kern_x6000fb.cpp in Sources */,
 				D579D09E2A629F5300A4BCCE /* kern_x6000p.cpp in Sources */,
+				D51187E92A6FB66800F23522 /* kern_hwlibs.cpp in Sources */,
 				4068898B2A229BF600028D22 /* kern_patcherplus.cpp in Sources */,
 				CE405ED91E4A080700AA0B3D /* plugin_start.cpp in Sources */,
 				1C748C2D1C21952C0024EED2 /* kern_start.cpp in Sources */,
+				D51187F12A6FBA3B00F23522 /* kern_x6000.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,7 +284,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-                                ARCHS = x86_64;
+				ARCHS = x86_64;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++1y";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -319,7 +347,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-                                ARCHS = x86_64;
+				ARCHS = x86_64;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++1y";
 				CLANG_CXX_LIBRARY = "libc++";

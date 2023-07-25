@@ -40,16 +40,16 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t index, mach_vm_address_t
         auto targetDeviceId = X6000P::callback->deviceId;
 
         while (orgCapsInitTable->deviceId != 0xFFFFFFFF) {
-            if (orgCapsInitTable->familyId == 8F && orgCapsInitTable->deviceId == targetDeviceId) {
+            if (orgCapsInitTable->familyId == 0x8F && orgCapsInitTable->deviceId == targetDeviceId) {
                 orgCapsInitTable->deviceId = X6000P::callback->deviceId;
                 orgCapsInitTable->revision = X6000P::callback->revision;
                 orgCapsInitTable->extRevision = static_cast<uint64_t>(X6000P::callback->enumRevision) + X6000P::callback->revision;
                 orgCapsInitTable->pciRevision = X6000P::callback->pciRevision;
                 *orgCapsTable = {
-                    .familyId = 8F,
+                    .familyId = 0x8F,
                     .deviceId = X6000P::callback->deviceId,
                     .revision = X6000P::callback->revision,
-                    .extRevision = static_cast<uint64_t>(X6000P::callback->enumRevision) + X6000P::callback->revision,
+                    .extRevision = static_cast<uint32_t>(X6000P::callback->enumRevision) + X6000P::callback->revision,
                     .pciRevision = 0xFFFFFFFF,
                 };
                 found = true;
