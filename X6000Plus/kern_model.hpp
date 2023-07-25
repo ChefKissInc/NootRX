@@ -53,7 +53,7 @@ inline const char *getBranding(uint16_t dev, uint16_t rev) {
             break;
         }
     }
-    return "AMD Radeon(TM) Graphics";
+    return "AMD Radeon RX 6000 Series";
 }
 
 #endif /* kern_model_hpp */
