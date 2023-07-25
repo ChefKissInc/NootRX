@@ -62,11 +62,6 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
         this->GPU->setProperty("built-in", builtin, arrsize(builtin));
         this->deviceId = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigDeviceID);
         this->pciRevision = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigRevisionID);
-
-        this->rmmio = this->GPU->mapDeviceMemoryWithRegister(kIOPCIConfigBaseAddress5);
-        PANIC_COND(UNLIKELY(!this->rmmio || !this->rmmio->getLength()), "x6000p", "Failed to map RMMIO");
-        this->rmmioPtr = reinterpret_cast<uint32_t *>(this->rmmio->getVirtualAddress());
-        this->revision = (this->readReg32(0xD31) & 0xF000000) >> 0x18;
         if (!this->GPU->getProperty("model")) {
             auto *model = getBranding(this->deviceId, this->pciRevision);
             this->GPU->setProperty("model", const_cast<char *>(model), static_cast<uint32_t>(strlen(model) + 1));
