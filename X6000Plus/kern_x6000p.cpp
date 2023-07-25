@@ -8,6 +8,7 @@
 #include "kern_patches.hpp"
 #include "kern_patterns.hpp"
 #include "kern_x6000fb.hpp"
+#include "kern_x6000.hpp"
 #include <Headers/kern_api.hpp>
 #include <Headers/kern_devinfo.hpp>
 
@@ -21,6 +22,7 @@ X6000P *X6000P::callback = nullptr;
 
 static X6000FB x6000fb;
 static HWLibs hwlibs;
+static X6000 x6000;
 
 void X6000P::init() {
     SYSLOG("x6000p", "Copyright 2022-2023 ChefKiss Inc. If you've paid for this, you've been scammed.");
@@ -28,6 +30,11 @@ void X6000P::init() {
 
     lilu.onKextLoadForce(&kextAGDP);
     x6000fb.init();
+
+    if (!checkKernelArgument("-x6kpfbonly")) {
+        hwlibs.init();
+        x6000.init();
+    }
 
     lilu.onPatcherLoadForce(
         [](void *user, KernelPatcher &patcher) { static_cast<X6000P *>(user)->processPatcher(patcher); }, this);
