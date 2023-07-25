@@ -25,7 +25,7 @@ bool X6000::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sli
         X6000P::callback->setRMMIOIfNecessary();
 
         RouteRequestPlus requests[] = {
-            {"__ZN35AMDRadeonX6000_AMDAccelVideoContext9getHWInfoEP13sHardwareInfo", orgGetHWInfo, wrapGetHWInfo},
+            {"__ZN35AMDRadeonX6000_AMDAccelVideoContext9getHWInfoEP13sHardwareInfo", this->orgGetHWInfo, wrapGetHWInfo},
         };
         PANIC_COND(!RouteRequestPlus::routeAll(patcher, id, requests, slide, size), "x6000", "Failed to route symbols");
         DBGLOG("x6000", "Processed AMDRadeonX6000.kext");
@@ -37,7 +37,7 @@ bool X6000::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sli
 }
 
 IOReturn X6000::wrapGetHWInfo(IOService *accelVideoCtx, void *hwInfo) {
-    int ret = FunctionCast(wrapGetHWInfo, X6000::callback->orgGetHWInfo)(accelVideoCtx, hwInfo);
+    auto ret = FunctionCast(wrapGetHWInfo, callback->orgGetHWInfo)(accelVideoCtx, hwInfo);
     getMember<uint16_t>(hwInfo, 0x4) = X6000P::callback->chipType < ChipType::Navi23 ? 0x73BF : 0x73FF;
     return ret;
 }
