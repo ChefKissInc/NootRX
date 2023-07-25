@@ -89,15 +89,15 @@ void X6000P::setRMMIOIfNecessary() {
         switch (this->deviceId) {
             case 0x73A5:
                 this->chipType = ChipType::Navi21;
-                this->enumRevision = 0x28;    // NV_SIENNA_CICHLID_P_A0 = 40
+                this->enumRevision = 0x28;
                 break;
             case 0x73DF:
                 this->chipType = ChipType::Navi22;
-                this->enumRevision = 0x3c;    // NV_DIMGREY_CAVEFISH_P_A0 = 60
+                this->enumRevision = 0x32;
                 break;
             case 0x73EF:
                 this->chipType = ChipType::Navi23;
-                this->enumRevision = 0x3c;    // NV_DIMGREY_CAVEFISH_P_A0 = 60
+                this->enumRevision = 0x3c;
                 break;
             default:
                 PANIC("x6000p", "Unknown device ID");
