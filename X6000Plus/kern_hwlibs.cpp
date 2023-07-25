@@ -27,7 +27,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t index, mach_vm_address_t
         CAILAsicCapsInitEntry *orgCapsInitTable = nullptr;
 
         SolveRequestPlus solveRequests[] = {
-            {"__ZL20CAIL_ASIC_CAPS_TABLE", orgCapsTable},
+            {"__ZL20CAIL_ASIC_CAPS_TABLE", orgCapsTable, kCailAsicCapsTableHWLibsPattern},
             {"_CAILAsicCapsInitTable", orgCapsInitTable, kCAILAsicCapsInitTablePattern},
         };
         PANIC_COND(!SolveRequestPlus::solveAll(&patcher, index, solveRequests, address, size), "hwlibs",
