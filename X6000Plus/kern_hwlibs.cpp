@@ -38,6 +38,9 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
 
         auto found = false;
         auto targetDeviceId = X6000P::callback->deviceId;
+        if (X6000P::callback->chipType == ChipType::Navi21) {targetDeviceId = 0x73BF;}
+        else if (X6000P::callback->chipType == ChipType::Navi22) {targetDeviceId = 0x73DF;}
+        else {targetDeviceId = 0x73FF;}
 
         while (orgCapsInitTable->deviceId != 0xFFFFFFFF) {
             if (orgCapsInitTable->familyId == 0x8F && orgCapsInitTable->deviceId == targetDeviceId) {
