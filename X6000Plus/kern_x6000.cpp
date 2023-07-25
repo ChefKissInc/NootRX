@@ -10,18 +10,18 @@
 
 static const char *pathRadeonX6000 = "/System/Library/Extensions/AMDRadeonX6000.kext/Contents/MacOS/AMDRadeonX6000";
 
-static KernelPatcher::KextInfo pathRadeonX6000 {"com.apple.kext.AMDRadeonX6000", &pathRadeonX6000, 1,
+static KernelPatcher::KextInfo kextRadeonX6000 {"com.apple.kext.AMDRadeonX6000", &pathRadeonX6000, 1,
     {}, {}, KernelPatcher::KextInfo::Unloaded};
 
 X6000 *X6000::callback = nullptr;
 
 void X6000::init() {
     callback = this;
-    lilu.onKextLoadForce(&pathRadeonX6000);
+    lilu.onKextLoadForce(&kextRadeonX6000);
 }
 
 bool X6000::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size) {
-    if (pathRadeonX6000.loadIndex == id) {
+    if (kextRadeonX6000.loadIndex == id) {
         X6000P::callback->setRMMIOIfNecessary();
 
         RouteRequestPlus requests[] = {
