@@ -30,7 +30,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
             {"__ZL20CAIL_ASIC_CAPS_TABLE", orgCapsTable, kCailAsicCapsTableHWLibsPattern},
             {"_CAILAsicCapsInitTable", orgCapsInitTable, kCAILAsicCapsInitTablePattern},
         };
-        PANIC_COND(!SolveRequestPlus::solveAll(&patcher, id, solveRequests, slide, size), "hwlibs",
+        PANIC_COND(!SolveRequestPlus::solveAll(patcher, id, solveRequests, slide, size), "hwlibs",
             "Failed to resolve symbols");
 
         PANIC_COND(MachInfo::setKernelWriting(true, KernelPatcher::kernelWriteLock) != KERN_SUCCESS, "hwlibs",
