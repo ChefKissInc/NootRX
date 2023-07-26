@@ -16,7 +16,6 @@ class HWLibs {
 
     private:
     int targetDeviceId;
-    mach_vm_address_t orgGetMatchProperty {0};
 
     static char *wrapGetMatchProperty(void);
 };

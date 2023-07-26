@@ -30,10 +30,10 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         X6000P::callback->setRMMIOIfNecessary();
 
         RouteRequestPlus requests[] = {
-            {"__ZN38AMDRadeonX6000_AMDRadeonHWServicesNavi16getMatchPropertyEv", this->orgGetMatchProperty, wrapGetMatchProperty}
+            {"__ZN38AMDRadeonX6000_AMDRadeonHWServicesNavi16getMatchPropertyEv", wrapGetMatchProperty},
         };
 
-        PANIC_COND(!RouteRequestPlus::routeAll(patcher, id, requests, slide, size), "x6000", "Failed to route symbols");
+        PANIC_COND(!RouteRequestPlus::routeAll(patcher, id, requests, slide, size), "hwservices", "Failed to route symbols");
     }
 
     else if (kextRadeonX6810HWLibs.loadIndex == id) {
