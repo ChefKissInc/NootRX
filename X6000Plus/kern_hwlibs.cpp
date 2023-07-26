@@ -9,13 +9,14 @@
 static const char *pathRadeonX6810HWLibs = "/System/Library/Extensions/AMDRadeonX6000HWServices.kext/Contents/PlugIns/"
                                            "AMDRadeonX6810HWLibs.kext/Contents/MacOS/AMDRadeonX6810HWLibs";
 
-static const char *pathRadeonX6000HWServices = "/System/Library/Extensions/AMDRadeonX6000HWServices.kext/Contents/MacOS/AMDRadeonX6000HWServices";
+static const char *pathRadeonX6000HWServices =
+    "/System/Library/Extensions/AMDRadeonX6000HWServices.kext/Contents/MacOS/AMDRadeonX6000HWServices";
 
 static KernelPatcher::KextInfo kextRadeonX6810HWLibs {"com.apple.kext.AMDRadeonX6810HWLibs", &pathRadeonX6810HWLibs, 1,
     {}, {}, KernelPatcher::KextInfo::Unloaded};
 
-static KernelPatcher::KextInfo kextRadeonX6000HWServices {"com.apple.kext.AMDRadeonX6000HWServices", &pathRadeonX6000HWServices, 1,
-    {}, {}, KernelPatcher::KextInfo::Unloaded};
+static KernelPatcher::KextInfo kextRadeonX6000HWServices {"com.apple.kext.AMDRadeonX6000HWServices",
+    &pathRadeonX6000HWServices, 1, {}, {}, KernelPatcher::KextInfo::Unloaded};
 
 HWLibs *HWLibs::callback = nullptr;
 
@@ -33,7 +34,8 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
             {"__ZN38AMDRadeonX6000_AMDRadeonHWServicesNavi16getMatchPropertyEv", wrapGetMatchProperty},
         };
 
-        PANIC_COND(!RouteRequestPlus::routeAll(patcher, id, requests, slide, size), "hwservices", "Failed to route symbols");
+        PANIC_COND(!RouteRequestPlus::routeAll(patcher, id, requests, slide, size), "hwservices",
+            "Failed to route symbols");
     }
 
     else if (kextRadeonX6810HWLibs.loadIndex == id) {
@@ -47,7 +49,6 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         SolveRequestPlus solveRequests[] = {
             {"__ZL15deviceTypeTable", orgDeviceTypeTable, kDeviceTypeTablePattern},
             {"__ZL20CAIL_ASIC_CAPS_TABLE", orgCapsTable, kCailAsicCapsTableHWLibsPattern},
-            {"_CAILAsicCapsInitTable", orgCapsInitTable, kCAILAsicCapsInitTablePattern},
             {"_DeviceCapabilityTbl", orgDevCapTable, kDeviceCapabilityTblPattern},
         };
         PANIC_COND(!SolveRequestPlus::solveAll(patcher, id, solveRequests, slide, size), "hwlibs",
@@ -57,31 +58,26 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
             "Failed to enable kernel writing");
 
         *orgDeviceTypeTable = {.deviceId = X6000P::callback->deviceId, .deviceType = 8};
-        auto found = false;
-        if (X6000P::callback->chipType == ChipType::Navi21) {targetDeviceId = 0x73BF;}
-        else if (X6000P::callback->chipType == ChipType::Navi22) {targetDeviceId = 0x73DF;}
-        else {targetDeviceId = 0x73FF;}
 
-        while (orgCapsInitTable->deviceId != 0xFFFFFFFF) {
-            if (orgCapsInitTable->familyId == 0x8F && orgCapsInitTable->deviceId == targetDeviceId) {
-                orgCapsInitTable->deviceId = X6000P::callback->deviceId;
-                orgCapsInitTable->revision = X6000P::callback->revision;
-                orgCapsInitTable->extRevision =
-                    static_cast<uint64_t>(X6000P::callback->enumRevision) + X6000P::callback->revision;
-                orgCapsInitTable->pciRevision = X6000P::callback->pciRevision;
-                *orgCapsTable = {
-                    .familyId = 0x8F,
-                    .deviceId = X6000P::callback->deviceId,
-                    .revision = X6000P::callback->revision,
-                    .extRevision = static_cast<uint32_t>(X6000P::callback->enumRevision) + X6000P::callback->revision,
-                    .pciRevision = 0xFFFFFFFF,
-                };
-                found = true;
-                break;
-            }
-            orgCapsInitTable++;
+        *orgCapsTable = {
+            .familyId = 0x8F,
+            .caps = X6000P::callback->chipType == ChipType::Navi21 ?
+                        ddiCapsNavi21 :
+                        ddiCapsNavi22,    // Navi 23 uses Navi 22 caps, we also assume the same for Navi 24 here
+            .deviceId = X6000P::callback->deviceId,
+            .revision = X6000P::callback->revision,
+            .extRevision = static_cast<uint32_t>(X6000P::callback->enumRevision) + X6000P::callback->revision,
+            .pciRevision = X6000P::callback->pciRevision,
+        };
+
+        auto found = false;
+        if (X6000P::callback->chipType == ChipType::Navi21) {
+            targetDeviceId = 0x73BF;
+        } else if (X6000P::callback->chipType == ChipType::Navi22) {
+            targetDeviceId = 0x73DF;
+        } else {
+            targetDeviceId = 0x73FF;
         }
-        PANIC_COND(!found, "hwlibs", "Failed to find caps init table entry");
 
         found = false;
         while (orgDevCapTable->familyId) {
@@ -110,8 +106,7 @@ char *HWLibs::wrapGetMatchProperty() {
     if (X6000P::callback->chipType < ChipType::Navi23) {
         DBGLOG("hwservices", "Forced X6800HWLibs");
         return "Load6800";
-    }
-    else {
+    } else {
         DBGLOG("hwservices", "Forced X6810HWLibs");
         return "Load6810";
     }

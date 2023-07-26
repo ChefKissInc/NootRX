@@ -7,8 +7,8 @@
 #include "kern_patcherplus.hpp"
 #include "kern_patches.hpp"
 #include "kern_patterns.hpp"
-#include "kern_x6000fb.hpp"
 #include "kern_x6000.hpp"
+#include "kern_x6000fb.hpp"
 #include <Headers/kern_api.hpp>
 #include <Headers/kern_devinfo.hpp>
 
@@ -33,7 +33,7 @@ void X6000P::init() {
 
     if (!checkKernelArgument("-x6kpfbonly")) {
         hwlibs.init();
-        //x6000.init();
+        // x6000.init();
     }
 
     lilu.onPatcherLoadForce(
@@ -127,8 +127,8 @@ void X6000P::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
     } else if (x6000fb.processKext(patcher, id, slide, size)) {
         DBGLOG("x6000p", "Processed AMDRadeonX6000Framebuffer");
     } else if (hwlibs.processKext(patcher, id, slide, size)) {
-        DBGLOG("x6000p", "Processed AMDRadeonX5000HWLibs");
-    } else if (x6000.processKext(patcher, id, slide, size)) {
+        DBGLOG("x6000p", "Processed AMDRadeonX68x0HWLibs");
+    } /*else if (x6000.processKext(patcher, id, slide, size)) {
         DBGLOG("x6000p", "Processed AMDRadeonX6000");
-    }
+    }*/
 }
