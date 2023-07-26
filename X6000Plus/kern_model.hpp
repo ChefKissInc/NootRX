@@ -16,6 +16,10 @@ struct DevicePair {
     size_t modelNum;
 };
 
+static constexpr Model dev73A5[] = {
+    {0xC0, "AMD Radeon RX 6950 XT"},
+};
+
 static constexpr Model dev73DF[] = {
     {0xC0, "AMD Radeon RX 6750 XT"},
     {0xC1, "AMD Radeon RX 6700 XT"},
