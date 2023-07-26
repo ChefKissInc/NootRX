@@ -16,6 +16,9 @@ class HWLibs {
 
     private:
     int targetDeviceId;
+    mach_vm_address_t orgGetMatchProperty {0};
+
+    static char *wrapGetMatchProperty(void);
 };
 
 #endif /* kern_hwlibs_hpp */

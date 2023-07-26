@@ -19,7 +19,7 @@ void X6000FB::init() {
     lilu.onKextLoadForce(&kextRadeonX6000Framebuffer);
 }
 
-void X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size) {
+bool X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size) {
     if (kextRadeonX6000Framebuffer.loadIndex == id) {
         X6000P::callback->setRMMIOIfNecessary();
         CAILAsicCapsEntry *orgAsicCapsTable = nullptr;
@@ -54,7 +54,11 @@ void X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t s
         };
         MachInfo::setKernelWriting(false, KernelPatcher::kernelWriteLock);
         DBGLOG("x6000fb", "Applied DDI Caps patches");
+        
+        return true;
     }
+
+    return false;
 }
 
 bool X6000FB::wrapInitWithPciInfo(void *that, void *param1) {

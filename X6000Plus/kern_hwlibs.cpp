@@ -9,18 +9,34 @@
 static const char *pathRadeonX6810HWLibs = "/System/Library/Extensions/AMDRadeonX6000HWServices.kext/Contents/PlugIns/"
                                            "AMDRadeonX6810HWLibs.kext/Contents/MacOS/AMDRadeonX6810HWLibs";
 
-static KernelPatcher::KextInfo kextRadeonX6810HWLibs {"com.apple.kext.AMDRadeonX6800HWLibs", &pathRadeonX6810HWLibs, 1,
+static const char *pathRadeonX6000HWServices = "/System/Library/Extensions/AMDRadeonX6000HWServices.kext/Contents/MacOS/AMDRadeonX6000HWServices";
+
+static KernelPatcher::KextInfo kextRadeonX6810HWLibs {"com.apple.kext.AMDRadeonX6810HWLibs", &pathRadeonX6810HWLibs, 1,
+    {}, {}, KernelPatcher::KextInfo::Unloaded};
+
+static KernelPatcher::KextInfo kextRadeonX6000HWServices {"com.apple.kext.AMDRadeonX6000HWServices", &pathRadeonX6000HWServices, 1,
     {}, {}, KernelPatcher::KextInfo::Unloaded};
 
 HWLibs *HWLibs::callback = nullptr;
 
 void HWLibs::init() {
     callback = this;
+    lilu.onKextLoadForce(&kextRadeonX6000HWServices);
     lilu.onKextLoadForce(&kextRadeonX6810HWLibs);
 }
 
 bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size) {
-    if (kextRadeonX6810HWLibs.loadIndex == id) {
+    if (kextRadeonX6000HWServices.loadIndex == id) {
+        X6000P::callback->setRMMIOIfNecessary();
+
+        RouteRequestPlus requests[] = {
+            {"__ZN38AMDRadeonX6000_AMDRadeonHWServicesNavi16getMatchPropertyEv", this->orgGetMatchProperty, wrapGetMatchProperty}
+        };
+
+        PANIC_COND(!RouteRequestPlus::routeAll(patcher, id, requests, slide, size), "x6000", "Failed to route symbols");
+    }
+
+    else if (kextRadeonX6810HWLibs.loadIndex == id) {
         X6000P::callback->setRMMIOIfNecessary();
 
         CAILAsicCapsEntry *orgCapsTable = nullptr;
@@ -40,7 +56,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         PANIC_COND(MachInfo::setKernelWriting(true, KernelPatcher::kernelWriteLock) != KERN_SUCCESS, "hwlibs",
             "Failed to enable kernel writing");
 
-        *orgDeviceTypeTable = {.deviceId = X6000P::callback->deviceId, .deviceType = 1};
+        *orgDeviceTypeTable = {.deviceId = X6000P::callback->deviceId, .deviceType = 8};
         auto found = false;
         if (X6000P::callback->chipType == ChipType::Navi21) {targetDeviceId = 0x73BF;}
         else if (X6000P::callback->chipType == ChipType::Navi22) {targetDeviceId = 0x73DF;}
@@ -88,4 +104,15 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
     }
 
     return false;
+}
+
+char *HWLibs::wrapGetMatchProperty() {
+    if (X6000P::callback->chipType < ChipType::Navi23) {
+        DBGLOG("hwservices", "Forced X6800HWLibs");
+        return "Load6800";
+    }
+    else {
+        DBGLOG("hwservices", "Forced X6810HWLibs");
+        return "Load6810";
+    }
 }
