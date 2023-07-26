@@ -33,7 +33,7 @@ void X6000P::init() {
 
     if (!checkKernelArgument("-x6kpfbonly")) {
         hwlibs.init();
-        x6000.init();
+        //x6000.init();
     }
 
     lilu.onPatcherLoadForce(
