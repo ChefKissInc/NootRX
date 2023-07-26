@@ -124,5 +124,11 @@ void X6000P::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         };
         PANIC_COND(!LookupPatchPlus::applyAll(patcher, patches, slide, size), "x6000p",
             "Failed to apply AGDP patch: %d", patcher.getError());
+    } else if (x6000fb.processKext(patcher, id, slide, size)) {
+        DBGLOG("x6000p", "Processed AMDRadeonX6000Framebuffer");
+    } else if (hwlibs.processKext(patcher, id, slide, size)) {
+        DBGLOG("x6000p", "Processed AMDRadeonX5000HWLibs");
+    } else if (x6000.processKext(patcher, id, slide, size)) {
+        DBGLOG("x6000p", "Processed AMDRadeonX6000");
     }
 }
