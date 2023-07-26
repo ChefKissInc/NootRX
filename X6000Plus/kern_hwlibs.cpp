@@ -6,23 +6,30 @@
 #include "kern_x6000p.hpp"
 #include <Headers/kern_api.hpp>
 
+static const char *pathRadeonX6000HWServices =
+    "/System/Library/Extensions/AMDRadeonX6000HWServices.kext/Contents/MacOS/AMDRadeonX6000HWServices";
+
+static const char *pathRadeonX6800HWLibs = "/System/Library/Extensions/AMDRadeonX6000HWServices.kext/Contents/PlugIns/"
+                                           "AMDRadeonX6800HWLibs.kext/Contents/MacOS/AMDRadeonX6800HWLibs";
+
 static const char *pathRadeonX6810HWLibs = "/System/Library/Extensions/AMDRadeonX6000HWServices.kext/Contents/PlugIns/"
                                            "AMDRadeonX6810HWLibs.kext/Contents/MacOS/AMDRadeonX6810HWLibs";
 
-static const char *pathRadeonX6000HWServices =
-    "/System/Library/Extensions/AMDRadeonX6000HWServices.kext/Contents/MacOS/AMDRadeonX6000HWServices";
+static KernelPatcher::KextInfo kextRadeonX6000HWServices {"com.apple.kext.AMDRadeonX6000HWServices",
+    &pathRadeonX6000HWServices, 1, {}, {}, KernelPatcher::KextInfo::Unloaded};
 
 static KernelPatcher::KextInfo kextRadeonX6810HWLibs {"com.apple.kext.AMDRadeonX6810HWLibs", &pathRadeonX6810HWLibs, 1,
     {}, {}, KernelPatcher::KextInfo::Unloaded};
 
-static KernelPatcher::KextInfo kextRadeonX6000HWServices {"com.apple.kext.AMDRadeonX6000HWServices",
-    &pathRadeonX6000HWServices, 1, {}, {}, KernelPatcher::KextInfo::Unloaded};
+static KernelPatcher::KextInfo kextRadeonX6800HWLibs {"com.apple.kext.AMDRadeonX6800HWLibs", &pathRadeonX6800HWLibs, 1,
+    {}, {}, KernelPatcher::KextInfo::Unloaded};
 
 HWLibs *HWLibs::callback = nullptr;
 
 void HWLibs::init() {
     callback = this;
     lilu.onKextLoadForce(&kextRadeonX6000HWServices);
+    //lilu.onKextLoadForce(&kextRadeonX6800HWLibs);
     lilu.onKextLoadForce(&kextRadeonX6810HWLibs);
 }
 
