@@ -71,7 +71,12 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
         this->pciRevision = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigRevisionID);
         if (!this->GPU->getProperty("model")) {
             auto *model = getBranding(this->deviceId, this->pciRevision);
-            this->GPU->setProperty("model", const_cast<char *>(model), static_cast<uint32_t>(strlen(model) + 1));
+            if (model) {
+                auto len = static_cast<uint32_t>(strlen(model) + 1);
+                this->GPU->setProperty("model", const_cast<char *>(model), len);
+                this->GPU->setProperty("ATY,FamilyName", const_cast<char *>("Radeon RX"), 9);
+                this->GPU->setProperty("ATY,DeviceName", const_cast<char *>(model) + 14, len - 14);     // 6600 XT...
+            }
         }
         DeviceInfo::deleter(devInfo);
     } else {
