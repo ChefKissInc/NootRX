@@ -20,18 +20,26 @@ static constexpr Model dev73A5[] = {
     {0xC0, "AMD Radeon RX 6950 XT"},
 };
 
+static constexpr Model dev73AF[] = {
+    {0xC0, "AMD Radeon RX 6900 XT"},
+};
+
+static constexpr Model dev73BF[] = {
+    {0xC0, "AMD Radeon RX 6900 XT"},
+    {0xC1, "AMD Radeon RX 6800 XT"},
+    {0xC3, "AMD Radeon RX 6800"},
+};
+
 static constexpr Model dev73DF[] = {
     {0xC0, "AMD Radeon RX 6750 XT"},
     {0xC1, "AMD Radeon RX 6700 XT"},
     {0xC2, "AMD Radeon RX 6800M"},
-    {0xC2, "AMD Radeon RX 6800M"},
+    {0xC3, "AMD Radeon RX 6800M"},
     {0xC5, "AMD Radeon RX 6700 XT"},
     {0xCF, "AMD Radeon RX 6700M"},
     {0xDF, "AMD Radeon RX 6700"},
     {0xFF, "AMD Radeon RX 6700"},
 };
-
-static constexpr Model dev73E1[] {{0x00, "AMD Radeon PRO W6600M"}};
 
 static constexpr Model dev73EF[] = {
     {0xC0, "AMD Radeon RX 6800S"},
@@ -42,8 +50,10 @@ static constexpr Model dev73EF[] = {
 };
 
 static constexpr DevicePair devices[] = {
+    {0x73A5, dev73A5, arrsize(dev73A5)},
+    {0x73AF, dev73AF, arrsize(dev73AF)},
+    {0x73BF, dev73BF, arrsize(dev73BF)},
     {0x73DF, dev73DF, arrsize(dev73DF)},
-    {0x73E1, dev73E1, arrsize(dev73E1)},
     {0x73EF, dev73EF, arrsize(dev73EF)},
 };
 
