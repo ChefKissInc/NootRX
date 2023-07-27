@@ -49,7 +49,6 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         X6000P::callback->setRMMIOIfNecessary();
 
         CAILAsicCapsEntry *orgCapsTable = nullptr;
-        CAILAsicCapsInitEntry *orgCapsInitTable = nullptr;
         CAILDeviceTypeEntry *orgDeviceTypeTable = nullptr;
         DeviceCapabilityEntry *orgDevCapTable = nullptr;
 

@@ -33,7 +33,7 @@ void X6000P::init() {
 
     if (!checkKernelArgument("-x6kpfbonly")) {
         hwlibs.init();
-        // x6000.init();
+        x6000.init();
     }
 
     lilu.onPatcherLoadForce(
@@ -128,7 +128,7 @@ void X6000P::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         DBGLOG("x6000p", "Processed AMDRadeonX6000Framebuffer");
     } else if (hwlibs.processKext(patcher, id, slide, size)) {
         DBGLOG("x6000p", "Processed AMDRadeonX68x0HWLibs");
-    } /*else if (x6000.processKext(patcher, id, slide, size)) {
+    } else if (x6000.processKext(patcher, id, slide, size)) {
         DBGLOG("x6000p", "Processed AMDRadeonX6000");
-    }*/
+    }
 }
