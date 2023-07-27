@@ -78,6 +78,17 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
                 this->GPU->setProperty("ATY,DeviceName", const_cast<char *>(model) + 14, len - 14);     // 6600 XT...
             }
         }
+
+        if (deviceId == 0x73EF || deviceId == 0x73FF) {
+            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Carswell"), 13)
+        }
+        else if (deviceId == 0x73BF && (pciRevision == 0xC1 || pciRevision == 0xC3)) {
+            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Belknap"), 12)
+        }
+        else {
+            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Henbury"), 12)
+        }
+        
         DeviceInfo::deleter(devInfo);
     } else {
         SYSLOG("x6000p", "Failed to create DeviceInfo");
