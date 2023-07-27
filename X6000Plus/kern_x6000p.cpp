@@ -2,6 +2,7 @@
 //  details.
 
 #include "kern_x6000p.hpp"
+#include "kern_dyld_patches.hpp"
 #include "kern_hwlibs.hpp"
 #include "kern_model.hpp"
 #include "kern_patcherplus.hpp"
@@ -23,6 +24,7 @@ X6000P *X6000P::callback = nullptr;
 static X6000FB x6000fb;
 static HWLibs hwlibs;
 static X6000 x6000;
+static DYLDPatches dyldpatches;
 
 void X6000P::init() {
     SYSLOG("x6000p", "Copyright 2022-2023 ChefKiss Inc. If you've paid for this, you've been scammed.");
@@ -34,6 +36,7 @@ void X6000P::init() {
     if (!checkKernelArgument("-x6kpfbonly")) {
         hwlibs.init();
         x6000.init();
+        dyldpatches.init();
     }
 
     lilu.onPatcherLoadForce(
@@ -75,24 +78,23 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
                 auto len = static_cast<uint32_t>(strlen(model) + 1);
                 this->GPU->setProperty("model", const_cast<char *>(model), len);
                 this->GPU->setProperty("ATY,FamilyName", const_cast<char *>("Radeon RX"), 9);
-                this->GPU->setProperty("ATY,DeviceName", const_cast<char *>(model) + 14, len - 14);     // 6600 XT...
+                this->GPU->setProperty("ATY,DeviceName", const_cast<char *>(model) + 14, len - 14);    // 6600 XT...
             }
         }
 
         if (deviceId == 0x73EF || deviceId == 0x73FF) {
-            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Carswell"), 13)
+            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Henbury"), 13);
+        } else if (deviceId == 0x73BF && (pciRevision == 0xC1 || pciRevision == 0xC3)) {
+            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Belknap"), 12);
+        } else {
+            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Carswell"), 12);
         }
-        else if (deviceId == 0x73BF && (pciRevision == 0xC1 || pciRevision == 0xC3)) {
-            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Belknap"), 12)
-        }
-        else {
-            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Henbury"), 12)
-        }
-        
+
         DeviceInfo::deleter(devInfo);
     } else {
         SYSLOG("x6000p", "Failed to create DeviceInfo");
     }
+    dyldpatches.processPatcher(patcher);
 }
 
 void X6000P::setRMMIOIfNecessary() {

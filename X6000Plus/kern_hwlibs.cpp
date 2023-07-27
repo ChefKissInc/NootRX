@@ -29,7 +29,7 @@ HWLibs *HWLibs::callback = nullptr;
 void HWLibs::init() {
     callback = this;
     lilu.onKextLoadForce(&kextRadeonX6000HWServices);
-    //lilu.onKextLoadForce(&kextRadeonX6800HWLibs);
+    // lilu.onKextLoadForce(&kextRadeonX6800HWLibs);
     lilu.onKextLoadForce(&kextRadeonX6810HWLibs);
 }
 
