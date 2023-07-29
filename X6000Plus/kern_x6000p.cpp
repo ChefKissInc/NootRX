@@ -32,12 +32,9 @@ void X6000P::init() {
 
     lilu.onKextLoadForce(&kextAGDP);
     x6000fb.init();
-
-    if (!checkKernelArgument("-x6kpfbonly")) {
-        hwlibs.init();
-        x6000.init();
-        dyldpatches.init();
-    }
+    hwlibs.init();
+    x6000.init();
+    dyldpatches.init();
 
     lilu.onPatcherLoadForce(
         [](void *user, KernelPatcher &patcher) { static_cast<X6000P *>(user)->processPatcher(patcher); }, this);
