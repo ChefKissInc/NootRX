@@ -49,6 +49,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         CAILAsicCapsEntry *orgCapsTable = nullptr;
         CAILDeviceTypeEntry *orgDeviceTypeTable = nullptr;
         DeviceCapabilityEntry *orgDevCapTable = nullptr;
+        CAILAsicCapsInitEntry *orgCapsInitTable = nullptr;
 
         SolveRequestPlus solveRequests[] = {
             {"__ZL15deviceTypeTable", orgDeviceTypeTable, kDeviceTypeTablePattern},
@@ -57,6 +58,8 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         };
         PANIC_COND(!SolveRequestPlus::solveAll(patcher, id, solveRequests, slide, size), "hwlibs",
             "Failed to resolve symbols");
+        SolveRequestPlus solveRequest {"_CAILAsicCapsInitTable", orgCapsInitTable, kCAILAsicCapsInitTablePattern};
+        solveRequest.solve(patcher, id, slide, size);
 
         PANIC_COND(MachInfo::setKernelWriting(true, KernelPatcher::kernelWriteLock) != KERN_SUCCESS, "hwlibs",
             "Failed to enable kernel writing");
@@ -76,9 +79,6 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
             .pciRevision = X6000P::callback->pciRevision,
         };
 
-        CAILAsicCapsInitEntry *orgCapsInitTable = nullptr;
-        SolveRequestPlus solveRequest {"_CAILAsicCapsInitTable", orgCapsInitTable, kCAILAsicCapsInitTablePattern};
-        solveRequest.solve(patcher, id, slide, size);
         if (orgCapsInitTable) {
             *orgCapsInitTable = {
                 .familyId = 0x8F,
