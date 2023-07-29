@@ -47,9 +47,8 @@ bool X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t s
 
         *orgAsicCapsTable = {
             .familyId = 0x8F,
-            .caps = X6000P::callback->chipType == ChipType::Navi21 ?
-                        ddiCapsNavi21 :
-                        ddiCapsNavi22,    // Navi 23 uses Navi 22 caps, we also assume the same for Navi 24 here
+            // Navi 23 uses Navi 22 caps, we also assume the same for Navi 24 here
+            .caps = X6000P::callback->chipType == ChipType::Navi21 ? ddiCapsNavi21 : ddiCapsNavi22,
             .deviceId = X6000P::callback->deviceId,
             .revision = X6000P::callback->revision,
             .extRevision = static_cast<uint32_t>(X6000P::callback->enumRevision) + X6000P::callback->revision,
