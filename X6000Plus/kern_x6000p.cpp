@@ -90,6 +90,43 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
             this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Carswell"), 12);
         }
 
+        switch (this->deviceId) {
+            case 0x73A2:
+                [[fallthrough]];
+            case 0x73A3:
+                [[fallthrough]];
+            case 0x73A4:
+                [[fallthrough]];
+            case 0x73A5:
+                [[fallthrough]];
+            case 0x73AB:
+                [[fallthrough]];
+            case 0x73BF:
+                this->chipType = ChipType::Navi21;
+                this->enumRevision = 0x28;
+                break;
+            case 0x73C3:
+                [[fallthrough]];
+            case 0x73C4:
+                [[fallthrough]];
+            case 0x73DF:
+                this->chipType = ChipType::Navi22;
+                this->enumRevision = 0x32;
+                break;
+            case 0x73E0:
+                [[fallthrough]];
+            case 0x73E1:
+                [[fallthrough]];
+            case 0x73E4:
+                [[fallthrough]];
+            case 0x73EF:
+                this->chipType = ChipType::Navi23;
+                this->enumRevision = 0x3C;
+                break;
+            default:
+                PANIC("x6000p", "Unknown device ID");
+        }
+
         DeviceInfo::deleter(devInfo);
     } else {
         SYSLOG("x6000p", "Failed to create DeviceInfo");
@@ -99,27 +136,11 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
 
 void X6000P::setRMMIOIfNecessary() {
     if (UNLIKELY(!this->rmmio || !this->rmmio->getLength())) {
+        OSSafeReleaseNULL(this->rmmio);
         this->rmmio = this->GPU->mapDeviceMemoryWithRegister(kIOPCIConfigBaseAddress5);
         PANIC_COND(UNLIKELY(!this->rmmio || !this->rmmio->getLength()), "x6000p", "Failed to map RMMIO");
         this->rmmioPtr = reinterpret_cast<uint32_t *>(this->rmmio->getVirtualAddress());
-
         this->revision = (this->readReg32(0xD31) & 0xF000000) >> 0x18;
-        switch (this->deviceId) {
-            case 0x73A5:
-                this->chipType = ChipType::Navi21;
-                this->enumRevision = 0x28;
-                break;
-            case 0x73DF:
-                this->chipType = ChipType::Navi22;
-                this->enumRevision = 0x32;
-                break;
-            case 0x73EF:
-                this->chipType = ChipType::Navi23;
-                this->enumRevision = 0x3c;
-                break;
-            default:
-                PANIC("x6000p", "Unknown device ID");
-        }
     }
 }
 
