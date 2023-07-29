@@ -81,14 +81,6 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
             }
         }
 
-        if (this->deviceId == 0x73EF || this->deviceId == 0x73FF) {
-            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Henbury"), 12);
-        } else if (this->deviceId == 0x73BF && (this->pciRevision == 0xC1 || this->pciRevision == 0xC3)) {
-            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Belknap"), 12);
-        } else {
-            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Carswell"), 13);
-        }
-
         switch (this->deviceId) {
             case 0x73A2:
                 [[fallthrough]];
@@ -124,6 +116,15 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
                 break;
             default:
                 PANIC("x6000p", "Unknown device ID");
+        }
+
+        // No named framebuffer for Navi 22/24 for now
+        if (this->chipType == ChipType::Navi21 && (this->pciRevision != 0xC1 && this->pciRevision != 0xC3)) {
+            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Carswell"), 13);
+        } else if (this->chipType == ChipType::Navi21) {
+            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Belknap"), 12);
+        } else if (this->chipType == ChipType::Navi23) {
+            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Henbury"), 12);
         }
 
         DeviceInfo::deleter(devInfo);
