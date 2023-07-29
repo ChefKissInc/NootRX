@@ -43,7 +43,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
 
         PANIC_COND(!RouteRequestPlus::routeAll(patcher, id, requests, slide, size), "hwservices",
             "Failed to route symbols");
-    } else if (kextRadeonX6810HWLibs.loadIndex == id || kextRadeonX6800HWLibs.loadIndex == id) {
+    } else if ((kextRadeonX6810HWLibs.loadIndex == id) || (kextRadeonX6800HWLibs.loadIndex == id)) {
         X6000P::callback->setRMMIOIfNecessary();
 
         CAILAsicCapsEntry *orgCapsTable = nullptr;
@@ -66,9 +66,8 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
 
         *orgCapsTable = {
             .familyId = 0x8F,
-            .caps = X6000P::callback->chipType == ChipType::Navi21 ?
-                        ddiCapsNavi21 :
-                        ddiCapsNavi22,    // Navi 23 uses Navi 22 caps, we also assume the same for Navi 24 here
+            // Navi 23 uses Navi 22 caps, we also assume the same for Navi 24 here
+            .caps = X6000P::callback->chipType == ChipType::Navi21 ? ddiCapsNavi21 : ddiCapsNavi22,
             .deviceId = X6000P::callback->deviceId,
             .revision = X6000P::callback->revision,
             .extRevision = static_cast<uint32_t>(X6000P::callback->enumRevision) + X6000P::callback->revision,
@@ -81,9 +80,8 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         if (orgCapsInitTable) {
             *orgCapsInitTable = {
                 .familyId = 0x8F,
-                .caps = X6000P::callback->chipType == ChipType::Navi21 ?
-                            ddiCapsNavi21 :
-                            ddiCapsNavi22,    // Navi 23 uses Navi 22 caps, we also assume the same for Navi 24 here
+                // Ditto
+                .caps = X6000P::callback->chipType == ChipType::Navi21 ? ddiCapsNavi21 : ddiCapsNavi22,
                 .deviceId = X6000P::callback->deviceId,
                 .revision = X6000P::callback->revision,
                 .extRevision = static_cast<uint64_t>(X6000P::callback->enumRevision) + X6000P::callback->revision,

@@ -84,9 +84,9 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
             }
         }
 
-        if (deviceId == 0x73EF || deviceId == 0x73FF) {
+        if (this->deviceId == 0x73EF || this->deviceId == 0x73FF) {
             this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Henbury"), 13);
-        } else if (deviceId == 0x73BF && (pciRevision == 0xC1 || pciRevision == 0xC3)) {
+        } else if (this->deviceId == 0x73BF && (this->pciRevision == 0xC1 || this->pciRevision == 0xC3)) {
             this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Belknap"), 12);
         } else {
             this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Carswell"), 12);
