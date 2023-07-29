@@ -82,11 +82,11 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
         }
 
         if (this->deviceId == 0x73EF || this->deviceId == 0x73FF) {
-            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Henbury"), 13);
+            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Henbury"), 12);
         } else if (this->deviceId == 0x73BF && (this->pciRevision == 0xC1 || this->pciRevision == 0xC3)) {
             this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Belknap"), 12);
         } else {
-            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Carswell"), 12);
+            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Carswell"), 13);
         }
 
         switch (this->deviceId) {
