@@ -17,16 +17,11 @@ class EXPORT PRODUCT_NAME : public IOService {
 };
 
 enum struct ChipType : uint32_t {
-    Navi21 = 0,
+    Unknown = 0,
+    Navi21,
     Navi22,
     Navi23,
     Navi24,
-    Unknown,
-};
-
-// Hack
-class AppleACPIPlatformExpert : IOACPIPlatformExpert {
-    friend class X6000P;
 };
 
 class X6000P {
@@ -39,7 +34,7 @@ class X6000P {
     void processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size);
 
     uint32_t readReg32(uint32_t reg) {
-        if (reg * 4 < this->rmmio->getLength()) {
+        if ((reg * 4) < this->rmmio->getLength()) {
             return this->rmmioPtr[reg];
         } else {
             this->rmmioPtr[mmPCIE_INDEX2] = reg;
