@@ -68,6 +68,8 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
             }
         }
 
+        PANIC_COND(!this->GPU, "x6000p", "Failed to find GPU");
+
         static uint8_t builtin[] = {0x00};
         this->GPU->setProperty("built-in", builtin, arrsize(builtin));
         this->deviceId = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigDeviceID);
