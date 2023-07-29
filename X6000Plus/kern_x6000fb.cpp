@@ -1,4 +1,4 @@
-//  Copyright © 2022-2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.0. See LICENSE for
+//  Copyright © 2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5. See LICENSE for
 //  details.
 
 #include "kern_x6000fb.hpp"
@@ -22,6 +22,7 @@ void X6000FB::init() {
 bool X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size) {
     if (kextRadeonX6000Framebuffer.loadIndex == id) {
         X6000P::callback->setRMMIOIfNecessary();
+
         CAILAsicCapsEntry *orgAsicCapsTable = nullptr;
 
         SolveRequestPlus solveRequests[] = {

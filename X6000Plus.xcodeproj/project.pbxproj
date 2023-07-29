@@ -11,6 +11,8 @@
 		4068898B2A229BF600028D22 /* kern_patcherplus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 406889892A229BF600028D22 /* kern_patcherplus.cpp */; };
 		4068898C2A229BF600028D22 /* kern_patcherplus.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 4068898A2A229BF600028D22 /* kern_patcherplus.hpp */; };
 		40A07FAD2A22A13600499F02 /* kern_patterns.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 40A07FAC2A22A13600499F02 /* kern_patterns.hpp */; };
+		40B6A67E2A75A2B9002D8B85 /* kern_dyld_patches.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40B6A67C2A75A2B9002D8B85 /* kern_dyld_patches.cpp */; };
+		40B6A67F2A75A2B9002D8B85 /* kern_dyld_patches.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 40B6A67D2A75A2B9002D8B85 /* kern_dyld_patches.hpp */; };
 		CE405ED91E4A080700AA0B3D /* plugin_start.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE405ED81E4A080700AA0B3D /* plugin_start.cpp */; };
 		CE8DA0832517C41A008C44E8 /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8DA0822517C41A008C44E8 /* libkmod.a */; };
 		D51187E82A6FB66800F23522 /* kern_hwlibs.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D51187E52A6FB66800F23522 /* kern_hwlibs.hpp */; };
@@ -46,6 +48,8 @@
 		406889892A229BF600028D22 /* kern_patcherplus.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = kern_patcherplus.cpp; sourceTree = "<group>"; };
 		4068898A2A229BF600028D22 /* kern_patcherplus.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = kern_patcherplus.hpp; sourceTree = "<group>"; };
 		40A07FAC2A22A13600499F02 /* kern_patterns.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = kern_patterns.hpp; sourceTree = "<group>"; };
+		40B6A67C2A75A2B9002D8B85 /* kern_dyld_patches.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = kern_dyld_patches.cpp; sourceTree = "<group>"; };
+		40B6A67D2A75A2B9002D8B85 /* kern_dyld_patches.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = kern_dyld_patches.hpp; sourceTree = "<group>"; };
 		CE405EBA1E49DD7100AA0B3D /* kern_compression.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = kern_compression.hpp; sourceTree = "<group>"; };
 		CE405EBB1E49DD7100AA0B3D /* kern_disasm.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = kern_disasm.hpp; sourceTree = "<group>"; };
 		CE405EBC1E49DD7100AA0B3D /* kern_file.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = kern_file.hpp; sourceTree = "<group>"; };
@@ -106,21 +110,23 @@
 		1C748C291C21952C0024EED2 /* X6000Plus */ = {
 			isa = PBXGroup;
 			children = (
+				1C748C2E1C21952C0024EED2 /* Info.plist */,
+				D51217862A62008A00EC0BEB /* kern_amd.hpp */,
+				40B6A67C2A75A2B9002D8B85 /* kern_dyld_patches.cpp */,
+				40B6A67D2A75A2B9002D8B85 /* kern_dyld_patches.hpp */,
 				D51187E62A6FB66800F23522 /* kern_hwlibs.cpp */,
 				D51187E52A6FB66800F23522 /* kern_hwlibs.hpp */,
 				D51187E72A6FB66800F23522 /* kern_model.hpp */,
-				1C748C2E1C21952C0024EED2 /* Info.plist */,
 				406889892A229BF600028D22 /* kern_patcherplus.cpp */,
 				4068898A2A229BF600028D22 /* kern_patcherplus.hpp */,
 				401A3D3829BF7D2D00B5A76A /* kern_patches.hpp */,
 				40A07FAC2A22A13600499F02 /* kern_patterns.hpp */,
 				1C748C2C1C21952C0024EED2 /* kern_start.cpp */,
-				D51217862A62008A00EC0BEB /* kern_amd.hpp */,
-				D579D09C2A629F5300A4BCCE /* kern_x6000p.cpp */,
 				D51187EF2A6FBA3B00F23522 /* kern_x6000.cpp */,
 				D51187F02A6FBA3B00F23522 /* kern_x6000.hpp */,
 				D51187EB2A6FB70700F23522 /* kern_x6000fb.cpp */,
 				D51187EC2A6FB70700F23522 /* kern_x6000fb.hpp */,
+				D579D09C2A629F5300A4BCCE /* kern_x6000p.cpp */,
 				D579D09D2A629F5300A4BCCE /* kern_x6000p.hpp */,
 			);
 			path = X6000Plus;
@@ -180,6 +186,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D579D09F2A629F5300A4BCCE /* kern_x6000p.hpp in Headers */,
+				40B6A67F2A75A2B9002D8B85 /* kern_dyld_patches.hpp in Headers */,
 				D51187F22A6FBA3B00F23522 /* kern_x6000.hpp in Headers */,
 				D51187E82A6FB66800F23522 /* kern_hwlibs.hpp in Headers */,
 				D51187EA2A6FB66800F23522 /* kern_model.hpp in Headers */,
@@ -268,6 +275,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D51187ED2A6FB70700F23522 /* kern_x6000fb.cpp in Sources */,
+				40B6A67E2A75A2B9002D8B85 /* kern_dyld_patches.cpp in Sources */,
 				D579D09E2A629F5300A4BCCE /* kern_x6000p.cpp in Sources */,
 				D51187E92A6FB66800F23522 /* kern_hwlibs.cpp in Sources */,
 				4068898B2A229BF600028D22 /* kern_patcherplus.cpp in Sources */,

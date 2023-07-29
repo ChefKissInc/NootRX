@@ -1,4 +1,4 @@
-//  Copyright © 2022-2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.0. See LICENSE for
+//  Copyright © 2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5. See LICENSE for
 //  details.
 
 #include "kern_x6000p.hpp"
@@ -27,7 +27,7 @@ static X6000 x6000;
 static DYLDPatches dyldpatches;
 
 void X6000P::init() {
-    SYSLOG("x6000p", "Copyright 2022-2023 ChefKiss Inc. If you've paid for this, you've been scammed.");
+    SYSLOG("x6000p", "Copyright 2023 ChefKiss Inc. If you've paid for this, you've been scammed.");
     callback = this;
 
     lilu.onKextLoadForce(&kextAGDP);
