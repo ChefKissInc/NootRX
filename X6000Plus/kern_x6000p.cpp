@@ -119,10 +119,12 @@ void X6000P::processPatcher(KernelPatcher &patcher) {
         }
 
         // No named framebuffer for Navi 22/24 for now
-        if (this->chipType == ChipType::Navi21 && (this->pciRevision != 0xC1 && this->pciRevision != 0xC3)) {
-            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Carswell"), 13);
-        } else if (this->chipType == ChipType::Navi21) {
-            this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Belknap"), 12);
+        if (this->chipType == ChipType::Navi21) {
+            if (this->pciRevision == 0xC1 || this->pciRevision == 0xC3) {
+                this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Belknap"), 12);
+            } else {
+                this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Carswell"), 13);
+            }
         } else if (this->chipType == ChipType::Navi23) {
             this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Henbury"), 12);
         }

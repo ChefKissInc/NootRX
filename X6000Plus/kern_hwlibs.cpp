@@ -118,7 +118,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
 }
 
 const char *HWLibs::wrapGetMatchProperty() {
-    if (X6000P::callback->chipType < ChipType::Navi23) {
+    if (X6000P::callback->chipType <= ChipType::Navi22) {
         DBGLOG("hwservices", "Forced X6800HWLibs");
         return "Load6800";
     } else {
