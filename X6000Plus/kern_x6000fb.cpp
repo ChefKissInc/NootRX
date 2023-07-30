@@ -32,7 +32,10 @@ bool X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t s
             "Failed to resolve symbols");
 
         RouteRequestPlus requests[] = {
-            {"__ZNK32AMDRadeonX6000_AmdAsicInfoNavi2127getEnumeratedRevisionNumberEv", wrapGetEnumeratedRevision},
+            {"__ZNK32AMDRadeonX6000_AmdAsicInfoNavi2127getEnumeratedRevisionNumberEv", wrapGetEnumeratedRevision,
+                X6000P::callback->chipType <= ChipType::Navi22},
+            {"__ZNK32AMDRadeonX6000_AmdAsicInfoNavi2327getEnumeratedRevisionNumberEv", wrapGetEnumeratedRevision,
+                X6000P::callback->chipType >= ChipType::Navi23},
             {"__ZN24AMDRadeonX6000_AmdLogger15initWithPciInfoEP11IOPCIDevice", wrapInitWithPciInfo,
                 this->orgInitWithPciInfo, ADDPR(debugEnabled)},
             {"__ZN34AMDRadeonX6000_AmdRadeonController10doGPUPanicEPKcz", wrapDoGPUPanic,
