@@ -36,7 +36,7 @@ bool X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t s
             {"__ZN24AMDRadeonX6000_AmdLogger15initWithPciInfoEP11IOPCIDevice", wrapInitWithPciInfo,
                 this->orgInitWithPciInfo, ADDPR(debugEnabled)},
             {"__ZN34AMDRadeonX6000_AmdRadeonController10doGPUPanicEPKcz", wrapDoGPUPanic, ADDPR(debugEnabled)},
-            {"_dm_logger_write", wrapDmLoggerWrite, kDmLoggerWritePattern, ADDPR(debugEnabled)},
+            {"_dm_logger_write", wrapDmLoggerWrite, kDmLoggerWritePattern, checkKernelArgument("-x6kpdmlogger")},
         };
         PANIC_COND(!RouteRequestPlus::routeAll(patcher, id, requests, slide, size), "x6000fb",
             "Failed to route symbols");
