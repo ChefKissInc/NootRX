@@ -82,6 +82,8 @@
 		D579D09D2A629F5300A4BCCE /* kern_x6000p.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = kern_x6000p.hpp; sourceTree = "<group>"; };
 		D58DDE722A79A96B0099BBEC /* psp_spl_navi22.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = psp_spl_navi22.bin; sourceTree = "<group>"; };
 		D58DDE732A79A96C0099BBEC /* psp_spl_navi23.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = psp_spl_navi23.bin; sourceTree = "<group>"; };
+		D58DDE742A79AF460099BBEC /* psp_sysdrv_navi23.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = psp_sysdrv_navi23.bin; sourceTree = "<group>"; };
+		D58DDE752A79AF510099BBEC /* psp_sysdrv_navi22.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = psp_sysdrv_navi22.bin; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +148,8 @@
 		4095294B2A7970ED00923793 /* Firmware */ = {
 			isa = PBXGroup;
 			children = (
+				D58DDE752A79AF510099BBEC /* psp_sysdrv_navi22.bin */,
+				D58DDE742A79AF460099BBEC /* psp_sysdrv_navi23.bin */,
 				D58DDE722A79A96B0099BBEC /* psp_spl_navi22.bin */,
 				D58DDE732A79A96C0099BBEC /* psp_spl_navi23.bin */,
 				4095294C2A7970FB00923793 /* psp_key_database_navi22.bin */,
