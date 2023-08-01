@@ -4,6 +4,8 @@
 #pragma once
 #include <Headers/kern_util.hpp>
 
+constexpr uint32_t AMDGPU_FAMILY_NAVI = 0x8F;
+
 constexpr uint32_t mmPCIE_INDEX2 = 0xE;
 constexpr uint32_t mmPCIE_DATA2 = 0xF;
 

@@ -33,9 +33,9 @@ bool X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t s
 
         RouteRequestPlus requests[] = {
             {"__ZNK32AMDRadeonX6000_AmdAsicInfoNavi2127getEnumeratedRevisionNumberEv", wrapGetEnumeratedRevision,
-                X6000P::callback->chipType <= ChipType::Navi22},
+                X6000P::callback->chipType == ChipType::Navi21},
             {"__ZNK32AMDRadeonX6000_AmdAsicInfoNavi2327getEnumeratedRevisionNumberEv", wrapGetEnumeratedRevision,
-                X6000P::callback->chipType >= ChipType::Navi23},
+                X6000P::callback->chipType >= ChipType::Navi22},
             {"__ZN24AMDRadeonX6000_AmdLogger15initWithPciInfoEP11IOPCIDevice", wrapInitWithPciInfo,
                 this->orgInitWithPciInfo, ADDPR(debugEnabled)},
             {"__ZN34AMDRadeonX6000_AmdRadeonController10doGPUPanicEPKcz", wrapDoGPUPanic,
@@ -49,7 +49,7 @@ bool X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t s
             "Failed to enable kernel writing");
 
         *orgAsicCapsTable = {
-            .familyId = 0x8F,
+            .familyId = AMDGPU_FAMILY_NAVI,
             // Navi 23 uses Navi 22 caps, we also assume the same for Navi 24 here
             .caps = X6000P::callback->chipType == ChipType::Navi21 ? ddiCapsNavi21 : ddiCapsNavi22,
             .deviceId = X6000P::callback->deviceId,

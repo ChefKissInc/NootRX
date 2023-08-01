@@ -38,6 +38,6 @@ bool X6000::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sli
 
 IOReturn X6000::wrapGetHWInfo(IOService *accelVideoCtx, void *hwInfo) {
     auto ret = FunctionCast(wrapGetHWInfo, callback->orgGetHWInfo)(accelVideoCtx, hwInfo);
-    getMember<uint16_t>(hwInfo, 0x4) = X6000P::callback->chipType < ChipType::Navi23 ? 0x73BF : 0x73FF;
+    getMember<uint16_t>(hwInfo, 0x4) = X6000P::callback->chipType == ChipType::Navi21 ? 0x73BF : 0x73FF;
     return ret;
 }

@@ -129,7 +129,7 @@
 			<key>IOMatchCategory</key>
 			<string>ATIFramebuffer</string>
 			<key>IOPCIMatch</key>
-			<string>0x73A21002 0x73A31002 0x73A41002 0x73A51002 0x73AB1002 0x73BF1002 0x73C31002 0x73C41002 0x73DF1002</string>
+			<string>0x73A21002 0x73A31002 0x73A41002 0x73A51002 0x73AB1002 0x73BF1002</string>
 			<key>IOPCITunnelCompatible</key>
 			<true/>
 			<key>IOPCIUseDeviceMapper</key>
@@ -237,7 +237,7 @@
 			<key>IOMatchCategory</key>
 			<string>ATIFramebuffer</string>
 			<key>IOPCIMatch</key>
-			<string>0x73E01002 0x73E31002 0x73EF1002 0x73FF1002</string>
+			<string>0x73C31002 0x73C41002 0x73DF1002 0x73E01002 0x73E31002 0x73EF1002 0x73FF1002</string>
 			<key>IOPCITunnelCompatible</key>
 			<true/>
 			<key>IOPCIUseDeviceMapper</key>
@@ -400,7 +400,7 @@
 					<key>IOMatchCategory</key>
 					<string>IOAccelerator</string>
 					<key>IOPCIMatch</key>
-					<string>0x73A21002 0x73A31002 0x73A41002 0x73A51002 0x73AB1002 0x73BF1002 0x73C31002 0x73C41002 0x73DF1002</string>
+					<string>0x73A21002 0x73A31002 0x73A41002 0x73A51002 0x73AB1002 0x73BF1002 </string>
 					<key>IOPCITunnelCompatible</key>
 					<true/>
 					<key>IOPropertyMatch</key>
@@ -507,7 +507,7 @@
 					<key>IOMatchCategory</key>
 					<string>IOAccelerator</string>
 					<key>IOPCIMatch</key>
-					<string>0x73E01002 0x73E11002 0x73E31002 0x73EF1002 0x73FF1002</string>
+					<string>0x73C31002 0x73C41002 0x73DF1002 0x73E01002 0x73E11002 0x73E31002 0x73EF1002 0x73FF1002</string>
 					<key>IOPCITunnelCompatible</key>
 					<true/>
 					<key>IOPropertyMatch</key>
