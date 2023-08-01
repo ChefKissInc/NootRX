@@ -38,6 +38,7 @@ DerivedData/
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 /Lilu.kext
+/X6000Plus/kern_fw.cpp
 .vscode/
 .cache/
 CompilationDatabase/

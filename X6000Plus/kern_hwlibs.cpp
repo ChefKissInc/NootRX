@@ -2,6 +2,7 @@
 //  details.
 
 #include "kern_hwlibs.hpp"
+#include "kern_fw.hpp"
 #include "kern_patches.hpp"
 #include "kern_patterns.hpp"
 #include "kern_x6000p.hpp"
@@ -63,8 +64,8 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         solveRequest.solve(patcher, id, slide, size);
 
         RouteRequestPlus requests[] = {
+            {"_psp_cos_log", wrapPspCosLog, this->orgPspCosLog, kPspCosLogPattern},
             {"_psp_assertion", wrapIpAssertion},
-            {"_psp_cos_log", wrapPspCosLog, this->orgPspCosLog},
         };
         SYSLOG_COND(!RouteRequestPlus::routeAll(patcher, id, requests, slide, size), "hwlibs",
             "Failed to route symbols");
@@ -132,8 +133,10 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
                     kPspSwInit2PatchedMask, 1},
                 {&kextRadeonX6810HWLibs, kPspSwInit3Original, kPspSwInit3OriginalMask, kPspSwInit3Patched,
                     kPspSwInit3PatchedMask, 1},
+                {&kextRadeonX6810HWLibs, getFWDescByName("psp_key_database_navi23.bin").data,
+                    getFWDescByName("psp_key_database_navi22.bin").data, 4208, 1},
             };
-            SYSLOG_COND(!LookupPatchPlus::applyAll(patcher, patches, slide, size), "hwlibs",
+            PANIC_COND(!LookupPatchPlus::applyAll(patcher, patches, slide, size), "hwlibs",
                 "Failed to apply patches: %d", patcher.getError());
         }
 
@@ -159,6 +162,10 @@ void HWLibs::wrapIpAssertion([[maybe_unused]] void *data, uint32_t cond, char *f
 }
 
 void HWLibs::wrapPspCosLog(void *pspData, uint32_t param2, uint64_t param3, uint32_t param4, char *param5) {
-    if (param5) { DBGLOG("hwlibs", "AMD TTL COS: %s", param5); }
+    if (param5) {
+        kprintf("AMD TTL COS: %s", param5);
+        auto len = strlen(param5);
+        if (len > 0 && param5[len - 1] != '\n') { kprintf("\n"); }
+    }
     FunctionCast(wrapPspCosLog, callback->orgPspCosLog)(pspData, param2, param3, param4, param5);
 }
