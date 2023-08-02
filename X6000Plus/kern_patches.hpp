@@ -83,3 +83,16 @@ static_assert(arrsize(kPspSwInit3Patched) == arrsize(kPspSwInit3PatchedMask));
 static const uint8_t kSmuUcodeOriginal[] = {0x00, 0x24, 0x3B, 0x00, 0x00, 0xB2, 0x03, 0x00};
 static const uint8_t kSmuUcodePatched[] = {0x00, 0x39, 0x41, 0x00, 0x00, 0xB2, 0x03, 0x00};
 static_assert(arrsize(kSmuUcodeOriginal) == arrsize(kSmuUcodePatched));
+
+/**
+ * `_smu_11_0_7_check_fw_version`
+ * AMDRadeonX6810HWLibs.kext
+ * Skip check for firmware version.
+ */
+static const uint8_t kSmu1107CheckFwVersionOriginal[] = {0x83, 0xFE, 0x40, 0x75, 0x00, 0xEB, 0x00};
+static const uint8_t kSmu1107CheckFwVersionOriginalMask[] = {0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0xFF, 0x00};
+static const uint8_t kSmu1107CheckFwVersionPatched[] = {0x66, 0x90, 0x66, 0x90, 0x90, 0x00, 0x00};
+static const uint8_t kSmu1107CheckFwVersionPatchedMask[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00};
+static_assert(arrsize(kSmu1107CheckFwVersionOriginal) == arrsize(kSmu1107CheckFwVersionOriginalMask));
+static_assert(arrsize(kSmu1107CheckFwVersionOriginal) == arrsize(kSmu1107CheckFwVersionPatched));
+static_assert(arrsize(kSmu1107CheckFwVersionPatched) == arrsize(kSmu1107CheckFwVersionPatchedMask));

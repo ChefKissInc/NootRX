@@ -144,6 +144,8 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
                     getFWDescByName("psp_tos_navi22.bin").data, 82772, 1},
                 {&kextRadeonX6810HWLibs, getFWDescByName("smc_navi23.bin").data, getFWDescByName("smc_navi22.bin").data,
                     242176, 2},
+                {&kextRadeonX6810HWLibs, kSmu1107CheckFwVersionOriginal, kSmu1107CheckFwVersionOriginalMask,
+                    kSmu1107CheckFwVersionPatched, kSmu1107CheckFwVersionPatchedMask, 1},
             };
             PANIC_COND(!LookupPatchPlus::applyAll(patcher, patches, slide, size), "hwlibs",
                 "Failed to apply patches: %d", patcher.getError());
