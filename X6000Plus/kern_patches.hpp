@@ -74,3 +74,12 @@ static const uint8_t kPspSwInit3PatchedMask[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0
 static_assert(arrsize(kPspSwInit3Original) == arrsize(kPspSwInit3OriginalMask));
 static_assert(arrsize(kPspSwInit3Original) == arrsize(kPspSwInit3Patched));
 static_assert(arrsize(kPspSwInit3Patched) == arrsize(kPspSwInit3PatchedMask));
+
+/**
+ * `_smu_11_0_7_ucode`
+ * AMDRadeonX6810HWLibs.kext
+ * Set ucode version to 0x413900
+ */
+static const uint8_t kSmuUcodeOriginal[] = {0x00, 0x24, 0x3B, 0x00, 0x00, 0xB2, 0x03, 0x00};
+static const uint8_t kSmuUcodePatched[] = {0x00, 0x39, 0x41, 0x00, 0x00, 0xB2, 0x03, 0x00};
+static_assert(arrsize(kSmuUcodeOriginal) == arrsize(kSmuUcodePatched));

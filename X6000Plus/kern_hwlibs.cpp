@@ -133,6 +133,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
                     kPspSwInit2PatchedMask, 1},
                 {&kextRadeonX6810HWLibs, kPspSwInit3Original, kPspSwInit3OriginalMask, kPspSwInit3Patched,
                     kPspSwInit3PatchedMask, 1},
+                {&kextRadeonX6810HWLibs, kSmuUcodeOriginal, kSmuUcodePatched, 1},
                 {&kextRadeonX6810HWLibs, getFWDescByName("psp_key_database_navi23.bin").data,
                     getFWDescByName("psp_key_database_navi22.bin").data, 4208, 1},
                 {&kextRadeonX6810HWLibs, getFWDescByName("psp_spl_navi23.bin").data,
@@ -140,7 +141,9 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
                 {&kextRadeonX6810HWLibs, getFWDescByName("psp_sysdrv_navi23.bin").data,
                     getFWDescByName("psp_sysdrv_navi22.bin").data, 112528, 1},
                 {&kextRadeonX6810HWLibs, getFWDescByName("psp_tos_navi23.bin").data,
-					getFWDescByName("psp_tos_navi22.bin").data, 82772 , 1},
+                    getFWDescByName("psp_tos_navi22.bin").data, 82772, 1},
+                {&kextRadeonX6810HWLibs, getFWDescByName("smc_navi23.bin").data, getFWDescByName("smc_navi22.bin").data,
+                    242176, 2},
             };
             PANIC_COND(!LookupPatchPlus::applyAll(patcher, patches, slide, size), "hwlibs",
                 "Failed to apply patches: %d", patcher.getError());
