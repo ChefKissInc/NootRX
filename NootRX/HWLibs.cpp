@@ -82,7 +82,8 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
                 {"_psp_cmd_km_submit", wrapPspCmdKmSubmit, this->orgPspCmdKmSubmit, kPspCmdKmSubmitPattern,
                     kPspCmdKmSubmitMask},
                 {"_smu_11_0_7_send_message_with_parameter", wrapSmu1107SendMessageWithParameter,
-                    this->orgSmu1107SendMessageWithParameter, kSmu1107SendMessageWithParameterPattern},
+                    this->orgSmu1107SendMessageWithParameter, kSmu1107SendMessageWithParameterPattern,
+                    kSmu1107SendMessageWithParameterPatternMask},
             };
             PANIC_COND(!RouteRequestPlus::routeAll(patcher, id, requests, slide, size), "HWLibs",
                 "Failed to route Navi 22 routes");
