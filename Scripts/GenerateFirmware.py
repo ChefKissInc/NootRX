@@ -5,10 +5,10 @@ import struct
 import sys
 
 header = '''
-//  Copyright © 2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5. See LICENSE for
-//  details.
+//!  Copyright © 2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5. See LICENSE for
+//!  details.
 
-#include "kern_fw.hpp"
+#include "Firmware.hpp"
 '''
 
 
@@ -54,7 +54,7 @@ def process_files(target_file, dir):
         lines += lines_for_file(os.path.join(root, file), file)
         fw_var_name = format_file_name(file)
         file_list_content += [
-            f"    {{X6KP_FW(\"{file}\", {fw_var_name}, {fw_var_name}_size)}},\n"]
+            f"    {{FIRMWARE(\"{file}\", {fw_var_name}, {fw_var_name}_size)}},\n"]
 
     lines += ["\n", "const struct FWDescriptor firmware[] = {\n"]
     lines += file_list_content

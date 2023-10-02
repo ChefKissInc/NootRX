@@ -1,6 +1,6 @@
 #!/bin/sh
 
-target_file="${PROJECT_DIR}/X6000Plus/kern_fw.cpp"
+target_file="${PROJECT_DIR}/NootRX/Firmware.cpp"
 if [ -f "$target_file" ]; then
     rm -f "$target_file"
 fi
