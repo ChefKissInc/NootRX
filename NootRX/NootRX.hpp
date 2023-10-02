@@ -52,8 +52,9 @@ class NootRXMain {
     }
 
     static const char *getGCPrefix() {
-        // TODO: Add Navi 24
-        return "gc_10_3_2_";
+        PANIC_COND(callback->chipType == ChipType::Unknown, "NootRX", "Unknown chip type");
+        static const char *gcPrefixes[] = {"gc_10_3_0_", "gc_10_3_2_", "gc_10_3_4_", "gc_10_3_5_"};
+        return gcPrefixes[static_cast<int>(callback->chipType)];
     }
 
     ChipType chipType {ChipType::Unknown};

@@ -112,6 +112,20 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
                 this->chipType = ChipType::Navi23;
                 this->enumRevision = 0x3C;
                 break;
+            case 0x7420:
+                [[fallthrough]];
+            case 0x7421:
+                [[fallthrough]];
+            case 0x7422:
+                [[fallthrough]];
+            case 0x7423:
+                [[fallthrough]];
+            case 0x7424:
+                [[fallthrough]];
+            case 0x743F:
+                this->chipType = ChipType::Navi24;
+                this->enumRevision = 0x46;
+                break;
             default:
                 PANIC("NootRX", "Unknown device ID");
         }
