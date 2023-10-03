@@ -67,11 +67,6 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         SolveRequestPlus solveRequest {"_CAILAsicCapsInitTable", orgCapsInitTable, kCAILAsicCapsInitTablePattern};
         solveRequest.solve(patcher, id, slide, size);
 
-        if (checkKernelArgument("-CKUltraDebug")) {
-            RouteRequestPlus request {"_psp_cos_log", wrapPspCosLog, this->orgPspCosLog, kPspCosLogPattern};
-            PANIC_COND(!request.route(patcher, id, slide, size), "HWLibs", "Failed to route psp_cos_log");
-        }
-
         if (NootRXMain::callback->chipType == ChipType::Navi22) {
             RouteRequestPlus requests[] = {
                 {"_psp_cmd_km_submit", wrapPspCmdKmSubmit, this->orgPspCmdKmSubmit, kPspCmdKmSubmitPattern,
@@ -131,12 +126,6 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         PANIC_COND(!orgDevCapTable->familyId, "HWLibs", "Failed to find device capability table entry");
         MachInfo::setKernelWriting(false, KernelPatcher::kernelWriteLock);
         DBGLOG("HWLibs", "Applied DDI Caps patches");
-
-        if (checkKernelArgument("-CKUltraDebug")) {
-            const LookupPatchPlus patch {&kextRadeonX6810HWLibs, AtiPowerPlayServicesCOriginal,
-                AtiPowerPlayServicesCPatched, 1};
-            PANIC_COND(!patch.apply(patcher, slide, size), "HWLibs", "Failed to apply debug patch");
-        }
 
         if (NootRXMain::callback->chipType == ChipType::Navi22) {
             const LookupPatchPlus patches[] = {
@@ -216,15 +205,6 @@ const char *HWLibs::wrapGetMatchProperty() {
 
     DBGLOG("HWServices", "Forced X6810HWLibs");
     return "Load6810";
-}
-
-void HWLibs::wrapPspCosLog(void *pspData, UInt32 param2, UInt64 param3, UInt32 param4, char *param5) {
-    if (param5) {
-        kprintf("AMD TTL COS: %s", param5);
-        auto len = strlen(param5);
-        if (len > 0 && param5[len - 1] != '\n') { kprintf("\n"); }
-    }
-    FunctionCast(wrapPspCosLog, callback->orgPspCosLog)(pspData, param2, param3, param4, param5);
 }
 
 CAILResult HWLibs::wrapPspCmdKmSubmit(void *psp, void *ctx, void *param3, void *param4) {
