@@ -54,27 +54,28 @@ struct CAILDeviceTypeEntry {
 } PACKED;
 
 struct CAILIPGoldenRegister {
-    UInt32 regOffset;
-    UInt32 segment;
-    UInt32 andMask;
-    UInt32 orMask;
+    const UInt32 regOffset;
+    const UInt32 segment;
+    const UInt32 andMask;
+    const UInt32 orMask;
 };
 
 enum CAILIPType : UInt32 {
+    kCAILIPTypeUnknown = 0,
     kCAILIPTypeGC = 0xB,
     kCAILIPTypeSDMA0 = 0x23,
     kCAILIPTypeSDMA1,
 };
 
 struct CAILASICGoldenRegisters {
-    CAILIPType ipType;
-    UInt32 instance;    //! Not sure about that one
+    const CAILIPType ipType;
+    const UInt32 instance;    //! Not sure about that one
     const CAILIPGoldenRegister *entries;
 };
 
 struct CAILASICGoldenSettings {
-    CAILASICGoldenRegisters *palladiumGoldenSettings;
-    CAILASICGoldenRegisters *goldenSettings;
+    const CAILASICGoldenRegisters *palladiumGoldenSettings;
+    const CAILASICGoldenRegisters *goldenSettings;
 };
 
 struct DeviceCapabilityEntry {
@@ -82,7 +83,7 @@ struct DeviceCapabilityEntry {
     UInt64 deviceId, revision, enumRevision;
     const void *swipInfo, *swipInfoMinimal;
     const UInt32 *devAttrFlags;
-    const CAILASICGoldenSettings *goldenRegisterSetings, *doorbellRange;
+    CAILASICGoldenSettings *goldenRegisterSetings, *doorbellRange;
 } PACKED;
 
 constexpr UInt64 DEVICE_CAP_ENTRY_REV_DONT_CARE = 0xDEADCAFEU;
@@ -212,7 +213,7 @@ constexpr UInt32 mmLDS_CONFIG_BASE_IDX = 0;
 #define GOLDEN_REGISTER_TERMINATOR \
     { .regOffset = 0xFFFFFFFF, .segment = 0xFFFFFFFF, .andMask = 0xFFFFFFFF, .orMask = 0xFFFFFFFF }
 
-static const CAILIPGoldenRegister goldenSettingsNavi22[] = {
+static const CAILIPGoldenRegister gcGoldenSettingsNavi22[] = {
     GOLDEN_REGISTER(mmCGTT_SPI_CS_CLK_CTRL, 0xFF7F0FFF, 0x78000100),
     GOLDEN_REGISTER(mmCGTT_SPI_PS_CLK_CTRL, 0xFF7F0FFF, 0x78000100),
     GOLDEN_REGISTER(mmCGTT_SPI_RA0_CLK_CTRL, 0xFF7F0FFF, 0x30000100),
@@ -258,7 +259,7 @@ static const CAILIPGoldenRegister goldenSettingsNavi22[] = {
     GOLDEN_REGISTER_TERMINATOR,
 };
 
-static const CAILIPGoldenRegister goldenSettingsNavi24[] = {
+static const CAILIPGoldenRegister gcGoldenSettingsNavi24[] = {
     GOLDEN_REGISTER(mmCGTT_SPI_CS_CLK_CTRL, 0x78000000, 0x78000100),
     GOLDEN_REGISTER(mmCGTT_SPI_RA0_CLK_CTRL, 0xb0000ff0, 0x30000100),
     GOLDEN_REGISTER(mmCGTT_SPI_RA1_CLK_CTRL, 0xff000000, 0x7e000100),
@@ -292,4 +293,15 @@ static const CAILIPGoldenRegister goldenSettingsNavi24[] = {
     GOLDEN_REGISTER(mmTA_CNTL_AUX, 0xfff7ffff, 0x01030000),
     GOLDEN_REGISTER(mmUTCL1_CTRL, 0xffbfffff, 0x00a00000),
     GOLDEN_REGISTER_TERMINATOR,
+};
+
+#define GOLDEN_REGISTERS(type, inst, ents) \
+    { .ipType = kCAILIPType##type, .instance = inst, .entries = ents }
+
+#define GOLDEN_REGISTERS_TERMINATOR \
+    { .ipType = kCAILIPTypeUnknown, .instance = 0, .entries = nullptr }
+
+static const CAILASICGoldenRegisters goldenSettingsNavi22[] = {
+    GOLDEN_REGISTERS(GC, 0, gcGoldenSettingsNavi22),
+    GOLDEN_REGISTERS_TERMINATOR,
 };

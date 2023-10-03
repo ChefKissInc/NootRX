@@ -46,14 +46,9 @@ DEF_FAKECPY(fakecpyNavi22TosSpl, "psp_tos_spl_navi22.bin");
 
 bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size) {
     if (kextRadeonX6000HWServices.loadIndex == id) {
-        NootRXMain::callback->setRMMIOIfNecessary();
-
-        RouteRequestPlus requests[] = {
-            {"__ZN38AMDRadeonX6000_AMDRadeonHWServicesNavi16getMatchPropertyEv", wrapGetMatchProperty},
-        };
-
-        PANIC_COND(!RouteRequestPlus::routeAll(patcher, id, requests, slide, size), "hwservices",
-            "Failed to route symbols");
+        RouteRequestPlus request {"__ZN38AMDRadeonX6000_AMDRadeonHWServicesNavi16getMatchPropertyEv",
+            wrapGetMatchProperty};
+        PANIC_COND(!request.route(patcher, id, slide, size), "HWServices", "Failed to route getMatchProperty");
     } else if ((kextRadeonX6810HWLibs.loadIndex == id) || (kextRadeonX6800HWLibs.loadIndex == id)) {
         NootRXMain::callback->setRMMIOIfNecessary();
 
@@ -128,12 +123,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
                 orgDevCapTable->revision = DEVICE_CAP_ENTRY_REV_DONT_CARE;
                 orgDevCapTable->enumRevision = DEVICE_CAP_ENTRY_REV_DONT_CARE;
                 if (NootRXMain::callback->chipType == ChipType::Navi22) {
-                    for (auto *tmp = orgDevCapTable->goldenRegisterSetings->goldenSettings; tmp->entries; tmp++) {
-                        if (tmp->ipType == kCAILIPTypeGC) {
-                            tmp->entries = goldenSettingsNavi22;
-                            break;
-                        }
-                    }
+                    orgDevCapTable->goldenRegisterSetings->goldenSettings = goldenSettingsNavi22;
                 }
                 break;
             }
@@ -220,12 +210,12 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
 
 const char *HWLibs::wrapGetMatchProperty() {
     if (NootRXMain::callback->chipType == ChipType::Navi21) {
-        DBGLOG("hwservices", "Forced X6800HWLibs");
+        DBGLOG("HWServices", "Forced X6800HWLibs");
         return "Load6800";
-    } else {
-        DBGLOG("hwservices", "Forced X6810HWLibs");
-        return "Load6810";
     }
+
+    DBGLOG("HWServices", "Forced X6810HWLibs");
+    return "Load6810";
 }
 
 void HWLibs::wrapPspCosLog(void *pspData, UInt32 param2, UInt64 param3, UInt32 param4, char *param5) {
