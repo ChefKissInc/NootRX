@@ -17,11 +17,11 @@ class EXPORT PRODUCT_NAME : public IOService {
 };
 
 enum struct ChipType : UInt32 {
-    Unknown = 0,
-    Navi21,
+    Navi21 = 0,
     Navi22,
     Navi23,
     Navi24,
+    Unknown,
 };
 
 class NootRXMain {
