@@ -7,7 +7,7 @@
 #include <Headers/plugin_start.hpp>
 #include <IOKit/IOCatalogue.h>
 
-static NootRXMain x6000p;
+static NootRXMain nrx;
 
 static const char *bootargDebug = "-NRXDebug";
 static const char *bootargBeta = "-NRXBeta";
@@ -24,48 +24,5 @@ PluginConfiguration ADDPR(config) {
     1,
     KernelVersion::BigSur,
     KernelVersion::Sonoma,
-    []() { x6000p.init(); },
+    []() { nrx.init(); },
 };
-
-OSDefineMetaClassAndStructors(PRODUCT_NAME, IOService);
-
-IOService *PRODUCT_NAME::probe(IOService *provider, SInt32 *score) {
-    setProperty("VersionInfo", kextVersion);
-    return ADDPR(startSuccess) ? IOService::probe(provider, score) : nullptr;
-}
-
-bool PRODUCT_NAME::start(IOService *provider) {
-    if (!ADDPR(startSuccess)) { return false; }
-
-    if (!IOService::start(provider)) {
-        SYSLOG("Init", "Failed to start the parent");
-        return false;
-    }
-
-    if (!(lilu.getRunMode() & LiluAPI::RunningInstallerRecovery) && !checkKernelArgument("-CKFBOnly")) {
-        auto *prop = OSDynamicCast(OSArray, this->getProperty("Drivers"));
-        if (!prop) {
-            SYSLOG("Init", "Failed to get Drivers property");
-            return false;
-        }
-        auto *propCopy = prop->copyCollection();
-        if (!propCopy) {
-            SYSLOG("Init", "Failed to copy Drivers property");
-            return false;
-        }
-        auto *drivers = OSDynamicCast(OSArray, propCopy);
-        if (!drivers) {
-            SYSLOG("Init", "Failed to cast Drivers property");
-            OSSafeReleaseNULL(propCopy);
-            return false;
-        }
-        if (!gIOCatalogue->addDrivers(drivers)) {
-            SYSLOG("Init", "Failed to add drivers");
-            OSSafeReleaseNULL(drivers);
-            return false;
-        }
-        OSSafeReleaseNULL(drivers);
-    }
-
-    return true;
-}

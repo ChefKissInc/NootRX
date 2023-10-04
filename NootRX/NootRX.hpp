@@ -8,14 +8,6 @@
 #include <IOKit/graphics/IOFramebuffer.h>
 #include <IOKit/pci/IOPCIDevice.h>
 
-class EXPORT PRODUCT_NAME : public IOService {
-    OSDeclareDefaultStructors(PRODUCT_NAME);
-
-    public:
-    IOService *probe(IOService *provider, SInt32 *score) override;
-    bool start(IOService *provider) override;
-};
-
 enum struct ChipType : UInt32 {
     Navi21 = 0,
     Navi22,

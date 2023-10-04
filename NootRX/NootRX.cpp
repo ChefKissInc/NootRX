@@ -3,6 +3,7 @@
 
 #include "NootRX.hpp"
 #include "DYLDPatches.hpp"
+#include "Firmware.hpp"
 #include "HWLibs.hpp"
 #include "Model.hpp"
 #include "PatcherPlus.hpp"
@@ -10,6 +11,7 @@
 #include "X6000FB.hpp"
 #include <Headers/kern_api.hpp>
 #include <Headers/kern_devinfo.hpp>
+#include <IOKit/IOCatalogue.h>
 
 static const char *pathAGDP = "/System/Library/Extensions/AppleGraphicsControl.kext/Contents/PlugIns/"
                               "AppleGraphicsDevicePolicy.kext/Contents/MacOS/AppleGraphicsDevicePolicy";
@@ -134,6 +136,21 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
         SYSLOG("NootRX", "Failed to create DeviceInfo");
     }
     dyldpatches.processPatcher(patcher);
+
+    if ((lilu.getRunMode() & LiluAPI::RunningInstallerRecovery) || checkKernelArgument("-CKFBOnly")) { return; }
+
+    auto &desc = getFWDescByName("Drivers.xml");
+    OSString *errStr = nullptr;
+    auto *dataNull = new char[desc.size + 1];
+    memcpy(dataNull, desc.data, desc.size);
+    dataNull[desc.size] = 0;
+    auto *dataUnserialized = OSUnserializeXML(reinterpret_cast<const char *>(desc.data), desc.size + 1, &errStr);
+    PANIC_COND(!dataUnserialized, "NootRX", "Failed to unserialize Drivers.xml: %s",
+        errStr ? errStr->getCStringNoCopy() : "<No additional information>");
+    auto *drivers = OSDynamicCast(OSArray, dataUnserialized);
+    PANIC_COND(!drivers, "NootRX", "Failed to cast Drivers.xml data");
+    PANIC_COND(!gIOCatalogue->addDrivers(drivers), "NootRX", "Failed to add drivers");
+    dataUnserialized->release();
 }
 
 void NootRXMain::setRMMIOIfNecessary() {
