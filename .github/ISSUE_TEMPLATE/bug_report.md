@@ -1,13 +1,13 @@
 ---
 name: Bug report
-about: Report an issue caused by NootedRed
+about: Report an issue caused by NootRX
 title: ''
 labels: Bug
 assignees: ''
 
 ---
 
-<!-- Only latest version of NootedRed (from master branch) is supported -->
+<!-- Only latest version of NootRX (from master branch) is supported for reporting issues -->
 **Describe the bug**
 A clear and concise description of what the bug is.
 

@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Request a new feature in NootedRed
+about: Request a new feature in NootRX
 title: ''
 labels: Enhancement
 assignees: ''
