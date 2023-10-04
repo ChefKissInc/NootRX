@@ -80,23 +80,17 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
         }
 
         switch (this->deviceId) {
-            case 0x73A2:
-                [[fallthrough]];
-            case 0x73A3:
-                [[fallthrough]];
-            case 0x73A4:
-                [[fallthrough]];
-            case 0x73A5:
+            case 0x73A2 ... 0x73A5:
                 [[fallthrough]];
             case 0x73AB:
+                [[fallthrough]];
+            case 0x73AF:
                 [[fallthrough]];
             case 0x73BF:
                 this->chipType = ChipType::Navi21;
                 this->enumRevision = 0x28;
                 break;
-            case 0x73C3:
-                [[fallthrough]];
-            case 0x73C4:
+            case 0x73C3 ... 0x73C4:
                 [[fallthrough]];
             case 0x73DF:
                 PANIC_COND(getKernelVersion() < KernelVersion::Monterey, "NootRX",
@@ -104,11 +98,7 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
                 this->chipType = ChipType::Navi22;
                 this->enumRevision = 0x32;
                 break;
-            case 0x73E0:
-                [[fallthrough]];
-            case 0x73E1:
-                [[fallthrough]];
-            case 0x73E4:
+            case 0x73E0 ... 0x73E4:
                 [[fallthrough]];
             case 0x73EF:
                 PANIC_COND(getKernelVersion() < KernelVersion::Monterey, "NootRX",
@@ -116,15 +106,7 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
                 this->chipType = ChipType::Navi23;
                 this->enumRevision = 0x3C;
                 break;
-            case 0x7420:
-                [[fallthrough]];
-            case 0x7421:
-                [[fallthrough]];
-            case 0x7422:
-                [[fallthrough]];
-            case 0x7423:
-                [[fallthrough]];
-            case 0x7424:
+            case 0x7420 ... 0x7424:
                 [[fallthrough]];
             case 0x743F:
                 PANIC_COND(getKernelVersion() < KernelVersion::Monterey, "NootRX",
