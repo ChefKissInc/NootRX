@@ -144,7 +144,7 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
     auto *dataNull = new char[desc.size + 1];
     memcpy(dataNull, desc.data, desc.size);
     dataNull[desc.size] = 0;
-    auto *dataUnserialized = OSUnserializeXML(reinterpret_cast<const char *>(desc.data), desc.size + 1, &errStr);
+    auto *dataUnserialized = OSUnserializeXML(dataNull, desc.size + 1, &errStr);
     delete[] dataNull;
     PANIC_COND(!dataUnserialized, "NootRX", "Failed to unserialize Drivers.xml: %s",
         errStr ? errStr->getCStringNoCopy() : "<No additional information>");
