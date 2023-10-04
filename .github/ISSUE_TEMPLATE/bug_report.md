@@ -25,8 +25,9 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **System Information:**
- - macOS Version: [e.g. macOS 11.7.4]
- - CPU: [e.g. AMD Ryzen 5 3600G]
+ - macOS Version: [e.g. macOS 13.5.1]
+ - CPU: [e.g. AMD Ryzen 5 5600X]
+ - GPU: [e.g. AMD Radeon RX 6700 XT]
 
 **Additional context**
 Add any other context about the problem here.
