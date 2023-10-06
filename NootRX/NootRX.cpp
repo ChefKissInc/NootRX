@@ -105,7 +105,7 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
             case 0x73E3:
                 [[fallthrough]];
             case 0x73EF:
-                [[fallthrough]]
+                [[fallthrough]];
             case 0x73FF:
                 PANIC_COND(getKernelVersion() < KernelVersion::Monterey, "NootRX",
                     "Unsupported macOS version; Navi 23 requires macOS Monterey or newer");

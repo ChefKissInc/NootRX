@@ -81,15 +81,15 @@ static constexpr Model dev73FF[] = {
 
 static constexpr Model dev7421[] = {
     {0x00, "AMD Radeon Pro W6500M"},
-}
+};
 
 static constexpr Model dev7422[] = {
     {0x00, "AMD Radeon Pro W6400"},
-}
+};
 
 static constexpr Model dev7423[] = {
     {0x01, "AMD Radeon Pro W6300"},
-}
+};
 
 static constexpr Model dev743F[] = {
     {0xC1, "AMD Radeon RX 6500 XT"},
@@ -98,7 +98,7 @@ static constexpr Model dev743F[] = {
     {0xC8, "AMD Radeon RX 6550M"},
     {0xCE, "AMD Radeon RX 6450M"},
     {0xCF, "AMD Radeon RX 6300M"},
-}
+};
 
 static constexpr DevicePair devices[] = {
     {0x73A2, dev73A2, arrsize(dev73A2)},
