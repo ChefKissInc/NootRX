@@ -14,13 +14,6 @@ void DYLDPatches::init() { callback = this; }
 void DYLDPatches::processPatcher(KernelPatcher &patcher) {
     if (!(lilu.getRunMode() & LiluAPI::RunningNormal) || checkKernelArgument("-CKNoVCN")) { return; }
 
-    auto *entry = IORegistryEntry::fromPath("/", gIODTPlane);
-    if (entry) {
-        DBGLOG("DYLD", "Setting hwgva-id to iMacPro1,1");
-        entry->setProperty("hwgva-id", const_cast<char *>(kHwGvaId), arrsize(kHwGvaId));
-        entry->release();
-    }
-
     KernelPatcher::RouteRequest request {"_cs_validate_page", csValidatePage, this->orgCsValidatePage};
 
     PANIC_COND(!patcher.routeMultipleLong(KernelPatcher::KernelID, &request, 1), "DYLD",
@@ -45,15 +38,4 @@ void DYLDPatches::csValidatePage(vnode *vp, memory_object_t pager, memory_object
         patch.apply(const_cast<void *>(data), PAGE_SIZE);
         return;
     }
-
-    if (UNLIKELY(KernelPatcher::findAndReplace(const_cast<void *>(data), PAGE_SIZE, kVideoToolboxDRMModelOriginal,
-            arrsize(kVideoToolboxDRMModelOriginal), BaseDeviceInfo::get().modelIdentifier, 20))) {
-        DBGLOG("DYLD", "Applied 'VideoToolbox DRM model check' patch");
-    }
-
-    const DYLDPatch patches[] = {
-        {kAGVABoardIdOriginal, kAGVABoardIdPatched, "iMacPro1,1 spoof (AppleGVA)"},
-        {kHEVCEncBoardIdOriginal, kHEVCEncBoardIdPatched, "iMacPro1,1 spoof (AppleGVAHEVCEncoder)"},
-    };
-    DYLDPatch::applyAll(patches, const_cast<void *>(data), PAGE_SIZE);
 }
