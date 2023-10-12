@@ -58,3 +58,9 @@ class NootRXMain {
     UInt32 pciRevision {0};
     IOPCIDevice *GPU {nullptr};
 };
+
+//------ Patches ------//
+
+//! Neutralise access to AGDP configuration by board identifier.
+static const UInt8 kAGDPBoardIDKeyOriginal[] = "board-id";
+static const UInt8 kAGDPBoardIDKeyPatched[] = "applehax";

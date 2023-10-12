@@ -170,21 +170,14 @@ void NootRXMain::setRMMIOIfNecessary() {
 
 void NootRXMain::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size) {
     if (kextAGDP.loadIndex == id) {
+        // Don't apply AGDP patch on MacPro7,1
         auto boardId = BaseDeviceInfo::get().boardIdentifier;
-        const char *compatibleBoards[] {
-            "Mac-27AD2F918AE68F61",    // MacPro7,1
-            "Mac-7BA5B2D9E42DDD94"     // iMacPro1,1
-        };
-        for (auto &board : compatibleBoards) {
-            if (!strncmp(board, boardId, 21)) { return; }
-        }
+        if (!strncmp("Mac-27AD2F918AE68F61", boardId, 21)) { return; }
 
-        static const UInt8 kAGDPBoardIDKeyOriginal[] = "board-id";
-        static const UInt8 kAGDPBoardIDKeyPatched[] = "applehax";
-        const LookupPatchPlus patches[] = {
+        const LookupPatchPlus patch = {
             {&kextAGDP, kAGDPBoardIDKeyOriginal, kAGDPBoardIDKeyPatched, 1},
         };
-        PANIC_COND(!LookupPatchPlus::applyAll(patcher, patches, slide, size), "NootRX", "Failed to apply AGDP patch");
+        PANIC_COND(!LookupPatchPlus::applyAll(patcher, patch, slide, size), "NootRX", "Failed to apply AGDP patch");
     } else if (x6000fb.processKext(patcher, id, slide, size)) {
         DBGLOG("NootRX", "Processed AMDRadeonX6000Framebuffer");
     } else if (hwlibs.processKext(patcher, id, slide, size)) {
