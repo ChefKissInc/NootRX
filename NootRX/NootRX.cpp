@@ -174,10 +174,8 @@ void NootRXMain::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_
         auto boardId = BaseDeviceInfo::get().boardIdentifier;
         if (!strncmp("Mac-27AD2F918AE68F61", boardId, 21)) { return; }
 
-        const LookupPatchPlus patch = {
-            {&kextAGDP, kAGDPBoardIDKeyOriginal, kAGDPBoardIDKeyPatched, 1},
-        };
-        PANIC_COND(!LookupPatchPlus::applyAll(patcher, patch, slide, size), "NootRX", "Failed to apply AGDP patch");
+        const LookupPatchPlus patch {&kextAGDP, kAGDPBoardIDKeyOriginal, kAGDPBoardIDKeyPatched, 1};
+        PANIC_COND(!patch.apply(patcher, slide, size), "NootRX", "Failed to apply AGDP patch");
     } else if (x6000fb.processKext(patcher, id, slide, size)) {
         DBGLOG("NootRX", "Processed AMDRadeonX6000Framebuffer");
     } else if (hwlibs.processKext(patcher, id, slide, size)) {
