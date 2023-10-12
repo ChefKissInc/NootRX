@@ -61,14 +61,21 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
                 snprintf(name, arrsize(name), "GFX%zu", ii++);
                 WIOKit::renameDevice(device, name);
                 WIOKit::awaitPublishing(device);
+				if (!device->getProperty("AAPL,slot-name")) {
+					snprintf(name, sizeof(name), "Slot-%zu", ii++);
+					device->setProperty("AAPL,slot-name", name, sizeof("Slot-1"));
+				}
                 break;
             }
         }
 
         PANIC_COND(!this->GPU, "NootRX", "Failed to find GPU");
 
-        static UInt8 builtin[] = {0x00};
-        this->GPU->setProperty("built-in", builtin, arrsize(builtin));
+        if (!GPU->getProperty("built-in")) {
+            static UInt8 builtin[] = {0x00};
+            this->GPU->setProperty("built-in", builtin, arrsize(builtin));
+        }
+
         this->deviceId = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigDeviceID);
         this->pciRevision = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigRevisionID);
         if (!this->GPU->getProperty("model")) {
