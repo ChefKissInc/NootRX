@@ -61,10 +61,10 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
                 snprintf(name, arrsize(name), "GFX%zu", ii++);
                 WIOKit::renameDevice(device, name);
                 WIOKit::awaitPublishing(device);
-		if (!device->getProperty("AAPL,slot-name")) {
-			snprintf(name, sizeof(name), "Slot-%zu", ii++);
-			device->setProperty("AAPL,slot-name", name, sizeof("Slot-1"));
-		}
+                if (!device->getProperty("AAPL,slot-name")) {
+                    snprintf(name, sizeof(name), "Slot-%zu", ii++);
+                    device->setProperty("AAPL,slot-name", name, sizeof("Slot-1"));
+                }
                 break;
             }
         }
