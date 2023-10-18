@@ -160,7 +160,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
                     static_cast<UInt8>((arg1Mask >> 16) & 0xFF), static_cast<UInt8>((arg1Mask >> 24) & 0xFF), 0xFF,
                     0xFF, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00};
                 size_t dataOffset;
-                PANIC_COND(!KernelPatch er::findPattern(find, mask, arrsize(find), reinterpret_cast<void *>(slide), size,
+                PANIC_COND(!KernelPatcher::findPattern(find, mask, arrsize(find), reinterpret_cast<void *>(slide), size,
                                &dataOffset),
                     "HWLibs", "Failed to find memcpy block 0x%X&0x%X", arg1, arg1Mask);
                 return slide + dataOffset;
