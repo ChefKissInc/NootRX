@@ -118,7 +118,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
                 orgDevCapTable->revision = DEVICE_CAP_ENTRY_REV_DONT_CARE;
                 orgDevCapTable->enumRevision = DEVICE_CAP_ENTRY_REV_DONT_CARE;
                 if (NootRXMain::callback->chipType == ChipType::Navi22) {
-                    orgDevCapTable->goldenRegisterSetings->goldenSettings = goldenSettingsNavi22;
+                    orgDevCapTable->asicGoldenSettings->goldenSettings = goldenSettingsNavi22;
                 }
                 break;
             }
@@ -204,7 +204,7 @@ const char *HWLibs::wrapGetMatchProperty() {
     return "Load6810";
 }
 
-CAILResult X5000HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *param4) {
+CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *param4) {
     char filename[128] = {0};
     auto &size = getMember<UInt32>(ctx, 0xC);
     auto cmdID = getMember<AMDPSPCommand>(cmd, 0x0);
