@@ -1,5 +1,5 @@
-//  Copyright © 2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5. See LICENSE for
-//  details.
+//! Copyright © 2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5.
+//! See LICENSE for details.
 
 #include "X6000.hpp"
 #include "HWLibs.hpp"
@@ -23,7 +23,7 @@ bool X6000::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sli
     if (kextRadeonX6000.loadIndex == id) {
         NootRXMain::callback->setRMMIOIfNecessary();
 
-        if (!checkKernelArgument("-CKNoVCN")) {
+        if (!checkKernelArgument("-NRXNoVCN")) {
             RouteRequestPlus request {"__ZN35AMDRadeonX6000_AMDAccelVideoContext9getHWInfoEP13sHardwareInfo",
                 wrapGetHWInfo, this->orgGetHWInfo};
             PANIC_COND(!request.route(patcher, id, slide, size), "X6000", "Failed to route getHWInfo");
@@ -32,7 +32,7 @@ bool X6000::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sli
         if (NootRXMain::callback->chipType == ChipType::Navi22 && getKernelVersion() >= KernelVersion::Ventura) {
             const LookupPatchPlus patch = {&kextRadeonX6000, kHwlConvertChipFamilyOriginal,
                 kHwlConvertChipFamilyOriginalMask, kHwlConvertChipFamilyPatched, 1};
-            PANIC_COND(!patch.apply(patcher, slide, size), "X6000", "Failed to apply HwlConvertChipFamily patch");
+            PANIC_COND(!patch.apply(patcher, slide, size), "X6000", "Failed to apply Navi 22 HwlConvertChipFamily patch");
         }
 
         return true;

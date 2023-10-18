@@ -1,5 +1,5 @@
-//  Copyright © 2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5. See LICENSE for
-//  details.
+//! Copyright © 2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5.
+//! See LICENSE for details.
 
 #include "NootRX.hpp"
 #include "DYLDPatches.hpp"
@@ -31,10 +31,10 @@ void NootRXMain::init() {
     callback = this;
 
     lilu.onKextLoadForce(&kextAGDP);
+    dyldpatches.init();
     x6000fb.init();
     hwlibs.init();
     x6000.init();
-    dyldpatches.init();
 
     lilu.onPatcherLoadForce(
         [](void *user, KernelPatcher &patcher) { static_cast<NootRXMain *>(user)->processPatcher(patcher); }, this);
@@ -80,11 +80,11 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
         this->pciRevision = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigRevisionID);
         if (!this->GPU->getProperty("model")) {
             auto *model = getBranding(this->deviceId, this->pciRevision);
+            auto modelLen = static_cast<UInt32>(strlen(model) + 1);
             if (model) {
-                auto len = static_cast<UInt32>(strlen(model) + 1);
-                this->GPU->setProperty("model", const_cast<char *>(model), len);
+                this->GPU->setProperty("model", const_cast<char *>(model), modelLen);
                 this->GPU->setProperty("ATY,FamilyName", const_cast<char *>("Radeon RX"), 10);
-                this->GPU->setProperty("ATY,DeviceName", const_cast<char *>(model) + 14, len - 14);    // 6600 XT...
+                this->GPU->setProperty("ATY,DeviceName", const_cast<char *>(model) + 14, modelLen - 14);    // 6600 XT...
             }
         }
 
@@ -131,11 +131,13 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
                 PANIC("NootRX", "Unknown device ID");
         }
 
-        // No named frame-buffer for Navi 22/24 for now
+        // No named framebuffer for Navi 22/24 for now
         if (this->chipType == ChipType::Navi21) {
             if (this->pciRevision == 0xC1 || this->pciRevision == 0xC3) {
+                // RX 6800 (XT)
                 this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Belknap"), 12);
             } else {
+                // RX 6900 XT / RX 6950 XT
                 this->GPU->setProperty("@0,name", const_cast<char *>("ATY,Carswell"), 13);
             }
         } else if (this->chipType == ChipType::Navi23) {
@@ -148,7 +150,7 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
     }
     dyldpatches.processPatcher(patcher);
 
-    if ((lilu.getRunMode() & LiluAPI::RunningInstallerRecovery) || checkKernelArgument("-CKFBOnly")) { return; }
+    if ((lilu.getRunMode() & LiluAPI::RunningInstallerRecovery) || checkKernelArgument("-NRXFBOnly")) { return; }
 
     auto &desc = getFWDescByName("Drivers.xml");
     OSString *errStr = nullptr;
@@ -158,7 +160,7 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
     auto *dataUnserialized = OSUnserializeXML(dataNull, desc.size + 1, &errStr);
     delete[] dataNull;
     PANIC_COND(!dataUnserialized, "NootRX", "Failed to unserialize Drivers.xml: %s",
-        errStr ? errStr->getCStringNoCopy() : "<No additional information>");
+        errStr ? errStr->getCStringNoCopy() : "Unspecified");
     auto *drivers = OSDynamicCast(OSArray, dataUnserialized);
     PANIC_COND(!drivers, "NootRX", "Failed to cast Drivers.xml data");
     PANIC_COND(!gIOCatalogue->addDrivers(drivers), "NootRX", "Failed to add drivers");

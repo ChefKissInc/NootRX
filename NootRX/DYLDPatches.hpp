@@ -1,5 +1,5 @@
-//  Copyright © 2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5. See LICENSE for
-//  details.
+//! Copyright © 2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5.
+//! See LICENSE for details.
 
 #pragma once
 #include <Headers/kern_patcher.hpp>
@@ -63,12 +63,11 @@ class DYLDPatches {
 
     private:
     mach_vm_address_t orgCsValidatePage {0};
-    static void csValidatePage(vnode *vp, memory_object_t pager, memory_object_offset_t page_offset, const void *data,
-        int *validated_p, int *tainted_p, int *nx_p);
+    static void wrapCsValidatePage(vnode *vp, memory_object_t pager, memory_object_offset_t page_offset,
+        const void *data, int *validated_p, int *tainted_p, int *nx_p);
 };
 static const char kCoreLSKDMSEPath[] = "/System/Library/PrivateFrameworks/CoreLSKDMSE.framework/Versions/A/CoreLSKDMSE";
 static const char kCoreLSKDPath[] = "/System/Library/PrivateFrameworks/CoreLSKD.framework/Versions/A/CoreLSKD";
 
 static const UInt8 kCoreLSKDOriginal[] = {0xC7, 0xC0, 0x01, 0x00, 0x00, 0x00, 0x0F, 0xA2};
 static const UInt8 kCoreLSKDPatched[] = {0xC7, 0xC0, 0xC3, 0x06, 0x03, 0x00, 0x66, 0x90};
-static_assert(arrsize(kCoreLSKDOriginal) == arrsize(kCoreLSKDPatched));

@@ -1,5 +1,5 @@
-//  Copyright © 2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5. See LICENSE for
-//  details.
+//! Copyright © 2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5.
+//! See LICENSE for details.
 
 #include "NootRX.hpp"
 #include <Headers/kern_api.hpp>
@@ -10,7 +10,6 @@
 static NootRXMain nrx;
 
 static const char *bootargDebug = "-NRXDebug";
-static const char *bootargBeta = "-NRXBeta";
 
 PluginConfiguration ADDPR(config) {
     xStringify(PRODUCT_NAME),
@@ -20,8 +19,8 @@ PluginConfiguration ADDPR(config) {
     0,
     &bootargDebug,
     1,
-    &bootargBeta,
-    1,
+    nullptr,
+    0,
     KernelVersion::BigSur,
     KernelVersion::Sonoma,
     []() { nrx.init(); },

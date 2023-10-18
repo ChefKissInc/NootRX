@@ -1,5 +1,5 @@
-//  Copyright © 2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5. See LICENSE for
-//  details.
+//! Copyright © 2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5.
+//! See LICENSE for details.
 
 #include "X6000FB.hpp"
 #include "NootRX.hpp"
@@ -28,14 +28,9 @@ bool X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t s
             {"__ZL20CAIL_ASIC_CAPS_TABLE", orgAsicCapsTable, kCailAsicCapsTablePattern},
         };
         PANIC_COND(!SolveRequestPlus::solveAll(patcher, id, solveRequests, slide, size), "X6000FB",
-            "Failed to resolve symbols");
+            "Failed to resolve CailAsicCapsTable");
 
-        if (NootRXMain::callback->chipType == ChipType::Navi21) {
-            RouteRequestPlus request {"__ZNK32AMDRadeonX6000_AmdAsicInfoNavi2127getEnumeratedRevisionNumberEv",
-                wrapGetEnumeratedRevision};
-            PANIC_COND(!request.route(patcher, id, slide, size), "X6000FB",
-                "Failed to route getEnumeratedRevisionNumber");
-        } else {
+        if (NootRXMain::callback->chipType == ChipType::Navi22 || NootRXMain::callback->chipType == ChipType::Navi24) {
             RouteRequestPlus request {"__ZNK32AMDRadeonX6000_AmdAsicInfoNavi2327getEnumeratedRevisionNumberEv",
                 wrapGetEnumeratedRevision};
             PANIC_COND(!request.route(patcher, id, slide, size), "X6000FB",
@@ -52,7 +47,7 @@ bool X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t s
                 "Failed to route debug symbols");
         }
 
-        if (checkKernelArgument("-CKDMLogger")) {
+        if (checkKernelArgument("-NRXDMLogger")) {
             RouteRequestPlus request {"_dm_logger_write", wrapDmLoggerWrite, kDmLoggerWritePattern};
             PANIC_COND(!request.route(patcher, id, slide, size), "X6000FB", "Failed to route dm_logger_write");
         }

@@ -1,5 +1,5 @@
-//  Copyright © 2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5. See LICENSE for
-//  details.
+//! Copyright © 2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5.
+//! See LICENSE for details.
 
 #include "HWLibs.hpp"
 #include "Firmware.hpp"
@@ -76,7 +76,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
                     kSmu1107SendMessageWithParameterPatternMask},
             };
             PANIC_COND(!RouteRequestPlus::routeAll(patcher, id, requests, slide, size), "HWLibs",
-                "Failed to route Navi 22 routes");
+                "Failed to route Navi 22 symbols");
         }
 
         PANIC_COND(MachInfo::setKernelWriting(true, KernelPatcher::kernelWriteLock) != KERN_SUCCESS, "HWLibs",
@@ -108,7 +108,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
                 break;
             }
         }
-        PANIC_COND(orgCapsTable->deviceId == 0xFFFFFFFF, "HWLibs", "Failed to find caps init table entry");
+        PANIC_COND(orgCapsTable->deviceId == 0xFFFFFFFF, "HWLibs", "Failed to find ASIC caps init table entry");
 
         for (; orgDevCapTable->familyId; orgDevCapTable++) {
             if (orgDevCapTable->familyId == AMDGPU_FAMILY_NAVI && orgDevCapTable->deviceId == targetDeviceId) {
@@ -148,7 +148,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
                 const LookupPatchPlus patch {&kextRadeonX6810HWLibs, kSdmaInitFunctionPointerOriginal,
                     kSdmaInitFunctionPointerOriginalMask, kSdmaInitFunctionPointerPatched, 1};
                 PANIC_COND(!patch.apply(patcher, slide, size), "HWLibs",
-                    "Failed to apply Navi 22 Ventura SDMA patches");
+                    "Failed to apply Navi 22 Ventura SDMA patch");
             }
 
             auto findMemCpyBlock = [=](UInt32 arg1, UInt32 arg1Mask) {
@@ -159,8 +159,8 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
                     static_cast<UInt8>(arg1Mask & 0xFF), static_cast<UInt8>((arg1Mask >> 8) & 0xFF),
                     static_cast<UInt8>((arg1Mask >> 16) & 0xFF), static_cast<UInt8>((arg1Mask >> 24) & 0xFF), 0xFF,
                     0xFF, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00};
-                size_t dataOffset = 0;
-                PANIC_COND(!KernelPatcher::findPattern(find, mask, arrsize(find), reinterpret_cast<void *>(slide), size,
+                size_t dataOffset;
+                PANIC_COND(!KernelPatch er::findPattern(find, mask, arrsize(find), reinterpret_cast<void *>(slide), size,
                                &dataOffset),
                     "HWLibs", "Failed to find memcpy block 0x%X&0x%X", arg1, arg1Mask);
                 return slide + dataOffset;
@@ -199,33 +199,25 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
 
 const char *HWLibs::wrapGetMatchProperty() {
     if (NootRXMain::callback->chipType == ChipType::Navi21) {
-        DBGLOG("HWServices", "Forced X6800HWLibs");
         return "Load6800";
     }
-
-    DBGLOG("HWServices", "Forced X6810HWLibs");
     return "Load6810";
 }
 
-CAILResult HWLibs::wrapPspCmdKmSubmit(void *psp, void *ctx, void *param3, void *param4) {
+CAILResult X5000HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *param4) {
     char filename[128] = {0};
     auto &size = getMember<UInt32>(ctx, 0xC);
-    auto cmdID = getMember<UInt32>(ctx, 0x0);
-    size_t off = 0;
+    auto cmdID = getMember<AMDPSPCommand>(cmd, 0x0);
+    size_t off;
     switch (getKernelVersion()) {
-        case KernelVersion::Catalina:
-            off = 0xB00;
-            break;
-        case KernelVersion::BigSur:
-            [[fallthrough]];
-        case KernelVersion::Monterey:
+        case KernelVersion::BigSur .. KernelVersion::Monterey:
             off = 0xAF8;
             break;
         default:
             off = 0xB48;
             break;
     }
-    auto *data = getMember<UInt8 *>(psp, off);
+    auto *data = getMember<UInt8 *>(ctx, off);
 
     switch (cmdID) {
         case kPSPCommandLoadTA: {
@@ -257,13 +249,15 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *psp, void *ctx, void *param3, void *
             }
 
             DBGLOG("HWLibs", "Other PSP TA is being loaded: (name: %s size: 0x%X)", data + 0x8DB, size);
-            return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(psp, ctx, param3, param4);
+            return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(ctx, cmd, param3, param4);
         }
+
         case kPSPCommandLoadASD: {
             DBGLOG("HWLibs", "ASD is being loaded (size: 0x%X)", size);
             strncpy(filename, "psp_asd.bin", 12);
             break;
         }
+
         case kPSPCommandLoadIPFW: {
             auto *prefix = NootRXMain::getGCPrefix();
             auto uCodeID = getMember<UInt32>(ctx, 0x10);
@@ -316,18 +310,6 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *psp, void *ctx, void *param3, void *
                     DBGLOG("HWLibs", "SDMA0 is being loaded (size: 0x%X)", size);
                     strncpy(filename, "sdma_5_2_2_ucode.bin", 21);
                     break;
-                case kUCodeSDMA1:
-                    DBGLOG("HWLibs", "SDMA1 is being loaded (size: 0x%X)", size);
-                    strncpy(filename, "sdma_5_2_2_ucode.bin", 21);
-                    break;
-                case kUCodeSDMA2:
-                    DBGLOG("HWLibs", "SDMA2 is being loaded (size: 0x%X)", size);
-                    strncpy(filename, "sdma_5_2_2_ucode.bin", 21);
-                    break;
-                case kUCodeSDMA3:
-                    DBGLOG("HWLibs", "SDMA3 is being loaded (size: 0x%X)", size);
-                    strncpy(filename, "sdma_5_2_2_ucode.bin", 21);
-                    break;
                 case kUCodeVCN0:
                     DBGLOG("HWLibs", "VCN0 is being loaded (size: 0x%X)", size);
                     strncpy(filename, "ativvaxy_vcn3.dat", 18);
@@ -368,31 +350,42 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *psp, void *ctx, void *param3, void *
                     DBGLOG("HWLibs", "SE1 Tap Delays is being loaded (size: 0x%X)", size);
                     snprintf(filename, 128, "%sse1_tap_delays.bin", prefix);
                     break;
+                case kUCodeSE2TapDelays:
+                    DBGLOG("HWLibs", "SE2 Tap Delays is being loaded (size: 0x%X)", size);
+                    snprintf(filename, 128, "%sse2_tap_delays.bin", prefix);
+                    break;
+                case kUCodeSE3TapDelays:
+                    DBGLOG("HWLibs", "SE3 Tap Delays is being loaded (size: 0x%X)", size);
+                    snprintf(filename, 128, "%sse3_tap_delays.bin", prefix);
+                    break;
                 case kUCodeDMCUB:
                     DBGLOG("HWLibs", "DMCUB is being loaded (size: 0x%X)", size);
                     strncpy(filename, "atidmcub_instruction_dcn30.bin", 31);
                     break;
+                case kUCodeVCNSram:
+                    DBGLOG("HWLibs", "VCN SRAM is being loaded (size: 0x%X)", size);
+                    return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(ctx, cmd, param3, param4);
                 default:
                     DBGLOG("HWLibs", "0x%X is being loaded (size: 0x%X)", uCodeID, size);
-                    return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(psp, ctx, param3, param4);
+                    return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(ctx, cmd, param3, param4);
             }
             break;
         }
         default:
             DBGLOG("HWLibs", "Not hijacking command id 0x%X", cmdID);
-            return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(psp, ctx, param3, param4);
+            return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(ctx, cmd, param3, param4);
     }
 
     auto &fwDesc = getFWDescByName(filename);
     memcpy(data, fwDesc.data, fwDesc.size);
     size = fwDesc.size;
 
-    return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(psp, ctx, param3, param4);
+    return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(ctx, cmd, param3, param4);
 }
 
 CAILResult HWLibs::wrapSmu1107SendMessageWithParameter(void *smum, UInt32 msgId, UInt32 param) {
     if (param == 0x10000 && (msgId == 0x2A || msgId == 0x2B)) {
-        DBGLOG("HWLibs", "Skipped VCN1 PG (msgId: 0x%X)", msgId);
+        DBGLOG("HWLibs", "Skipped VCN1 PG command (msgId: 0x%X)", msgId);
         return kCAILResultSuccess;
     }
     return FunctionCast(wrapSmu1107SendMessageWithParameter, callback->orgSmu1107SendMessageWithParameter)(smum, msgId,

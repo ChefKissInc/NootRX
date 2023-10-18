@@ -1,5 +1,5 @@
-//  Copyright © 2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5. See LICENSE for
-//  details.
+//! Copyright © 2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5.
+//! See LICENSE for details.
 
 #pragma once
 #include "AMDCommon.hpp"
@@ -18,7 +18,7 @@ class HWLibs {
     mach_vm_address_t orgSmu1107SendMessageWithParameter {0};
 
     static const char *wrapGetMatchProperty(void);
-    static CAILResult wrapPspCmdKmSubmit(void *psp, void *ctx, void *param3, void *param4);
+    static CAILResult wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *param4);
     static CAILResult wrapSmu1107SendMessageWithParameter(void *smum, UInt32 msgId, UInt32 param);
 };
 

@@ -1,127 +1,17 @@
-//  Copyright © 2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5. See LICENSE for
-//  details.
+//! Copyright © 2023 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5.
+//! See LICENSE for details.
 
 #pragma once
 #include <Headers/kern_util.hpp>
 
 constexpr UInt32 AMDGPU_FAMILY_NAVI = 0x8F;
 
+//-------- Generic Registers --------//
+
 constexpr UInt32 mmPCIE_INDEX2 = 0xE;
 constexpr UInt32 mmPCIE_DATA2 = 0xF;
 
-constexpr UInt32 MP_BASE = 0x16000;
-
-constexpr UInt32 AMDGPU_MAX_USEC_TIMEOUT = 100000;
-
-constexpr UInt32 mmMP1_SMN_C2PMSG_90 = 0x29A;
-constexpr UInt32 mmMP1_SMN_C2PMSG_82 = 0x292;
-constexpr UInt32 mmMP1_SMN_C2PMSG_66 = 0x282;
-
-enum CAILResult : UInt32 {
-    kCAILResultSuccess = 0,
-    kCAILResultInvalidArgument,
-    kCAILResultGeneralFailure,
-    kCAILResultResourcesExhausted,
-    kCAILResultUnsupported,
-};
-
-struct CAILAsicCapsEntry {
-    UInt32 familyId, deviceId;
-    UInt32 revision, extRevision;
-    UInt32 pciRevision;
-    UInt32 _reserved;
-    const UInt32 *caps;
-    const UInt32 *skeleton;
-} PACKED;
-
-struct CAILAsicCapsInitEntry {
-    UInt64 familyId, deviceId;
-    UInt64 revision, extRevision;
-    UInt64 pciRevision;
-    const UInt32 *caps;
-    const void *goldenCaps;
-} PACKED;
-
-static const UInt32 ddiCapsNavi21[16] = {0x800001, 0x1FE, 0x0, 0x0, 0x200, 0x8000000, 0x8000000, 0x2, 0x200A0101,
-    0xA20600, 0x42000028, 0x0, 0x0, 0x0, 0x0, 0x0};
-
-static const UInt32 ddiCapsNavi22[16] = {0x800001, 0x1FE, 0x0, 0x0, 0x200, 0x8000000, 0x8000000, 0x2, 0x200A0101,
-    0xA20600, 0x42000020, 0x0, 0x0, 0x0, 0x0, 0x0};
-
-struct CAILDeviceTypeEntry {
-    UInt32 deviceId;
-    UInt32 deviceType;
-} PACKED;
-
-struct CAILIPGoldenRegister {
-    const UInt32 regOffset;
-    const UInt32 segment;
-    const UInt32 andMask;
-    const UInt32 orMask;
-};
-
-enum CAILIPType : UInt32 {
-    kCAILIPTypeUnknown = 0,
-    kCAILIPTypeGC = 0xB,
-    kCAILIPTypeSDMA0 = 0x23,
-    kCAILIPTypeSDMA1,
-};
-
-struct CAILASICGoldenRegisters {
-    const CAILIPType ipType;
-    const UInt32 instance;    //! Not sure about that one
-    const CAILIPGoldenRegister *entries;
-};
-
-struct CAILASICGoldenSettings {
-    const CAILASICGoldenRegisters *palladiumGoldenSettings;
-    const CAILASICGoldenRegisters *goldenSettings;
-};
-
-struct DeviceCapabilityEntry {
-    UInt64 familyId, extRevision;
-    UInt64 deviceId, revision, enumRevision;
-    const void *swipInfo, *swipInfoMinimal;
-    const UInt32 *devAttrFlags;
-    CAILASICGoldenSettings *goldenRegisterSetings, *doorbellRange;
-} PACKED;
-
-constexpr UInt64 DEVICE_CAP_ENTRY_REV_DONT_CARE = 0xDEADCAFEU;
-
-enum AMDPSPCommand : UInt32 {
-    kPSPCommandLoadTA = 1,
-    kPSPCommandLoadASD = 4,
-    kPSPCommandLoadIPFW = 6,
-};
-
-enum AMDUCodeID : UInt32 {
-    kUCodeSMU = 1,
-    kUCodeCE,
-    kUCodePFP,
-    kUCodeME,
-    kUCodeMEC1JT,
-    kUCodeMEC2JT,
-    kUCodeMEC1,
-    kUCodeMEC2,
-    kUCodeMES,
-    kUCodeMESStack,
-    kUCodeRLC,
-    kUCodeSDMA0,
-    kUCodeSDMA1,
-    kUCodeVCN0,
-    kUCodeRLCP = 22,
-    kUCodeRLCSRListGPM,
-    kUCodeRLCSRListSRM,
-    kUCodeRLCSRListCntl,
-    kUCodeRLCLX6Iram,
-    kUCodeRLCLX6Dram,
-    kUCodeGlobalTapDelays = 30,
-    kUCodeSE0TapDelays,
-    kUCodeSE1TapDelays,
-    kUCodeDMCUB = 35,
-    kUCodeSDMA2,
-    kUCodeSDMA3,
-};
+//-------- GC Registers --------//
 
 constexpr UInt32 mmCGTT_SPI_CS_CLK_CTRL = 0x507C;
 constexpr UInt32 mmCGTT_SPI_CS_CLK_CTRL_BASE_IDX = 1;
@@ -208,10 +98,127 @@ constexpr UInt32 mmVGT_GS_MAX_WAVE_ID_BASE_IDX = 0;
 constexpr UInt32 mmLDS_CONFIG = 0x10A2;
 constexpr UInt32 mmLDS_CONFIG_BASE_IDX = 0;
 
+//-------- AMD Catalyst Data Types --------//
+
+struct CAILAsicCapsEntry {
+    UInt32 familyId, deviceId;
+    UInt32 revision, extRevision;
+    UInt32 pciRevision;
+    UInt32 _reserved;
+    const UInt32 *caps;
+    const UInt32 *skeleton;
+} PACKED;
+
+struct CAILAsicCapsInitEntry {
+    UInt64 familyId, deviceId;
+    UInt64 revision, extRevision;
+    UInt64 pciRevision;
+    const UInt32 *caps;
+    const void *goldenCaps;
+} PACKED;
+
+enum CAILResult : UInt32 {
+    kCAILResultSuccess = 0,
+    kCAILResultInvalidArgument,
+    kCAILResultGeneralFailure,
+    kCAILResultResourcesExhausted,
+    kCAILResultUnsupported,
+};
+
+struct CAILDeviceTypeEntry {
+    UInt32 deviceId, deviceType;
+} PACKED;
+
+struct CAILIPGoldenRegister {
+    const UInt32 regOffset;
+    const UInt32 segment;
+    const UInt32 andMask;
+    const UInt32 orMask;
+} PACKED;
+
 #define GOLDEN_REGISTER(reg, and, or) \
     { .regOffset = reg, .segment = reg##_BASE_IDX, .andMask = and, .orMask = or }
 #define GOLDEN_REGISTER_TERMINATOR \
     { .regOffset = 0xFFFFFFFF, .segment = 0xFFFFFFFF, .andMask = 0xFFFFFFFF, .orMask = 0xFFFFFFFF }
+
+enum CAILIPType : UInt32 {
+    kCAILIPTypeUnknown = 0,
+    kCAILIPTypeGC = 11,
+};
+
+struct CAILASICGoldenRegisters {
+    const CAILIPType ipType;
+    const UInt32 instance;    //! Not sure about that one.
+    const CAILIPGoldenRegister *entries;
+} PACKED;
+
+#define GOLDEN_REGISTERS(type, inst, ents) \
+    { .ipType = kCAILIPType##type, .instance = inst, .entries = ents }
+
+#define GOLDEN_REGISTERS_TERMINATOR \
+    { .ipType = kCAILIPTypeUnknown, .instance = 0, .entries = nullptr }
+
+struct CAILASICGoldenSettings {
+    //! Golden settings for GPUs emulated using the Cadence Palladium Emulation platform. We don't care.
+    const CAILASICGoldenRegisters *palladiumGoldenSettings;
+    const CAILASICGoldenRegisters *goldenSettings;
+} PACKED;
+
+struct DeviceCapabilityEntry {
+    UInt64 familyId, extRevision;
+    UInt64 deviceId, revision, enumRevision;
+    const void *swipInfo, *swipInfoMinimal;
+    const UInt32 *devAttrFlags;
+    CAILASICGoldenSettings *asicGoldenSettings;
+    void *doorbellRange;
+} PACKED;
+
+enum AMDPSPCommand : UInt32 {
+    kPSPCommandLoadTA = 1,
+    kPSPCommandLoadASD = 4,
+    kPSPCommandLoadIPFW = 6,
+};
+
+enum AMDUCodeID : UInt32 {
+    kUCodeSMU = 1,
+    kUCodeCE,
+    kUCodePFP,
+    kUCodeME,
+    kUCodeMEC1JT,
+    kUCodeMEC2JT,
+    kUCodeMEC1,
+    kUCodeMEC2,
+    kUCodeMES,
+    kUCodeMESStack,
+    kUCodeRLC,
+    kUCodeSDMA0,
+    kUCodeVCN0,
+    kUCodeRLCP = 22,
+    kUCodeRLCSRListGPM,
+    kUCodeRLCSRListSRM,
+    kUCodeRLCSRListCntl,
+    kUCodeRLCLX6Iram,
+    kUCodeRLCLX6Dram,
+    kUCodeVCNSram,
+    kUCodeGlobalTapDelays = 30,
+    kUCodeSE0TapDelays,
+    kUCodeSE1TapDelays,
+    kUCodeSE2TapDelays,
+    kUCodeSE3TapDelays,
+    kUCodeDMCUB,
+};
+
+//-------- AMD Catalyst Constants --------//
+
+constexpr UInt64 DEVICE_CAP_ENTRY_REV_DONT_CARE = 0xDEADCAFEU;
+
+static const UInt32 ddiCapsNavi21[16] = {0x800001, 0x1FE, 0x0, 0x0, 0x200, 0x8000000, 0x8000000, 0x2, 0x200A0101,
+    0xA20600, 0x42000028, 0x0, 0x0, 0x0, 0x0, 0x0};
+
+static const UInt32 ddiCapsNavi22[16] = {0x800001, 0x1FE, 0x0, 0x0, 0x200, 0x8000000, 0x8000000, 0x2, 0x200A0101,
+    0xA20600, 0x42000020, 0x0, 0x0, 0x0, 0x0, 0x0};
+
+//---- Golden Settings ----//
 
 static const CAILIPGoldenRegister gcGoldenSettingsNavi22[] = {
     GOLDEN_REGISTER(mmCGTT_SPI_CS_CLK_CTRL, 0xFF7F0FFF, 0x78000100),
@@ -258,48 +265,6 @@ static const CAILIPGoldenRegister gcGoldenSettingsNavi22[] = {
     GOLDEN_REGISTER(mmLDS_CONFIG, 0x00000020, 0x00000020),
     GOLDEN_REGISTER_TERMINATOR,
 };
-
-static const CAILIPGoldenRegister gcGoldenSettingsNavi24[] = {
-    GOLDEN_REGISTER(mmCGTT_SPI_CS_CLK_CTRL, 0x78000000, 0x78000100),
-    GOLDEN_REGISTER(mmCGTT_SPI_RA0_CLK_CTRL, 0xb0000ff0, 0x30000100),
-    GOLDEN_REGISTER(mmCGTT_SPI_RA1_CLK_CTRL, 0xff000000, 0x7e000100),
-    GOLDEN_REGISTER(mmCPF_GCR_CNTL, 0x0007ffff, 0x0000c000),
-    GOLDEN_REGISTER(mmDB_DEBUG3, 0xffffffff, 0x00000280),
-    GOLDEN_REGISTER(mmDB_DEBUG4, 0xffffffff, 0x00800000),
-    GOLDEN_REGISTER(mmGCR_GENERAL_CNTL_Sienna_Cichlid, 0x1ff1ffff, 0x00000500),
-    GOLDEN_REGISTER(mmGL2A_ADDR_MATCH_MASK, 0xffffffff, 0xffffffcf),
-    GOLDEN_REGISTER(mmGL2C_ADDR_MATCH_MASK, 0xffffffff, 0xffffffcf),
-    GOLDEN_REGISTER(mmGL2C_CM_CTRL1, 0xff8fff0f, 0x580f1008),
-    GOLDEN_REGISTER(mmGL2C_CTRL3, 0xf7ffffff, 0x00f80988),
-    GOLDEN_REGISTER(mmLDS_CONFIG, 0x000001ff, 0x00000020),
-    GOLDEN_REGISTER(mmPA_CL_ENHANCE, 0xf17fffff, 0x01200007),
-    GOLDEN_REGISTER(mmSQ_CONFIG, 0xe07df47f, 0x00180070),
-    GOLDEN_REGISTER(mmSQ_PERFCOUNTER0_SELECT, 0xf0f001ff, 0x00000000),
-    GOLDEN_REGISTER(mmSQ_PERFCOUNTER1_SELECT, 0xf0f001ff, 0x00000000),
-    GOLDEN_REGISTER(mmSQ_PERFCOUNTER10_SELECT, 0xf0f001ff, 0x00000000),
-    GOLDEN_REGISTER(mmSQ_PERFCOUNTER11_SELECT, 0xf0f001ff, 0x00000000),
-    GOLDEN_REGISTER(mmSQ_PERFCOUNTER12_SELECT, 0xf0f001ff, 0x00000000),
-    GOLDEN_REGISTER(mmSQ_PERFCOUNTER13_SELECT, 0xf0f001ff, 0x00000000),
-    GOLDEN_REGISTER(mmSQ_PERFCOUNTER14_SELECT, 0xf0f001ff, 0x00000000),
-    GOLDEN_REGISTER(mmSQ_PERFCOUNTER15_SELECT, 0xf0f001ff, 0x00000000),
-    GOLDEN_REGISTER(mmSQ_PERFCOUNTER2_SELECT, 0xf0f001ff, 0x00000000),
-    GOLDEN_REGISTER(mmSQ_PERFCOUNTER3_SELECT, 0xf0f001ff, 0x00000000),
-    GOLDEN_REGISTER(mmSQ_PERFCOUNTER4_SELECT, 0xf0f001ff, 0x00000000),
-    GOLDEN_REGISTER(mmSQ_PERFCOUNTER5_SELECT, 0xf0f001ff, 0x00000000),
-    GOLDEN_REGISTER(mmSQ_PERFCOUNTER6_SELECT, 0xf0f001ff, 0x00000000),
-    GOLDEN_REGISTER(mmSQ_PERFCOUNTER7_SELECT, 0xf0f001ff, 0x00000000),
-    GOLDEN_REGISTER(mmSQ_PERFCOUNTER8_SELECT, 0xf0f001ff, 0x00000000),
-    GOLDEN_REGISTER(mmSQ_PERFCOUNTER9_SELECT, 0xf0f001ff, 0x00000000),
-    GOLDEN_REGISTER(mmTA_CNTL_AUX, 0xfff7ffff, 0x01030000),
-    GOLDEN_REGISTER(mmUTCL1_CTRL, 0xffbfffff, 0x00a00000),
-    GOLDEN_REGISTER_TERMINATOR,
-};
-
-#define GOLDEN_REGISTERS(type, inst, ents) \
-    { .ipType = kCAILIPType##type, .instance = inst, .entries = ents }
-
-#define GOLDEN_REGISTERS_TERMINATOR \
-    { .ipType = kCAILIPTypeUnknown, .instance = 0, .entries = nullptr }
 
 static const CAILASICGoldenRegisters goldenSettingsNavi22[] = {
     GOLDEN_REGISTERS(GC, 0, gcGoldenSettingsNavi22),
