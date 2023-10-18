@@ -210,7 +210,7 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *
     auto cmdID = getMember<AMDPSPCommand>(cmd, 0x0);
     size_t off;
     switch (getKernelVersion()) {
-        case KernelVersion::BigSur .. KernelVersion::Monterey:
+        case KernelVersion::BigSur ... KernelVersion::Monterey:
             off = 0xAF8;
             break;
         default:
