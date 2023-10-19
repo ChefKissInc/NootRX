@@ -421,12 +421,12 @@ static const CAILIPGoldenRegister gcGoldenSettingsNavi23[] = {
 };
 
 static const CAILASICGoldenRegisters goldenSettingsNavi21[] = {
-    GOLDEN_REGISTERS(GC, 0, gcGoldenSettingsNavi22),
+    GOLDEN_REGISTERS(GC, 0, gcGoldenSettingsNavi21),
     GOLDEN_REGISTERS_TERMINATOR,
 };
 
 static const CAILASICGoldenRegisters goldenSettingsNavi22[] = {
-    GOLDEN_REGISTERS(GC, 0, gcGoldenSettingsNavi21),
+    GOLDEN_REGISTERS(GC, 0, gcGoldenSettingsNavi22),
     GOLDEN_REGISTERS_TERMINATOR,
 };
 
