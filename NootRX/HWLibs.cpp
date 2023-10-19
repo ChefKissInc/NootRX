@@ -117,8 +117,18 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
                     static_cast<UInt64>(NootRXMain::callback->enumRevision) + NootRXMain::callback->revision;
                 orgDevCapTable->revision = DEVICE_CAP_ENTRY_REV_DONT_CARE;
                 orgDevCapTable->enumRevision = DEVICE_CAP_ENTRY_REV_DONT_CARE;
-                if (NootRXMain::callback->chipType == ChipType::Navi22) {
-                    orgDevCapTable->asicGoldenSettings->goldenSettings = goldenSettingsNavi22;
+                switch (NootRXMain::callback->chipType) {
+                    case ChipType::Navi21:
+                        orgDevCapTable->asicGoldenSettings->goldenSettings = goldenSettingsNavi21;
+                        break;
+                    case ChipType::Navi22:
+                        orgDevCapTable->asicGoldenSettings->goldenSettings = goldenSettingsNavi22;
+                        break;
+                    case ChipType::Navi23:
+                        orgDevCapTable->asicGoldenSettings->goldenSettings = goldenSettingsNavi23;
+                        break;
+                    default:
+                        break;
                 }
                 break;
             }
@@ -206,16 +216,18 @@ const char *HWLibs::wrapGetMatchProperty() {
 
 CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *param4) {
     char filename[128] = {0};
-    auto &size = getMember<UInt32>(ctx, 0xC);
+    auto &size = getMember<UInt32>(cmd, 0xC);
     auto cmdID = getMember<AMDPSPCommand>(cmd, 0x0);
     size_t off;
     switch (getKernelVersion()) {
         case KernelVersion::BigSur ... KernelVersion::Monterey:
             off = 0xAF8;
             break;
-        default:
+        case KernelVersion::Ventura ... KernelVersion::Sonoma:
             off = 0xB48;
             break;
+        default:
+            PANIC("HWLibs", "Unsupported kernel version %d", getKernelVersion());
     }
     auto *data = getMember<UInt8 *>(ctx, off);
 
@@ -260,7 +272,7 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *
 
         case kPSPCommandLoadIPFW: {
             auto *prefix = NootRXMain::getGCPrefix();
-            auto uCodeID = getMember<UInt32>(ctx, 0x10);
+            auto uCodeID = getMember<AMDUCodeID>(cmd, 0x10);
             switch (uCodeID) {
                 case kUCodeSMU:
                     DBGLOG("HWLibs", "SMU is being loaded (size: 0x%X)", size);
