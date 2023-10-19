@@ -119,19 +119,11 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
                 this->chipType = ChipType::Navi23;
                 this->enumRevision = 0x3C;
                 break;
-            case 0x7421 ... 0x7423:
-                [[fallthrough]];
-            case 0x743F:
-                PANIC_COND(getKernelVersion() < KernelVersion::Monterey, "NootRX",
-                    "Unsupported macOS version; Navi 24 requires macOS Monterey or newer");
-                this->chipType = ChipType::Navi24;
-                this->enumRevision = 0x46;
-                break;
             default:
                 PANIC("NootRX", "Unknown device ID");
         }
 
-        // No named framebuffer for Navi 22/24 for now
+        // No named framebuffer for Navi 22 for now
         if (this->chipType == ChipType::Navi21) {
             if (this->pciRevision == 0xC1 || this->pciRevision == 0xC3) {
                 // RX 6800 (XT)

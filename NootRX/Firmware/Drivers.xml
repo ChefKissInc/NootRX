@@ -7,7 +7,7 @@
 		<key>IOMatchCategory</key>
 		<string>AMDRadeonX6000HWServices</string>
 		<key>IOPCIMatch</key>
-		<string>0x73A21002 0x73A31002 0x73A51002 0x73AB1002 0x73AF1002 0x73BF1002 0x73DF1002 0x73E01002 0x73E11002 0x73E31002 0x73EF1002 0x73FF1002 0x74211002 0x74221002 0x74231002 0x743F1002</string>
+		<string>0x73A21002 0x73A31002 0x73A51002 0x73AB1002 0x73AF1002 0x73BF1002 0x73DF1002 0x73E01002 0x73E11002 0x73E31002 0x73EF1002 0x73FF1002</string>
 		<key>IOPCITunnelCompatible</key>
 		<true/>
 		<key>IOProbeScore</key>
@@ -204,7 +204,7 @@
 		<key>IOMatchCategory</key>
 		<string>IOAccelerator</string>
 		<key>IOPCIMatch</key>
-		<string>0x73DF1002 0x73E01002 0x73E11002 0x73E31002 0x73EF1002 0x73FF1002 0x74211002 0x74221002 0x74231002 0x743F1002</string>
+		<string>0x73DF1002 0x73E01002 0x73E11002 0x73E31002 0x73EF1002 0x73FF1002</string>
 		<key>IOPCITunnelCompatible</key>
 		<true/>
 		<key>IOPropertyMatch</key>

@@ -12,7 +12,6 @@ enum struct ChipType : UInt32 {
     Navi21 = 0,
     Navi22,
     Navi23,
-    Navi24,
     Unknown,
 };
 

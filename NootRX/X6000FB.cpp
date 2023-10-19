@@ -30,7 +30,7 @@ bool X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t s
         PANIC_COND(!SolveRequestPlus::solveAll(patcher, id, solveRequests, slide, size), "X6000FB",
             "Failed to resolve CailAsicCapsTable");
 
-        if (NootRXMain::callback->chipType == ChipType::Navi22 || NootRXMain::callback->chipType == ChipType::Navi24) {
+        if (NootRXMain::callback->chipType == ChipType::Navi22) {
             RouteRequestPlus request {"__ZNK32AMDRadeonX6000_AmdAsicInfoNavi2327getEnumeratedRevisionNumberEv",
                 wrapGetEnumeratedRevision};
             PANIC_COND(!request.route(patcher, id, slide, size), "X6000FB",
@@ -57,7 +57,7 @@ bool X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t s
 
         *orgAsicCapsTable = {
             .familyId = AMDGPU_FAMILY_NAVI,
-            // Navi 23 uses Navi 22 caps, we also assume the same for Navi 24 here
+            // Navi 23 uses Navi 22 caps
             .caps = NootRXMain::callback->chipType == ChipType::Navi21 ? ddiCapsNavi21 : ddiCapsNavi22,
             .deviceId = NootRXMain::callback->deviceId,
             .revision = NootRXMain::callback->revision,
