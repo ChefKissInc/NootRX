@@ -95,6 +95,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
                 orgCapsTable->extRevision =
                     static_cast<UInt32>(NootRXMain::callback->enumRevision) + NootRXMain::callback->revision;
                 orgCapsTable->pciRevision = NootRXMain::callback->pciRevision;
+                orgCapsTable->caps = ddiCapsNavi2Universal,
                 if (orgCapsInitTable) {
                     *orgCapsInitTable = {
                         .familyId = AMDGPU_FAMILY_NAVI,

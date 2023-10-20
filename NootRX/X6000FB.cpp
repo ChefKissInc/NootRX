@@ -57,12 +57,11 @@ bool X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t s
 
         *orgAsicCapsTable = {
             .familyId = AMDGPU_FAMILY_NAVI,
-            // Navi 23 uses Navi 22 caps
-            .caps = NootRXMain::callback->chipType == ChipType::Navi21 ? ddiCapsNavi21 : ddiCapsNavi22,
             .deviceId = NootRXMain::callback->deviceId,
             .revision = NootRXMain::callback->revision,
             .extRevision = static_cast<UInt32>(NootRXMain::callback->enumRevision) + NootRXMain::callback->revision,
             .pciRevision = NootRXMain::callback->pciRevision,
+            .caps = ddiCapsNavi2Universal,
         };
         MachInfo::setKernelWriting(false, KernelPatcher::kernelWriteLock);
         DBGLOG("X6000FB", "Applied DDI Caps patches");
