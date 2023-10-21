@@ -84,7 +84,8 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
             if (model) {
                 this->GPU->setProperty("model", const_cast<char *>(model), modelLen);
                 this->GPU->setProperty("ATY,FamilyName", const_cast<char *>("Radeon RX"), 10);
-                this->GPU->setProperty("ATY,DeviceName", const_cast<char *>(model) + 14, modelLen - 14);    // 6600 XT...
+                this->GPU->setProperty("ATY,DeviceName", const_cast<char *>(model) + 14,
+                    modelLen - 14);    // 6600 XT...
             }
         }
 

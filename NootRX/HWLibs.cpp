@@ -158,8 +158,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
             if (getKernelVersion() >= KernelVersion::Ventura) {
                 const LookupPatchPlus patch {&kextRadeonX6810HWLibs, kSdmaInitFunctionPointerOriginal,
                     kSdmaInitFunctionPointerOriginalMask, kSdmaInitFunctionPointerPatched, 1};
-                PANIC_COND(!patch.apply(patcher, slide, size), "HWLibs",
-                    "Failed to apply Navi 22 Ventura SDMA patch");
+                PANIC_COND(!patch.apply(patcher, slide, size), "HWLibs", "Failed to apply Navi 22 Ventura SDMA patch");
             }
 
             auto findMemCpyBlock = [=](UInt32 arg1, UInt32 arg1Mask) {
@@ -209,9 +208,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
 }
 
 const char *HWLibs::wrapGetMatchProperty() {
-    if (NootRXMain::callback->chipType == ChipType::Navi21) {
-        return "Load6800";
-    }
+    if (NootRXMain::callback->chipType == ChipType::Navi21) { return "Load6800"; }
     return "Load6810";
 }
 
@@ -221,10 +218,10 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *
     auto cmdID = getMember<AMDPSPCommand>(cmd, 0x0);
     size_t off;
     switch (getKernelVersion()) {
-        case KernelVersion::BigSur ... KernelVersion::Monterey:
+        case KernelVersion::BigSur... KernelVersion::Monterey:
             off = 0xAF8;
             break;
-        case KernelVersion::Ventura ... KernelVersion::Sonoma:
+        case KernelVersion::Ventura... KernelVersion::Sonoma:
             off = 0xB48;
             break;
         default:

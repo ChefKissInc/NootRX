@@ -32,7 +32,8 @@ bool X6000::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sli
         if (NootRXMain::callback->chipType == ChipType::Navi22 && getKernelVersion() >= KernelVersion::Ventura) {
             const LookupPatchPlus patch = {&kextRadeonX6000, kHwlConvertChipFamilyOriginal,
                 kHwlConvertChipFamilyOriginalMask, kHwlConvertChipFamilyPatched, 1};
-            PANIC_COND(!patch.apply(patcher, slide, size), "X6000", "Failed to apply Navi 22 HwlConvertChipFamily patch");
+            PANIC_COND(!patch.apply(patcher, slide, size), "X6000",
+                "Failed to apply Navi 22 HwlConvertChipFamily patch");
         }
 
         return true;
