@@ -216,7 +216,7 @@ enum AMDPSPCommand : UInt32 {
 };
 
 enum AMDUCodeID : UInt32 {
-    kUCodeSMU = 1,
+    kUCodeSMU = 0x01,
     kUCodeCE,
     kUCodePFP,
     kUCodeME,
@@ -228,15 +228,15 @@ enum AMDUCodeID : UInt32 {
     kUCodeMESStack,
     kUCodeRLC,
     kUCodeSDMA0,
-    kUCodeVCN0,
-    kUCodeRLCP = 22,
+    kUCodeVCN0 = 0xE,
+    kUCodeRLCP = 0x16,
     kUCodeRLCSRListGPM,
     kUCodeRLCSRListSRM,
     kUCodeRLCSRListCntl,
     kUCodeRLCLX6Iram,
     kUCodeRLCLX6Dram,
     kUCodeVCNSram,
-    kUCodeGlobalTapDelays = 30,
+    kUCodeGlobalTapDelays = 0x1E,
     kUCodeSE0TapDelays,
     kUCodeSE1TapDelays,
     kUCodeSE2TapDelays,

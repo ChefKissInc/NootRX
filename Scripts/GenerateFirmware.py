@@ -70,4 +70,3 @@ def process_files(target_file, dir):
 
 if __name__ == '__main__':
     process_files(sys.argv[1], sys.argv[2])
-    
