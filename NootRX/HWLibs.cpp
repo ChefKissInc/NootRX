@@ -33,16 +33,27 @@ void HWLibs::init() {
     lilu.onKextLoadForce(&kextRadeonX6810HWLibs);
 }
 
-#define DEF_FAKECPY(ident, filename)              \
-    extern "C" void ident(void *data) {           \
+#define DEF_FAKECPY(ident, filename)           \
+    static void ident(void *data) {            \
         const auto fw = getFWByName(filename); \
-        memcpy(data, fw.data, fw.size);   \
+        memcpy(data, fw.data, fw.size);        \
+        IOFree(fw.data, fw.size);              \
     }
 
-DEF_FAKECPY(fakecpyNavi22Kdb, "psp_key_database_navi22.bin")
+DEF_FAKECPY(fakecpyNavi21Kdb, "psp_key_database_navi21.bin");
+DEF_FAKECPY(fakecpyNavi21Sos, "psp_sos_navi21.bin");
+DEF_FAKECPY(fakecpyNavi21SysDrv, "psp_sys_drv_navi21.bin");
+DEF_FAKECPY(fakecpyNavi21TosSpl, "psp_tos_spl_navi21.bin");
+
+DEF_FAKECPY(fakecpyNavi22Kdb, "psp_key_database_navi22.bin");
 DEF_FAKECPY(fakecpyNavi22Sos, "psp_sos_navi22.bin");
 DEF_FAKECPY(fakecpyNavi22SysDrv, "psp_sys_drv_navi22.bin");
 DEF_FAKECPY(fakecpyNavi22TosSpl, "psp_tos_spl_navi22.bin");
+
+DEF_FAKECPY(fakecpyNavi23Kdb, "psp_key_database_navi23.bin");
+DEF_FAKECPY(fakecpyNavi23Sos, "psp_sos_navi23.bin");
+DEF_FAKECPY(fakecpyNavi23SysDrv, "psp_sys_drv_navi23.bin");
+DEF_FAKECPY(fakecpyNavi23TosSpl, "psp_tos_spl_navi23.bin");
 
 bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size) {
     if (kextRadeonX6000HWServices.loadIndex == id) {
@@ -67,16 +78,16 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         SolveRequestPlus solveRequest {"_CAILAsicCapsInitTable", orgCapsInitTable, kCAILAsicCapsInitTablePattern};
         solveRequest.solve(patcher, id, slide, size);
 
+        RouteRequestPlus request = {"_psp_cmd_km_submit", wrapPspCmdKmSubmit, this->orgPspCmdKmSubmit,
+            kPspCmdKmSubmitPattern, kPspCmdKmSubmitMask};
+        PANIC_COND(!request.route(patcher, id, slide, size), "HWLibs", "Failed to route psp_cmd_km_submit");
+
         if (NootRXMain::callback->chipType == ChipType::Navi22) {
-            RouteRequestPlus requests[] = {
-                {"_psp_cmd_km_submit", wrapPspCmdKmSubmit, this->orgPspCmdKmSubmit, kPspCmdKmSubmitPattern,
-                    kPspCmdKmSubmitMask},
-                {"_smu_11_0_7_send_message_with_parameter", wrapSmu1107SendMessageWithParameter,
-                    this->orgSmu1107SendMessageWithParameter, kSmu1107SendMessageWithParameterPattern,
-                    kSmu1107SendMessageWithParameterPatternMask},
-            };
-            PANIC_COND(!RouteRequestPlus::routeAll(patcher, id, requests, slide, size), "HWLibs",
-                "Failed to route Navi 22 symbols");
+            RouteRequestPlus request = {"_smu_11_0_7_send_message_with_parameter", wrapSmu1107SendMessageWithParameter,
+                this->orgSmu1107SendMessageWithParameter, kSmu1107SendMessageWithParameterPattern,
+                kSmu1107SendMessageWithParameterPatternMask};
+            PANIC_COND(!request.route(patcher, id, slide, size), "HWLibs",
+                "Failed to route smu_11_0_7_send_message_with_parameter");
         }
 
         PANIC_COND(MachInfo::setKernelWriting(true, KernelPatcher::kernelWriteLock) != KERN_SUCCESS, "HWLibs",
@@ -138,6 +149,63 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         MachInfo::setKernelWriting(false, KernelPatcher::kernelWriteLock);
         DBGLOG("HWLibs", "Applied DDI Caps patches");
 
+        auto findMemCpyBlock = [=](UInt32 arg1, UInt32 arg1Mask) {
+            const UInt8 find[] = {0x48, 0x8D, 0x35, 0x00, 0x00, 0x00, 0x00, 0xBA, static_cast<UInt8>(arg1 & 0xFF),
+                static_cast<UInt8>((arg1 >> 8) & 0xFF), static_cast<UInt8>((arg1 >> 16) & 0xFF),
+                static_cast<UInt8>((arg1 >> 24) & 0xFF), 0x4C, 0x89, 0x00, 0xE8, 0x00, 0x00, 0x00, 0x00};
+            const UInt8 mask[] = {0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0xFF, static_cast<UInt8>(arg1Mask & 0xFF),
+                static_cast<UInt8>((arg1Mask >> 8) & 0xFF), static_cast<UInt8>((arg1Mask >> 16) & 0xFF),
+                static_cast<UInt8>((arg1Mask >> 24) & 0xFF), 0xFF, 0xFF, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00};
+            size_t dataOffset;
+            PANIC_COND(!KernelPatcher::findPattern(find, mask, arrsize(find), reinterpret_cast<void *>(slide), size,
+                           &dataOffset),
+                "HWLibs", "Failed to find memcpy block 0x%X&0x%X", arg1, arg1Mask);
+            return slide + dataOffset;
+        };
+        //! movabs rsi, ident
+        //! nop
+        //! mov rdi, r*
+        //! call rsi
+        //! nop
+        //! nop
+#define HIJACK_MEMCPY(arg1, arg1Mask, ident)                                      \
+    do {                                                                          \
+        auto block = findMemCpyBlock(arg1, arg1Mask);                             \
+        *reinterpret_cast<UInt16 *>(block) = 0xBE48;                              \
+        *reinterpret_cast<UInt64 *>(block + 2) = reinterpret_cast<UInt64>(ident); \
+        *reinterpret_cast<UInt16 *>(block + 10) = 0x6690;                         \
+        *reinterpret_cast<UInt16 *>(block + 15) = 0xD6FF;                         \
+        *reinterpret_cast<UInt16 *>(block + 17) = 0x6690;                         \
+        *reinterpret_cast<UInt8 *>(block + 19) = 0x90;                            \
+    } while (0)
+        PANIC_COND(MachInfo::setKernelWriting(true, KernelPatcher::kernelWriteLock) != KERN_SUCCESS, "HWLibs",
+            "Failed to enable kernel writing");
+        switch (NootRXMain::callback->chipType) {
+            case ChipType::Navi21:
+                HIJACK_MEMCPY(0x00001310, 0xFFFFFFFF, fakecpyNavi21Kdb);
+                HIJACK_MEMCPY(0x00014350, 0xFFFFFFFF, fakecpyNavi21Sos);
+                HIJACK_MEMCPY(0x00010770, 0xFFFF0FFF, fakecpyNavi21SysDrv);
+                HIJACK_MEMCPY(0x000003A0, 0xFFFFFFFF, fakecpyNavi21TosSpl);
+                break;
+            case ChipType::Navi22:
+                HIJACK_MEMCPY(0x00001070, 0xFFFFFFFF, fakecpyNavi22Kdb);
+                HIJACK_MEMCPY(0x00014350, 0xFFFFFFFF, fakecpyNavi22Sos);
+                HIJACK_MEMCPY(0x00010790, 0xFFFF0FFF, fakecpyNavi22SysDrv);
+                HIJACK_MEMCPY(0x000003A0, 0xFFFFFFFF, fakecpyNavi22TosSpl);
+                break;
+            case ChipType::Navi23:
+                HIJACK_MEMCPY(0x00001070, 0xFFFFFFFF, fakecpyNavi23Kdb);
+                HIJACK_MEMCPY(0x00014350, 0xFFFFFFFF, fakecpyNavi23Sos);
+                HIJACK_MEMCPY(0x00010790, 0xFFFF0FFF, fakecpyNavi23SysDrv);
+                HIJACK_MEMCPY(0x000003A0, 0xFFFFFFFF, fakecpyNavi23TosSpl);
+                break;
+            default:
+                break;
+        }
+        MachInfo::setKernelWriting(false, KernelPatcher::kernelWriteLock);
+#undef HIJACK_MEMCPY
+        DBGLOG("HWLibs", "Applied PSP memcpy firmware patches");
+
         if (NootRXMain::callback->chipType == ChipType::Navi22) {
             const LookupPatchPlus patches[] = {
                 {&kextRadeonX6810HWLibs, kGcSwInitOriginal, kGcSwInitOriginalMask, kGcSwInitPatched,
@@ -160,47 +228,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
                     kSdmaInitFunctionPointerOriginalMask, kSdmaInitFunctionPointerPatched, 1};
                 PANIC_COND(!patch.apply(patcher, slide, size), "HWLibs", "Failed to apply Navi 22 Ventura SDMA patch");
             }
-
-            auto findMemCpyBlock = [=](UInt32 arg1, UInt32 arg1Mask) {
-                const UInt8 find[] = {0x48, 0x8D, 0x35, 0x00, 0x00, 0x00, 0x00, 0xBA, static_cast<UInt8>(arg1 & 0xFF),
-                    static_cast<UInt8>((arg1 >> 8) & 0xFF), static_cast<UInt8>((arg1 >> 16) & 0xFF),
-                    static_cast<UInt8>((arg1 >> 24) & 0xFF), 0x4C, 0x89, 0x00, 0xE8, 0x00, 0x00, 0x00, 0x00};
-                const UInt8 mask[] = {0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0xFF,
-                    static_cast<UInt8>(arg1Mask & 0xFF), static_cast<UInt8>((arg1Mask >> 8) & 0xFF),
-                    static_cast<UInt8>((arg1Mask >> 16) & 0xFF), static_cast<UInt8>((arg1Mask >> 24) & 0xFF), 0xFF,
-                    0xFF, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00};
-                size_t dataOffset;
-                PANIC_COND(!KernelPatcher::findPattern(find, mask, arrsize(find), reinterpret_cast<void *>(slide), size,
-                               &dataOffset),
-                    "HWLibs", "Failed to find memcpy block 0x%X&0x%X", arg1, arg1Mask);
-                return slide + dataOffset;
-            };
-            //! movabs rsi, ident
-            //! nop
-            //! mov rdi, r*
-            //! call rsi
-            //! nop
-            //! nop
-#define HIJACK_MEMCPY(arg1, arg1Mask, ident)                                      \
-    do {                                                                          \
-        auto block = findMemCpyBlock(arg1, arg1Mask);                             \
-        *reinterpret_cast<UInt16 *>(block) = 0xBE48;                              \
-        *reinterpret_cast<UInt64 *>(block + 2) = reinterpret_cast<UInt64>(ident); \
-        *reinterpret_cast<UInt16 *>(block + 10) = 0x6690;                         \
-        *reinterpret_cast<UInt16 *>(block + 15) = 0xD6FF;                         \
-        *reinterpret_cast<UInt16 *>(block + 17) = 0x6690;                         \
-        *reinterpret_cast<UInt8 *>(block + 19) = 0x90;                            \
-    } while (0)
-            PANIC_COND(MachInfo::setKernelWriting(true, KernelPatcher::kernelWriteLock) != KERN_SUCCESS, "HWLibs",
-                "Failed to enable kernel writing");
-            HIJACK_MEMCPY(0x00001070, 0xFFFFFFFF, fakecpyNavi22Kdb);
-            HIJACK_MEMCPY(0x00014350, 0xFFFFFFFF, fakecpyNavi22Sos);
-            HIJACK_MEMCPY(0x00010790, 0xFFFF0FFF, fakecpyNavi22SysDrv);
-            HIJACK_MEMCPY(0x000003A0, 0xFFFFFFFF, fakecpyNavi22TosSpl);
-            MachInfo::setKernelWriting(false, KernelPatcher::kernelWriteLock);
-#undef HIJACK_MEMCPY
         }
-
         return true;
     }
 
@@ -274,7 +302,19 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *
             switch (uCodeID) {
                 case kUCodeSMU:
                     DBGLOG("HWLibs", "SMU is being loaded (size: 0x%X)", size);
-                    strncpy(filename, "navi22_smc_firmware.bin", 24);
+                    switch (NootRXMain::callback->chipType) {
+                        case ChipType::Navi21:
+                            strncpy(filename, "navi21_smc_firmware.bin", 24);
+                            break;
+                        case ChipType::Navi22:
+                            strncpy(filename, "navi22_smc_firmware.bin", 24);
+                            break;
+                        case ChipType::Navi23:
+                            strncpy(filename, "navi23_smc_firmware.bin", 24);
+                            break;
+                        default:
+                            break;
+                    }
                     break;
                 case kUCodeCE:
                     DBGLOG("HWLibs", "CE is being loaded (size: 0x%X)", size);
@@ -318,7 +358,19 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *
                     break;
                 case kUCodeSDMA0:
                     DBGLOG("HWLibs", "SDMA0 is being loaded (size: 0x%X)", size);
-                    strncpy(filename, "sdma_5_2_2_ucode.bin", 21);
+                    switch (NootRXMain::callback->chipType) {
+                        case ChipType::Navi21:
+                            strncpy(filename, "sdma_5_2_0_ucode.bin", 21);
+                            break;
+                        case ChipType::Navi22:
+                            strncpy(filename, "sdma_5_2_2_ucode.bin", 21);
+                            break;
+                        case ChipType::Navi23:
+                            strncpy(filename, "sdma_5_2_4_ucode.bin", 21);
+                            break;
+                        default:
+                            break;
+                    }
                     break;
                 case kUCodeVCN0:
                     DBGLOG("HWLibs", "VCN0 is being loaded (size: 0x%X)", size);
@@ -370,7 +422,18 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *
                     break;
                 case kUCodeDMCUB:
                     DBGLOG("HWLibs", "DMCUB is being loaded (size: 0x%X)", size);
-                    strncpy(filename, "atidmcub_instruction_dcn30.bin", 31);
+                    switch (NootRXMain::callback->chipType) {
+                        case ChipType::Navi21:
+                            [[fallthrough]];
+                        case ChipType::Navi22:
+                            strncpy(filename, "atidmcub_instruction_dcn30.bin", 31);
+                            break;
+                        case ChipType::Navi23:
+                            strncpy(filename, "atidmcub_instruction_dcn302.bin", 32);
+                            break;
+                        default:
+                            break;
+                    }
                     break;
                 case kUCodeVCNSram:
                     DBGLOG("HWLibs", "VCN SRAM is being loaded (size: 0x%X)", size);
