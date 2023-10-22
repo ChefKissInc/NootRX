@@ -145,19 +145,20 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
 
     if ((lilu.getRunMode() & LiluAPI::RunningInstallerRecovery) || checkKernelArgument("-NRXFBOnly")) { return; }
 
-    auto &desc = getFWDescByName("Drivers.xml");
+    const auto driversXML = getFWByName("Drivers.xml");
+    auto *dataNull = new char[driversXML.size + 1];
+    memcpy(dataNull, driversXML.data, driversXML.size);
+    dataNull[driversXML.size] = 0;
     OSString *errStr = nullptr;
-    auto *dataNull = new char[desc.size + 1];
-    memcpy(dataNull, desc.data, desc.size);
-    dataNull[desc.size] = 0;
-    auto *dataUnserialized = OSUnserializeXML(dataNull, desc.size + 1, &errStr);
+    auto *dataUnserialized = OSUnserializeXML(dataNull, driversXML.size + 1, &errStr);
     delete[] dataNull;
     PANIC_COND(!dataUnserialized, "NootRX", "Failed to unserialize Drivers.xml: %s",
         errStr ? errStr->getCStringNoCopy() : "Unspecified");
     auto *drivers = OSDynamicCast(OSArray, dataUnserialized);
     PANIC_COND(!drivers, "NootRX", "Failed to cast Drivers.xml data");
     PANIC_COND(!gIOCatalogue->addDrivers(drivers), "NootRX", "Failed to add drivers");
-    dataUnserialized->release();
+    OSSafeReleaseNULL(dataUnserialized);
+    IOFree(driversXML.data, driversXML.size);
 }
 
 void NootRXMain::setRMMIOIfNecessary() {

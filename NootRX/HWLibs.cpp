@@ -34,9 +34,9 @@ void HWLibs::init() {
 }
 
 #define DEF_FAKECPY(ident, filename)              \
-    extern "C" void ident(void *dest) {           \
-        auto &fwDesc = getFWDescByName(filename); \
-        memcpy(dest, fwDesc.data, fwDesc.size);   \
+    extern "C" void ident(void *data) {           \
+        const auto fw = getFWByName(filename); \
+        memcpy(data, fw.data, fw.size);   \
     }
 
 DEF_FAKECPY(fakecpyNavi22Kdb, "psp_key_database_navi22.bin")
@@ -386,9 +386,10 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *
             return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(ctx, cmd, param3, param4);
     }
 
-    auto &fwDesc = getFWDescByName(filename);
-    memcpy(data, fwDesc.data, fwDesc.size);
-    size = fwDesc.size;
+    const auto fw = getFWByName(filename);
+    memcpy(data, fw.data, fw.size);
+    size = fw.size;
+    IOFree(fw.data, fw.size);
 
     return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(ctx, cmd, param3, param4);
 }
