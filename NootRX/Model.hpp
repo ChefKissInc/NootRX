@@ -49,6 +49,7 @@ static constexpr Model dev73DF[] = {
     {0xC5, "AMD Radeon RX 6700 XT"},
     {0xCF, "AMD Radeon RX 6700M"},
     {0xDF, "AMD Radeon RX 6700"},
+    {0xE5, "AMD Radeon RX 6750 GRE"},
     {0xFF, "AMD Radeon RX 6700"},
 };
 
