@@ -1,6 +1,6 @@
 # NootRX ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/ChefKissInc/NootRX/main.yml?branch=master&logo=github&style=for-the-badge)
 
-Lilu plug-in for unsupported RDNA 2 dGPUs. Conflicts with WhateverGreen/NootedRed.
+Lilu plug-in for unsupported RDNA 2 desktop dGPUs. Conflicts with WhateverGreen and NootedRed.
 
 Currently supports:
 
