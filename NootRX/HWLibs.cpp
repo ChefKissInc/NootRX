@@ -377,6 +377,10 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *
                     DBGLOG("HWLibs", "VCN0 is being loaded (size: 0x%X)", size);
                     strncpy(filename, "ativvaxy_vcn3.dat", 18);
                     break;
+                case kUCodeVCN1:
+                    DBGLOG("HWLibs", "VCN1 is being loaded (size: 0x%X)", size);
+                    strncpy(filename, "ativvaxy_vcn3.dat", 18);
+                    break;
                 case kUCodeRLCP:
                     DBGLOG("HWLibs", "RLC P is being loaded (size: 0x%X)", size);
                     snprintf(filename, 128, "%srlcp_ucode.bin", prefix);

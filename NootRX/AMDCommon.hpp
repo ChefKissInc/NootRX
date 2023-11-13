@@ -242,6 +242,7 @@ enum AMDUCodeID : UInt32 {
     kUCodeSE2TapDelays,
     kUCodeSE3TapDelays,
     kUCodeDMCUB,
+    kUCodeVCN1 = 0x2A,
 };
 
 //-------- AMD Catalyst Constants --------//
