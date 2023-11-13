@@ -304,8 +304,9 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *
                     DBGLOG("HWLibs", "SMU is being loaded (size: 0x%X)", size);
                     switch (NootRXMain::callback->chipType) {
                         case ChipType::Navi21:
-                            strncpy(filename, "navi21_smc_firmware.bin", 24);
-                            break;
+                            //strncpy(filename, "navi21_smc_firmware.bin", 24);
+                            //break;
+                            return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(ctx, cmd, param3, param4);
                         case ChipType::Navi22:
                             strncpy(filename, "navi22_smc_firmware.bin", 24);
                             break;
