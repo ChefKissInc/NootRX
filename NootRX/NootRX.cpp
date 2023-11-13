@@ -56,7 +56,7 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
             if (!device) { continue; }
             auto devid = WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigDeviceID) & 0xFF00;
             if (WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigVendorID) == WIOKit::VendorID::ATIAMD &&
-                (devid == 0x7300 || devid == 0x7400)) {
+                devid == 0x7300) {
                 this->GPU = device;
                 snprintf(name, arrsize(name), "GFX%zu", ii++);
                 WIOKit::renameDevice(device, name);
@@ -69,7 +69,7 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
             }
         }
 
-        PANIC_COND(!this->GPU, "NootRX", "Failed to find GPU");
+        PANIC_COND(!this->GPU, "NootRX", "Failed to find a compatible GPU");
 
         if (!GPU->getProperty("built-in")) {
             static UInt8 builtin[] = {0x00};

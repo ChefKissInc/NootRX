@@ -80,27 +80,6 @@ static constexpr Model dev73FF[] = {
     {0xCB, "AMD Radeon RX 6600S"},
 };
 
-static constexpr Model dev7421[] = {
-    {0x00, "AMD Radeon Pro W6500M"},
-};
-
-static constexpr Model dev7422[] = {
-    {0x00, "AMD Radeon Pro W6400"},
-};
-
-static constexpr Model dev7423[] = {
-    {0x01, "AMD Radeon Pro W6300"},
-};
-
-static constexpr Model dev743F[] = {
-    {0xC1, "AMD Radeon RX 6500 XT"},
-    {0xC3, "AMD Radeon RX 6500M"},
-    {0xC7, "AMD Radeon RX 6400"},
-    {0xC8, "AMD Radeon RX 6550M"},
-    {0xCE, "AMD Radeon RX 6450M"},
-    {0xCF, "AMD Radeon RX 6300M"},
-};
-
 static constexpr DevicePair devices[] = {
     {0x73A2, dev73A2, arrsize(dev73A2)},
     {0x73A3, dev73A3, arrsize(dev73A3)},
@@ -114,10 +93,6 @@ static constexpr DevicePair devices[] = {
     {0x73E3, dev73E3, arrsize(dev73E3)},
     {0x73EF, dev73EF, arrsize(dev73EF)},
     {0x73FF, dev73FF, arrsize(dev73FF)},
-    {0x7421, dev7421, arrsize(dev7421)},
-    {0x7422, dev7422, arrsize(dev7422)},
-    {0x7423, dev7423, arrsize(dev7423)},
-    {0x743F, dev743F, arrsize(dev743F)},
 };
 
 inline const char *getBranding(UInt16 dev, UInt16 rev) {
