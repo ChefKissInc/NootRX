@@ -3,7 +3,6 @@ description: Report an issue caused by NootRX
 labels: ["Bug"]
 projects: ["ChefKissInc/7"]
 assignees:
-  - VisualEhrmanntraut
   - ExtremeXT
 body:
   - type: markdown
@@ -11,7 +10,7 @@ body:
       value: |
         This form isn't for you to ask for help with your configuration; it's to report behaviour that NootRX should not be exhibiting under normal conditions!
   - type: dropdown
-    id: macos_ver
+    id: macos_version
     attributes:
       label: macOS Version
       description: On which macOS version is the bug occurring? Versions that do not appear in the dropdown are not supported.
@@ -23,36 +22,36 @@ body:
     validations:
       required: true
   - type: input
-    id: cpu_model
+    id: cpu
     attributes:
       label: What is your CPU's model?
       placeholder: ex. AMD Ryzen 5 5600X
     validations:
       required: true
   - type: input
-    id: cpu_model
+    id: gpu
     attributes:
       label: What is your GPU's model?
-      description: Only RDNA 2.1-2.3 are supported.
+      description: Only Navi 21-23 are supported.
       placeholder: ex. AMD Radeon RX 6600 XT
     validations:
       required: true
   - type: textarea
-    id: bug_description
+    id: description
     attributes:
       label: Please describe the behaviour in detail.
-      placeholder: "I clicked on X, then Y and Z happened."
+      placeholder: I clicked on X, then Y and Z happened.
     validations:
       required: true
   - type: textarea
-    id: bug_expected_behaviour
+    id: expected_behaviour
     attributes:
       label: What should've happened instead?
-      placeholder: "X should be doing Y."
+      placeholder: X should be doing Y.
     validations:
       required: true
   - type: textarea
-    id: bug_gpurestart_report
+    id: logs
     attributes:
       label: If applicable, attach the `.gpuRestart`, `.panic`, etc file related to this issue.
       description: |
