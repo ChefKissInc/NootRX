@@ -1,0 +1,76 @@
+name: Bug Report
+description: Report an issue caused by NootRX
+labels: ["Bug"]
+projects: ["ChefKissInc/7"]
+assignees:
+  - VisualEhrmanntraut
+  - ExtremeXT
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This form isn't for you to ask for help with your configuration; it's to report behaviour that NootRX should not be exhibiting under normal conditions!
+  - type: dropdown
+    id: macos_ver
+    attributes:
+      label: macOS Version
+      description: On which macOS version is the bug occurring? Versions that do not appear in the dropdown are not supported.
+      options:
+       - Big Sur (Only Navi 21)
+       - Monterey
+       - Ventura
+       - Sonoma
+    validations:
+      required: true
+  - type: input
+    id: cpu_model
+    attributes:
+      label: What is your CPU's model?
+      placeholder: ex. AMD Ryzen 5 5600X
+    validations:
+      required: true
+  - type: input
+    id: cpu_model
+    attributes:
+      label: What is your GPU's model?
+      description: Only RDNA 2.1-2.3 are supported.
+      placeholder: ex. AMD Radeon RX 6600 XT
+    validations:
+      required: true
+  - type: textarea
+    id: bug_description
+    attributes:
+      label: Please describe the behaviour in detail.
+      placeholder: "I clicked on X, then Y and Z happened."
+    validations:
+      required: true
+  - type: textarea
+    id: bug_expected_behaviour
+    attributes:
+      label: What should've happened instead?
+      placeholder: "X should be doing Y."
+    validations:
+      required: true
+  - type: textarea
+    id: bug_gpurestart_report
+    attributes:
+      label: If applicable, attach the `.gpuRestart`, `.panic`, etc file related to this issue.
+      description: |
+        You can find those in `/Library/Logs/DiagnosticReports`.
+        If attaching a panic, make sure it was created while you have `keepsyms=1` in your boot args (else the file is useless).
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Issue submission terms
+      description: By submitting this issue, you have ensured the following
+      options:
+        - label: I am using the latest version of NootRX.
+          required: true
+        - label: I am on the latest minor and patch version of macOS (ex. 7 is the minor and 10 is the patch of macOS 11.7.10).
+          required: true
+        - label: The issue only happens with NootRX enabled.
+          required: true
+        - label: I have ruled out any external factors that could interfere, including, but not limited to, using OCLP or WhateverGreen.
+          required: true
+    validations:
+      required: true

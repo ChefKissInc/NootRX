@@ -1,0 +1,69 @@
+name: Feature Request
+description: Request a feature be added to NootRX
+labels: ["Enhancement"]
+projects: ["ChefKissInc/7"]
+assignees:
+  - VisualEhrmanntraut
+  - ExtremeXT
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This form isn't for you to ask for help with your configuration or report issues; it's to request features NootRX is missing!
+  - type: dropdown
+    id: macos_ver
+    attributes:
+      label: macOS Version
+      description: On which macOS version is the feature missing, if not on all? Versions that do not appear in the dropdown are not supported.
+      options:
+       - Big Sur (Only Navi 21)
+       - Monterey
+       - Ventura
+       - Sonoma
+    validations:
+      required: true
+  - type: input
+    id: cpu_model
+    attributes:
+      label: What is your CPU's model?
+      placeholder: ex. AMD Ryzen 5 5600X
+    validations:
+      required: true
+  - type: input
+    id: cpu_model
+    attributes:
+      label: What is your GPU's model?
+      description: Only RDNA 2.1-2.3 are supported.
+      placeholder: ex. AMD Radeon RX 6600 XT
+    validations:
+      required: true
+  - type: textarea
+    id: feature_description
+    attributes:
+      label: Please describe the feature in detail.
+      placeholder: "I want NootRX to be able to do Y."
+    validations:
+      required: true
+  - type: textarea
+    id: feature_alternatives
+    attributes:
+      label: What alternatives have you tried, if any?
+      placeholder: "I used X to work around the lack of the feature."
+    validations:
+      required: true
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Feature request submission terms
+      description: By submitting this feature request, you have ensured the following
+      options:
+        - label: I am using the latest version of NootRX, thereby extension the feature is not already present.
+          required: true
+        - label: I am on the latest minor and patch version of macOS (ex. 7 is the minor and 10 is the patch of macOS 11.7.10).
+          required: true
+        - label: The feature being present in NootRX makes sense.
+          required: true
+        - label: I have ruled out any external factors that could interfere, including, but not limited to, using OCLP or WhateverGreen.
+          required: true
+    validations:
+      required: true
