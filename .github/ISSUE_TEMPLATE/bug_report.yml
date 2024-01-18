@@ -3,7 +3,7 @@ description: Report an issue caused by NootRX
 labels: ["Bug"]
 projects: ["ChefKissInc/7"]
 assignees:
-  - ExtremeXT
+  - VisualEhrmanntraut
 body:
   - type: markdown
     attributes:
