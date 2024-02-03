@@ -78,9 +78,16 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         SolveRequestPlus solveRequest {"_CAILAsicCapsInitTable", orgCapsInitTable, kCAILAsicCapsInitTablePattern};
         solveRequest.solve(patcher, id, slide, size);
 
-        RouteRequestPlus request = {"_psp_cmd_km_submit", wrapPspCmdKmSubmit, this->orgPspCmdKmSubmit,
-            kPspCmdKmSubmitPattern, kPspCmdKmSubmitMask};
-        PANIC_COND(!request.route(patcher, id, slide, size), "HWLibs", "Failed to route psp_cmd_km_submit");
+        if (getKernelVersion() > KernelVersion::Sonoma ||
+            (getKernelVersion() == KernelVersion::Sonoma && getKernelMinorVersion() >= 4)) {
+            RouteRequestPlus request = {"_psp_cmd_km_submit", wrapPspCmdKmSubmit, this->orgPspCmdKmSubmit,
+                kPspCmdKmSubmitPattern14_4, kPspCmdKmSubmitMask14_4};
+            PANIC_COND(!request.route(patcher, id, slide, size), "HWLibs", "Failed to route psp_cmd_km_submit (14.4+)");
+        } else {
+            RouteRequestPlus request = {"_psp_cmd_km_submit", wrapPspCmdKmSubmit, this->orgPspCmdKmSubmit,
+                kPspCmdKmSubmitPattern, kPspCmdKmSubmitMask};
+            PANIC_COND(!request.route(patcher, id, slide, size), "HWLibs", "Failed to route psp_cmd_km_submit");
+        }
 
         if (NootRXMain::callback->chipType == ChipType::Navi22) {
             RouteRequestPlus request = {"_smu_11_0_7_send_message_with_parameter", wrapSmu1107SendMessageWithParameter,
