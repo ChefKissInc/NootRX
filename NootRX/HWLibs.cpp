@@ -166,7 +166,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
             size_t dataOffset;
             PANIC_COND(!KernelPatcher::findPattern(find, mask, arrsize(find), reinterpret_cast<void *>(slide), size,
                            &dataOffset),
-                "HWLibs", "Failed to find memcpy block 0x%X&0x%X", arg1, arg1Mask);
+                "HWLibs", "Failed to find memcpy block 0x%04X&0x%04X", arg1, arg1Mask);
             auto block = slide + dataOffset;
             //! movabs rsi, ident
             *reinterpret_cast<UInt16 *>(block) = 0xBE48;
@@ -241,7 +241,7 @@ const char *HWLibs::wrapGetMatchProperty() {
 }
 
 CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *param4) {
-    char filename[128] = {0};
+    char filename[64] = {0};
     auto &size = getMember<UInt32>(cmd, 0xC);
     auto cmdID = getMember<AMDPSPCommand>(cmd, 0x0);
     size_t off;
@@ -250,7 +250,7 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *
             off = 0xAF8;
             break;
         case KernelVersion::Ventura... KernelVersion::Sonoma:
-            off = 0xB48;
+            off = NootRXMain::callback->chipType == ChipType::Navi21 ? 0xAF8 : 0xB48;
             break;
         default:
             PANIC("HWLibs", "Unsupported kernel version %d", getKernelVersion());
