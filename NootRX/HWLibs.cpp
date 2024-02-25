@@ -163,18 +163,39 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
             const UInt8 mask[] = {0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0xFF, static_cast<UInt8>(arg1Mask & 0xFF),
                 static_cast<UInt8>((arg1Mask >> 8) & 0xFF), static_cast<UInt8>((arg1Mask >> 16) & 0xFF),
                 static_cast<UInt8>((arg1Mask >> 24) & 0xFF), 0xFF, 0xFF, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00};
-            size_t dataOffset;
-            PANIC_COND(!KernelPatcher::findPattern(find, mask, arrsize(find), reinterpret_cast<void *>(slide), size,
-                           &dataOffset),
-                "HWLibs", "Failed to find memcpy block 0x%04X&0x%04X", arg1, arg1Mask);
+            size_t dataOffset = 0;
+            if (!KernelPatcher::findPattern(find, mask, arrsize(find), reinterpret_cast<void *>(slide), size,
+                    &dataOffset)) {
+                const UInt8 find[] = {0x48, 0x8D, 0x35, 0x00, 0x00, 0x00, 0x00, 0xBA, static_cast<UInt8>(arg1 & 0xFF),
+                    static_cast<UInt8>((arg1 >> 8) & 0xFF), static_cast<UInt8>((arg1 >> 16) & 0xFF),
+                    static_cast<UInt8>((arg1 >> 24) & 0xFF), 0xE8, 0x00, 0x00, 0x00, 0x00, 0x40};
+                const UInt8 mask[] = {0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0xFF,
+                    static_cast<UInt8>(arg1Mask & 0xFF), static_cast<UInt8>((arg1Mask >> 8) & 0xFF),
+                    static_cast<UInt8>((arg1Mask >> 16) & 0xFF), static_cast<UInt8>((arg1Mask >> 24) & 0xFF), 0xFF,
+                    0x00, 0x00, 0x00, 0x00, 0xF0};
+                PANIC_COND(!KernelPatcher::findPattern(find, mask, arrsize(find), reinterpret_cast<void *>(slide), size,
+                               &dataOffset),
+                    "HWLibs", "Failed to find memcpy block 0x%04X&0x%04X", arg1, arg1Mask);
+                auto block = slide + dataOffset;
+                //! 0x0 lea rsi, [rel ...]
+                //! movabs rsi, 0x<FAKECPY_FUNC_ADDR>
+                *reinterpret_cast<UInt16 *>(block) = 0xBE48;
+                *reinterpret_cast<UInt64 *>(block + 2) = reinterpret_cast<UInt64>(func);
+                *reinterpret_cast<UInt16 *>(block + 10) = 0xD6FF;    //! call rsi
+                //! 0xC call _memcpy
+                *reinterpret_cast<UInt32 *>(block + 12) = 0x66906690;    //! nop nop
+                *reinterpret_cast<UInt16 *>(block + 15) = 0x6690;        //! nop
+                //! 0xF lea, mov, etc.
+                return;
+            }
             auto block = slide + dataOffset;
-            //! movabs rsi, ident
-            *reinterpret_cast<UInt16 *>(block) = 0xBE48;
-            *reinterpret_cast<UInt64 *>(block + 2) = reinterpret_cast<UInt64>(func);
-            *reinterpret_cast<UInt16 *>(block + 10) = 0x6690;    //! nop
-            //! mov rdi, r*
-            //! call rsi
-            *reinterpret_cast<UInt16 *>(block + 15) = 0xD6FF;
+            //! 0x0 lea rsi, [rel ...]
+            *reinterpret_cast<UInt16 *>(block) = 0xBE48;                                //! movabs rsi,
+            *reinterpret_cast<UInt64 *>(block + 2) = reinterpret_cast<UInt64>(func);    //! 0x<FAKECPY_FUNC_ADDR>
+            *reinterpret_cast<UInt16 *>(block + 10) = 0x6690;                           //! nop
+            //! 0xC mov rdi, ...
+            //! 0xF call _memcpy
+            *reinterpret_cast<UInt16 *>(block + 15) = 0xD6FF;    //! call rsi
             *reinterpret_cast<UInt16 *>(block + 17) = 0x6690;    //! nop
             *reinterpret_cast<UInt8 *>(block + 19) = 0x90;       //! nop
         };
@@ -185,7 +206,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
             case ChipType::Navi21:
                 hijackMemCpyBlock(0x00001310, 0xFFFFFFFF, fakecpyNavi21Kdb);
                 hijackMemCpyBlock(0x00014350, 0xFFFFFFFF, fakecpyNavi21Sos);
-                hijackMemCpyBlock(0x00010770, 0xFFFF0FFF, fakecpyNavi21SysDrv);
+                hijackMemCpyBlock(0x00000770, 0xFFFC0FFF, fakecpyNavi21SysDrv);
                 hijackMemCpyBlock(0x000003A0, 0xFFFFFFFF, fakecpyNavi21TosSpl);
                 break;
             case ChipType::Navi22:
@@ -286,7 +307,7 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *
                 break;
             }
 
-            DBGLOG("HWLibs", "Other PSP TA is being loaded: (name: %s size: 0x%X)", data + 0x8DB, size);
+            DBGLOG("HWLibs", "Other PSP TA is being loaded: (name: %s size: 0x%X)", name, size);
             return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(ctx, cmd, param3, param4);
         }
 
