@@ -78,8 +78,9 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         SolveRequestPlus solveRequest {"_CAILAsicCapsInitTable", orgCapsInitTable, kCAILAsicCapsInitTablePattern};
         solveRequest.solve(patcher, id, slide, size);
 
-        if (getKernelVersion() > KernelVersion::Sonoma ||
-            (getKernelVersion() == KernelVersion::Sonoma && getKernelMinorVersion() >= 4)) {
+        bool sonoma144 = getKernelVersion() > KernelVersion::Sonoma ||
+                         (getKernelVersion() == KernelVersion::Sonoma && getKernelMinorVersion() >= 4);
+        if (sonoma144) {
             RouteRequestPlus request = {"_psp_cmd_km_submit", wrapPspCmdKmSubmit, this->orgPspCmdKmSubmit,
                 kPspCmdKmSubmitPattern14_4, kPspCmdKmSubmitMask14_4};
             PANIC_COND(!request.route(patcher, id, slide, size), "HWLibs", "Failed to route psp_cmd_km_submit (14.4+)");
@@ -90,11 +91,19 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         }
 
         if (NootRXMain::callback->chipType == ChipType::Navi22) {
-            RouteRequestPlus request = {"_smu_11_0_7_send_message_with_parameter", wrapSmu1107SendMessageWithParameter,
-                this->orgSmu1107SendMessageWithParameter, kSmu1107SendMessageWithParameterPattern,
-                kSmu1107SendMessageWithParameterPatternMask};
-            PANIC_COND(!request.route(patcher, id, slide, size), "HWLibs",
-                "Failed to route smu_11_0_7_send_message_with_parameter");
+            if (sonoma144) {
+                RouteRequestPlus request = {"_smu_11_0_7_send_message_with_parameter",
+                    wrapSmu1107SendMessageWithParameter, this->orgSmu1107SendMessageWithParameter,
+                    kSmu1107SendMessageWithParameterPattern14_4, kSmu1107SendMessageWithParameterPatternMask14_4};
+                PANIC_COND(!request.route(patcher, id, slide, size), "HWLibs",
+                    "Failed to route smu_11_0_7_send_message_with_parameter (14.4+)");
+            } else {
+                RouteRequestPlus request = {"_smu_11_0_7_send_message_with_parameter",
+                    wrapSmu1107SendMessageWithParameter, this->orgSmu1107SendMessageWithParameter,
+                    kSmu1107SendMessageWithParameterPattern, kSmu1107SendMessageWithParameterPatternMask};
+                PANIC_COND(!request.route(patcher, id, slide, size), "HWLibs",
+                    "Failed to route smu_11_0_7_send_message_with_parameter");
+            }
         }
 
         PANIC_COND(MachInfo::setKernelWriting(true, KernelPatcher::kernelWriteLock) != KERN_SUCCESS, "HWLibs",
@@ -231,23 +240,44 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
             const LookupPatchPlus patches[] = {
                 {&kextRadeonX6810HWLibs, kGcSwInitOriginal, kGcSwInitOriginalMask, kGcSwInitPatched,
                     kGcSwInitPatchedMask, 1},
-                {&kextRadeonX6810HWLibs, kGcSetFwEntryInfoOriginal, kGcSetFwEntryInfoOriginalMask,
-                    kGcSetFwEntryInfoPatched, kGcSetFwEntryInfoPatchedMask, 1},
-                {&kextRadeonX6810HWLibs, kPspSwInit1Original, kPspSwInit1OriginalMask, kPspSwInit1Patched,
-                    kPspSwInit1PatchedMask, 1},
-                {&kextRadeonX6810HWLibs, kPspSwInit2Original, kPspSwInit2OriginalMask, kPspSwInit2Patched,
-                    kPspSwInit2PatchedMask, 1},
-                {&kextRadeonX6810HWLibs, kPspSwInit3Original, kPspSwInit3OriginalMask, kPspSwInit3Patched,
-                    kPspSwInit3PatchedMask, 1},
                 {&kextRadeonX6810HWLibs, kSmu1107CheckFwVersionOriginal, kSmu1107CheckFwVersionOriginalMask,
                     kSmu1107CheckFwVersionPatched, kSmu1107CheckFwVersionPatchedMask, 1},
             };
             PANIC_COND(!LookupPatchPlus::applyAll(patcher, patches, slide, size), "HWLibs",
-                "Failed to apply Navi 22 patches");
-            if (getKernelVersion() >= KernelVersion::Ventura) {
-                const LookupPatchPlus patch {&kextRadeonX6810HWLibs, kSdmaInitFunctionPointerOriginal,
-                    kSdmaInitFunctionPointerOriginalMask, kSdmaInitFunctionPointerPatched, 1};
-                PANIC_COND(!patch.apply(patcher, slide, size), "HWLibs", "Failed to apply Navi 22 Ventura SDMA patch");
+                "Failed to apply Navi 22 patches (all vers)");
+            if (sonoma144) {
+                const LookupPatchPlus patches[] = {
+                    {&kextRadeonX6810HWLibs, kGcSetFwEntryInfoOriginal14_4, kGcSetFwEntryInfoOriginalMask14_4,
+                        kGcSetFwEntryInfoPatched14_4, kGcSetFwEntryInfoPatchedMask14_4, 1},
+                    {&kextRadeonX6810HWLibs, kPspSwInit1Original14_4, kPspSwInit1OriginalMask14_4,
+                        kPspSwInit1Patched14_4, kPspSwInit1PatchedMask14_4, 1},
+                    {&kextRadeonX6810HWLibs, kPspSwInit2Original14_4, kPspSwInit2OriginalMask14_4,
+                        kPspSwInit2Patched14_4, kPspSwInit2PatchedMask14_4, 1},
+                    {&kextRadeonX6810HWLibs, kPspSwInit3Original14_4, kPspSwInit3Patched14_4, 1},
+                    {&kextRadeonX6810HWLibs, kSdmaInitFunctionPointerOriginal14_4,
+                        kSdmaInitFunctionPointerOriginalMask14_4, kSdmaInitFunctionPointerPatched14_4, 1},
+                };
+                PANIC_COND(!LookupPatchPlus::applyAll(patcher, patches, slide, size), "HWLibs",
+                    "Failed to apply Navi 22 patches (>=14.4)");
+            } else {
+                const LookupPatchPlus patches[] = {
+                    {&kextRadeonX6810HWLibs, kGcSetFwEntryInfoOriginal, kGcSetFwEntryInfoOriginalMask,
+                        kGcSetFwEntryInfoPatched, kGcSetFwEntryInfoPatchedMask, 1},
+                    {&kextRadeonX6810HWLibs, kPspSwInit1Original, kPspSwInit1OriginalMask, kPspSwInit1Patched,
+                        kPspSwInit1PatchedMask, 1},
+                    {&kextRadeonX6810HWLibs, kPspSwInit2Original, kPspSwInit2OriginalMask, kPspSwInit2Patched,
+                        kPspSwInit2PatchedMask, 1},
+                    {&kextRadeonX6810HWLibs, kPspSwInit3Original, kPspSwInit3OriginalMask, kPspSwInit3Patched,
+                        kPspSwInit3PatchedMask, 1},
+                };
+                PANIC_COND(!LookupPatchPlus::applyAll(patcher, patches, slide, size), "HWLibs",
+                    "Failed to apply Navi 22 patches (<14.4)");
+                if (getKernelVersion() >= KernelVersion::Ventura) {
+                    const LookupPatchPlus patch {&kextRadeonX6810HWLibs, kSdmaInitFunctionPointerOriginal,
+                        kSdmaInitFunctionPointerOriginalMask, kSdmaInitFunctionPointerPatched, 1};
+                    PANIC_COND(!patch.apply(patcher, slide, size), "HWLibs",
+                        "Failed to apply Navi 22 Ventura SDMA patch");
+                }
             }
         }
         return true;
