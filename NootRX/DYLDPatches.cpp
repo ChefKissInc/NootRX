@@ -38,4 +38,9 @@ void DYLDPatches::wrapCsValidatePage(vnode *vp, memory_object_t pager, memory_ob
         patch.apply(const_cast<void *>(data), PAGE_SIZE);
         return;
     }
+
+    if (UNLIKELY(KernelPatcher::findAndReplace(const_cast<void *>(data), PAGE_SIZE, kVideoToolboxDRMModelOriginal,
+            arrsize(kVideoToolboxDRMModelOriginal), BaseDeviceInfo::get().modelIdentifier, 20))) {
+        DBGLOG("DYLD", "Applied 'VideoToolbox DRM model check' patch");
+    }
 }

@@ -66,6 +66,10 @@ class DYLDPatches {
     static void wrapCsValidatePage(vnode *vp, memory_object_t pager, memory_object_offset_t page_offset,
         const void *data, int *validated_p, int *tainted_p, int *nx_p);
 };
+
+//! VideoToolbox DRM model check
+static const char kVideoToolboxDRMModelOriginal[] = "MacPro5,1\0MacPro6,1\0IOService";
+
 static const char kCoreLSKDMSEPath[] = "/System/Library/PrivateFrameworks/CoreLSKDMSE.framework/Versions/A/CoreLSKDMSE";
 static const char kCoreLSKDPath[] = "/System/Library/PrivateFrameworks/CoreLSKD.framework/Versions/A/CoreLSKD";
 
