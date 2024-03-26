@@ -13,3 +13,5 @@ Currently supports:
 Navi 24 support soon™
 
 The NootRX project is licensed under the `Thou Shalt Not Profit License version 1.5`. See `LICENSE`
+
+Thanks [Acidanthera](https://github.com/Acidanthera) for the UnfairGVA patches in [WhateverGreen](https://github.com/Acidanthera/WhateverGreen).
