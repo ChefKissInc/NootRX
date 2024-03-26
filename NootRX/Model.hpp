@@ -78,6 +78,7 @@ static constexpr Model dev73FF[] = {
     {0xC3, "AMD Radeon RX 6600M"},
     {0xC7, "AMD Radeon RX 6600"},
     {0xCB, "AMD Radeon RX 6600S"},
+    {0xDF, "AMD Radeon RX 6570 GRE"},
 };
 
 static constexpr DevicePair devices[] = {

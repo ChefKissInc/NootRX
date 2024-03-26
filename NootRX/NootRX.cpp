@@ -115,6 +115,13 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
             case 0x73EF:
                 [[fallthrough]];
             case 0x73FF:
+                if (this->pciRevision == 0xDF) {
+                    PANIC_COND(getKernelVersion() < KernelVersion::Monterey, "NootRX",
+                        "Unsupported macOS version; Navi 22 requires macOS Monterey or newer");
+                    this->chipType = ChipType::Navi22;
+                    this->enumRevision = 0x32;
+                    break;
+                }
                 PANIC_COND(getKernelVersion() < KernelVersion::Monterey, "NootRX",
                     "Unsupported macOS version; Navi 23 requires macOS Monterey or newer");
                 this->chipType = ChipType::Navi23;
