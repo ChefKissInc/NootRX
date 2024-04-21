@@ -44,7 +44,7 @@ class NootRXMain {
 
     static const char *getGCPrefix() {
         PANIC_COND(callback->chipType == ChipType::Unknown, "NootRX", "Unknown chip type");
-        static const char *gcPrefixes[] = {"gc_10_3_0_", "gc_10_3_2_", "gc_10_3_4_", "gc_10_3_5_"};
+        static const char *gcPrefixes[] = {"gc_10_3_", "gc_10_3_2_", "gc_10_3_4_"};
         return gcPrefixes[static_cast<int>(callback->chipType)];
     }
 

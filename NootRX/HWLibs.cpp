@@ -292,7 +292,8 @@ const char *HWLibs::wrapGetMatchProperty() {
 }
 
 CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *param4) {
-    char filename[64] = {0};
+    char filename[128];
+    bzero(filename, sizeof(filename));
     auto &size = getMember<UInt32>(cmd, 0xC);
     auto cmdID = getMember<AMDPSPCommand>(cmd, 0x0);
     size_t off;
@@ -312,47 +313,37 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *
         case kPSPCommandLoadTA: {
             const char *name = reinterpret_cast<char *>(data + 0x8DB);
             if (!strncmp(name, "AMD DTM Application", 20)) {
-                DBGLOG("HWLibs", "DTM is being loaded (size: 0x%X)", size);
                 strncpy(filename, "psp_dtm.bin", 12);
                 break;
             }
             if (!strncmp(name, "AMD RAP Application", 20)) {
-                DBGLOG("HWLibs", "RAP is being loaded (size: 0x%X)", size);
                 strncpy(filename, "psp_rap.bin", 12);
                 break;
             }
             if (!strncmp(name, "AMD HDCP Application", 21)) {
-                DBGLOG("HWLibs", "HDCP is being loaded (size: 0x%X)", size);
                 strncpy(filename, "psp_hdcp.bin", 13);
                 break;
             }
             if (!strncmp(name, "AMD AUC Application", 20)) {
-                DBGLOG("HWLibs", "AUC is being loaded (size: 0x%X)", size);
                 strncpy(filename, "psp_auc.bin", 12);
                 break;
             }
             if (!strncmp(name, "AMD FP Application", 19)) {
-                DBGLOG("HWLibs", "FP is being loaded (size: 0x%X)", size);
                 strncpy(filename, "psp_fp.bin", 11);
                 break;
             }
 
-            DBGLOG("HWLibs", "Other PSP TA is being loaded: (name: %s size: 0x%X)", name, size);
             return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(ctx, cmd, param3, param4);
         }
-
         case kPSPCommandLoadASD: {
-            DBGLOG("HWLibs", "ASD is being loaded (size: 0x%X)", size);
             strncpy(filename, "psp_asd.bin", 12);
             break;
         }
-
         case kPSPCommandLoadIPFW: {
             auto *prefix = NootRXMain::getGCPrefix();
             auto uCodeID = getMember<AMDUCodeID>(cmd, 0x10);
             switch (uCodeID) {
                 case kUCodeSMU:
-                    DBGLOG("HWLibs", "SMU is being loaded (size: 0x%X)", size);
                     switch (NootRXMain::callback->chipType) {
                         case ChipType::Navi21:
                             // strncpy(filename, "navi21_smc_firmware.bin", 24);
@@ -366,54 +357,43 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *
                             strncpy(filename, "navi23_smc_firmware.bin", 24);
                             break;
                         default:
-                            break;
+                            PANIC("HWLibs", "Unknown chip type");
                     }
                     break;
                 case kUCodeCE:
-                    DBGLOG("HWLibs", "CE is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%sce_ucode.bin", prefix);
+                    snprintf(filename, sizeof(filename), "%sce_ucode.bin", prefix);
                     break;
                 case kUCodePFP:
-                    DBGLOG("HWLibs", "PFP is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%spfp_ucode.bin", prefix);
+                    snprintf(filename, sizeof(filename), "%spfp_ucode.bin", prefix);
                     break;
                 case kUCodeME:
-                    DBGLOG("HWLibs", "ME is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%sme_ucode.bin", prefix);
+                    snprintf(filename, sizeof(filename), "%sme_ucode.bin", prefix);
                     break;
                 case kUCodeMEC1:
-                    DBGLOG("HWLibs", "MEC1 is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%smec_ucode.bin", prefix);
+                    snprintf(filename, sizeof(filename), "%smec_ucode.bin", prefix);
                     break;
                 case kUCodeMEC2:
-                    DBGLOG("HWLibs", "MEC2 is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%smec_ucode.bin", prefix);
+                    snprintf(filename, sizeof(filename), "%smec_ucode.bin", prefix);
                     break;
                 case kUCodeMEC1JT:
-                    DBGLOG("HWLibs", "MEC1 JT is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%smec_jt_ucode.bin", prefix);
+                    snprintf(filename, sizeof(filename), "%smec_jt_ucode.bin", prefix);
                     break;
                 case kUCodeMEC2JT:
-                    DBGLOG("HWLibs", "MEC2 JT is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%smec_jt_ucode.bin", prefix);
+                    snprintf(filename, sizeof(filename), "%smec_jt_ucode.bin", prefix);
                     break;
-                case kUCodeMES:
-                    DBGLOG("HWLibs", "MES is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%smes_ucode.bin", prefix);
-                    break;
-                case kUCodeMESStack:
-                    DBGLOG("HWLibs", "MES STACK is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%smes_stack_data.bin", prefix);
-                    break;
+                // case kUCodeMES:
+                //     strncpy(filename, "mes_10_3_mes0_ucode.bin", 24);
+                //     break;
+                // case kUCodeMESStack:
+                //     strncpy(filename, "mes_10_3_mes0_data.bin", 23);
+                //     break;
                 case kUCodeRLC:
-                    DBGLOG("HWLibs", "RLC is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%srlc_ucode.bin", prefix);
+                    snprintf(filename, sizeof(filename), "%srlc_ucode.bin", prefix);
                     break;
                 case kUCodeSDMA0:
-                    DBGLOG("HWLibs", "SDMA0 is being loaded (size: 0x%X)", size);
                     switch (NootRXMain::callback->chipType) {
                         case ChipType::Navi21:
-                            strncpy(filename, "sdma_5_2_0_ucode.bin", 21);
+                            strncpy(filename, "sdma_5_2_ucode.bin", 19);
                             break;
                         case ChipType::Navi22:
                             strncpy(filename, "sdma_5_2_2_ucode.bin", 21);
@@ -422,63 +402,49 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *
                             strncpy(filename, "sdma_5_2_4_ucode.bin", 21);
                             break;
                         default:
-                            break;
+                            PANIC("HWLibs", "Unknown chip type");
                     }
                     break;
                 case kUCodeVCN0:
-                    DBGLOG("HWLibs", "VCN0 is being loaded (size: 0x%X)", size);
                     strncpy(filename, "ativvaxy_vcn3.dat", 18);
                     break;
                 case kUCodeVCN1:
-                    DBGLOG("HWLibs", "VCN1 is being loaded (size: 0x%X)", size);
                     strncpy(filename, "ativvaxy_vcn3.dat", 18);
                     break;
                 case kUCodeRLCP:
-                    DBGLOG("HWLibs", "RLC P is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%srlcp_ucode.bin", prefix);
+                    snprintf(filename, sizeof(filename), "%srlcp_ucode.bin", prefix);
                     break;
                 case kUCodeRLCSRListGPM:
-                    DBGLOG("HWLibs", "RLC SRList GPM is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%srlc_srlist_gpm_mem_ucode.bin", prefix);
+                    snprintf(filename, sizeof(filename), "%srlc_srlist_gpm_mem.bin", prefix);
                     break;
                 case kUCodeRLCSRListSRM:
-                    DBGLOG("HWLibs", "RLC SRList SRM is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%srlc_srlist_srm_mem_ucode.bin", prefix);
+                    snprintf(filename, sizeof(filename), "%srlc_srlist_srm_mem.bin", prefix);
                     break;
                 case kUCodeRLCSRListCntl:
-                    DBGLOG("HWLibs", "RLC SRList Cntl is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%srlc_srlist_cntl_ucode.bin", prefix);
+                    snprintf(filename, sizeof(filename), "%srlc_srlist_cntl.bin", prefix);
                     break;
                 case kUCodeRLCLX6Iram:
-                    DBGLOG("HWLibs", "RLC LX6 IRAM is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%srlc_lx6_iram_ucode.bin", prefix);
+                    snprintf(filename, sizeof(filename), "%srlc_lx6_iram_ucode.bin", prefix);
                     break;
                 case kUCodeRLCLX6Dram:
-                    DBGLOG("HWLibs", "RLC LX6 DRAM is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%srlc_lx6_dram_ucode.bin", prefix);
+                    snprintf(filename, sizeof(filename), "%srlc_lx6_dram_ucode.bin", prefix);
                     break;
                 case kUCodeGlobalTapDelays:
-                    DBGLOG("HWLibs", "Global Tap Delays is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%sglobal_tap_delays.bin", prefix);
+                    snprintf(filename, sizeof(filename), "%sglobal_tap_delays.bin", prefix);
                     break;
                 case kUCodeSE0TapDelays:
-                    DBGLOG("HWLibs", "SE0 Tap Delays is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%sse0_tap_delays.bin", prefix);
+                    snprintf(filename, sizeof(filename), "%sse0_tap_delays.bin", prefix);
                     break;
                 case kUCodeSE1TapDelays:
-                    DBGLOG("HWLibs", "SE1 Tap Delays is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%sse1_tap_delays.bin", prefix);
+                    snprintf(filename, sizeof(filename), "%sse1_tap_delays.bin", prefix);
                     break;
                 case kUCodeSE2TapDelays:
-                    DBGLOG("HWLibs", "SE2 Tap Delays is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%sse2_tap_delays.bin", prefix);
+                    snprintf(filename, sizeof(filename), "%sse2_tap_delays.bin", prefix);
                     break;
                 case kUCodeSE3TapDelays:
-                    DBGLOG("HWLibs", "SE3 Tap Delays is being loaded (size: 0x%X)", size);
-                    snprintf(filename, 128, "%sse3_tap_delays.bin", prefix);
+                    snprintf(filename, sizeof(filename), "%sse3_tap_delays.bin", prefix);
                     break;
                 case kUCodeDMCUB:
-                    DBGLOG("HWLibs", "DMCUB is being loaded (size: 0x%X)", size);
                     switch (NootRXMain::callback->chipType) {
                         case ChipType::Navi21:
                             [[fallthrough]];
@@ -489,20 +455,15 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *
                             strncpy(filename, "atidmcub_instruction_dcn302.bin", 32);
                             break;
                         default:
-                            break;
+                            PANIC("HWLibs", "Unknown chip type");
                     }
                     break;
-                case kUCodeVCNSram:
-                    DBGLOG("HWLibs", "VCN SRAM is being loaded (size: 0x%X)", size);
-                    return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(ctx, cmd, param3, param4);
                 default:
-                    DBGLOG("HWLibs", "0x%X is being loaded (size: 0x%X)", uCodeID, size);
                     return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(ctx, cmd, param3, param4);
             }
             break;
         }
         default:
-            DBGLOG("HWLibs", "Not hijacking command id 0x%X", cmdID);
             return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(ctx, cmd, param3, param4);
     }
 
@@ -515,10 +476,7 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *
 }
 
 CAILResult HWLibs::wrapSmu1107SendMessageWithParameter(void *smum, UInt32 msgId, UInt32 param) {
-    if (param == 0x10000 && (msgId == 0x2A || msgId == 0x2B)) {
-        DBGLOG("HWLibs", "Skipped VCN1 PG command (msgId: 0x%X)", msgId);
-        return kCAILResultSuccess;
-    }
+    if (param == 0x10000 && (msgId == 0x2A || msgId == 0x2B)) { return kCAILResultSuccess; }
     return FunctionCast(wrapSmu1107SendMessageWithParameter, callback->orgSmu1107SendMessageWithParameter)(smum, msgId,
         param);
 }
