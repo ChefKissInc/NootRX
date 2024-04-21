@@ -33,11 +33,10 @@ void HWLibs::init() {
     lilu.onKextLoadForce(&kextRadeonX6810HWLibs);
 }
 
-#define DEF_FAKECPY(ident, filename)           \
-    static void ident(void *data) {            \
-        const auto fw = getFWByName(filename); \
-        memcpy(data, fw.data, fw.size);        \
-        IOFree(fw.data, fw.size);              \
+#define DEF_FAKECPY(ident, filename)            \
+    static void ident(void *data) {             \
+        const auto &fw = getFWByName(filename); \
+        memcpy(data, fw.data, fw.length);       \
     }
 
 DEF_FAKECPY(fakecpyNavi21Kdb, "psp_key_database_navi21.bin");
@@ -467,10 +466,9 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *
             return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(ctx, cmd, param3, param4);
     }
 
-    const auto fw = getFWByName(filename);
-    memcpy(data, fw.data, fw.size);
-    size = fw.size;
-    IOFree(fw.data, fw.size);
+    const auto &fw = getFWByName(filename);
+    memcpy(data, fw.data, fw.length);
+    size = fw.length;
 
     return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(ctx, cmd, param3, param4);
 }

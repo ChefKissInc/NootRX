@@ -24,8 +24,6 @@
 		D51187F12A6FBA3B00F23522 /* X6000.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D51187EF2A6FBA3B00F23522 /* X6000.cpp */; };
 		D51187F22A6FBA3B00F23522 /* X6000.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D51187F02A6FBA3B00F23522 /* X6000.hpp */; };
 		D51217872A62008A00EC0BEB /* AMDCommon.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D51217862A62008A00EC0BEB /* AMDCommon.hpp */; };
-		D51D13902AE4FFB7008D0441 /* ZlibAlloc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D51D138E2AE4FFB7008D0441 /* ZlibAlloc.cpp */; };
-		D51D13912AE4FFB7008D0441 /* ZlibAlloc.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D51D138F2AE4FFB7008D0441 /* ZlibAlloc.hpp */; };
 		D579D09E2A629F5300A4BCCE /* NootRX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D579D09C2A629F5300A4BCCE /* NootRX.cpp */; };
 		D579D09F2A629F5300A4BCCE /* NootRX.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D579D09D2A629F5300A4BCCE /* NootRX.hpp */; };
 /* End PBXBuildFile section */
@@ -47,6 +45,34 @@
 		1C748C271C21952C0024EED2 /* NootRX.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NootRX.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C748C2C1C21952C0024EED2 /* Plugin.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Plugin.cpp; sourceTree = "<group>"; };
 		1C748C2E1C21952C0024EED2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		404624A32BD4FAFE00677022 /* gc_10_3_4_rlc_srlist_gpm_mem.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_rlc_srlist_gpm_mem.bin; sourceTree = "<group>"; };
+		404624A42BD4FAFE00677022 /* gc_10_3_se0_tap_delays.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_se0_tap_delays.bin; sourceTree = "<group>"; };
+		404624A52BD4FAFE00677022 /* gc_10_3_global_tap_delays.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_global_tap_delays.bin; sourceTree = "<group>"; };
+		404624A62BD4FAFE00677022 /* gc_10_3_rlc_srlist_srm_mem.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_rlc_srlist_srm_mem.bin; sourceTree = "<group>"; };
+		404624A72BD4FAFE00677022 /* gc_10_3_4_rlc_srlist_srm_mem.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_rlc_srlist_srm_mem.bin; sourceTree = "<group>"; };
+		404624A82BD4FAFE00677022 /* gc_10_3_rlc_lx6_dram_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_rlc_lx6_dram_ucode.bin; sourceTree = "<group>"; };
+		404624A92BD4FAFE00677022 /* gc_10_3_pfp_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_pfp_ucode.bin; sourceTree = "<group>"; };
+		404624AA2BD4FAFE00677022 /* gc_10_3_ce_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_ce_ucode.bin; sourceTree = "<group>"; };
+		404624AB2BD4FAFE00677022 /* gc_10_3_se1_tap_delays.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_se1_tap_delays.bin; sourceTree = "<group>"; };
+		404624AC2BD4FAFE00677022 /* Drivers.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Drivers.xml; sourceTree = "<group>"; };
+		404624AD2BD4FAFE00677022 /* gc_10_3_rlc_srlist_gpm_mem.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_rlc_srlist_gpm_mem.bin; sourceTree = "<group>"; };
+		404624AE2BD4FAFE00677022 /* gc_10_3_rlc_srlist_cntl.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_rlc_srlist_cntl.bin; sourceTree = "<group>"; };
+		404624AF2BD4FAFE00677022 /* gc_10_3_rlc_lx6_iram_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_rlc_lx6_iram_ucode.bin; sourceTree = "<group>"; };
+		404624B02BD4FAFE00677022 /* gc_10_3_se2_tap_delays.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_se2_tap_delays.bin; sourceTree = "<group>"; };
+		404624B12BD4FAFE00677022 /* gc_10_3_rlc_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_rlc_ucode.bin; sourceTree = "<group>"; };
+		404624B22BD4FAFE00677022 /* gc_10_3_2_rlc_srlist_cntl.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_rlc_srlist_cntl.bin; sourceTree = "<group>"; };
+		404624B32BD4FAFE00677022 /* gc_10_3_mec_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_mec_ucode.bin; sourceTree = "<group>"; };
+		404624B42BD4FAFE00677022 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		404624B52BD4FAFE00677022 /* gc_10_3_me_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_me_ucode.bin; sourceTree = "<group>"; };
+		404624B62BD4FAFE00677022 /* mes_10_3_mes0_data.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = mes_10_3_mes0_data.bin; sourceTree = "<group>"; };
+		404624B72BD4FAFE00677022 /* gc_10_3_2_rlc_srlist_gpm_mem.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_rlc_srlist_gpm_mem.bin; sourceTree = "<group>"; };
+		404624B82BD4FAFE00677022 /* sdma_5_2_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sdma_5_2_ucode.bin; sourceTree = "<group>"; };
+		404624B92BD4FAFE00677022 /* gc_10_3_se3_tap_delays.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_se3_tap_delays.bin; sourceTree = "<group>"; };
+		404624BA2BD4FAFE00677022 /* gc_10_3_mec_jt_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_mec_jt_ucode.bin; sourceTree = "<group>"; };
+		404624BB2BD4FAFE00677022 /* gc_10_3_rlcp_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_rlcp_ucode.bin; sourceTree = "<group>"; };
+		404624BC2BD4FAFE00677022 /* mes_10_3_mes0_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = mes_10_3_mes0_ucode.bin; sourceTree = "<group>"; };
+		404624BD2BD4FAFE00677022 /* gc_10_3_4_rlc_srlist_cntl.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_rlc_srlist_cntl.bin; sourceTree = "<group>"; };
+		404624BE2BD4FAFE00677022 /* gc_10_3_2_rlc_srlist_srm_mem.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_rlc_srlist_srm_mem.bin; sourceTree = "<group>"; };
 		406889892A229BF600028D22 /* PatcherPlus.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PatcherPlus.cpp; sourceTree = "<group>"; };
 		4068898A2A229BF600028D22 /* PatcherPlus.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PatcherPlus.hpp; sourceTree = "<group>"; };
 		4095294F2A7971CD00923793 /* Firmware.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Firmware.cpp; sourceTree = "<group>"; };
@@ -75,57 +101,30 @@
 		D51187EF2A6FBA3B00F23522 /* X6000.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = X6000.cpp; sourceTree = "<group>"; };
 		D51187F02A6FBA3B00F23522 /* X6000.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = X6000.hpp; sourceTree = "<group>"; };
 		D51217862A62008A00EC0BEB /* AMDCommon.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AMDCommon.hpp; sourceTree = "<group>"; };
-		D51D138E2AE4FFB7008D0441 /* ZlibAlloc.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ZlibAlloc.cpp; sourceTree = "<group>"; };
-		D51D138F2AE4FFB7008D0441 /* ZlibAlloc.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ZlibAlloc.hpp; sourceTree = "<group>"; };
-		D51D13922AE51905008D0441 /* gc_10_3_4_mes_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_mes_ucode.bin; sourceTree = "<group>"; };
 		D51D13932AE51905008D0441 /* gc_10_3_4_rlc_lx6_dram_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_rlc_lx6_dram_ucode.bin; sourceTree = "<group>"; };
-		D51D13942AE51905008D0441 /* gc_10_3_4_rlc_srlist_srm_mem_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_rlc_srlist_srm_mem_ucode.bin; sourceTree = "<group>"; };
-		D51D13952AE51905008D0441 /* gc_10_3_0_mec_jt_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_0_mec_jt_ucode.bin; sourceTree = "<group>"; };
-		D51D13962AE51905008D0441 /* gc_10_3_0_ce_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_0_ce_ucode.bin; sourceTree = "<group>"; };
 		D51D13972AE51905008D0441 /* psp_sys_drv_navi21.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = psp_sys_drv_navi21.bin; sourceTree = "<group>"; };
 		D51D13982AE51905008D0441 /* gc_10_3_4_mec_jt_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_mec_jt_ucode.bin; sourceTree = "<group>"; };
 		D51D13992AE51905008D0441 /* psp_sos_navi21.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = psp_sos_navi21.bin; sourceTree = "<group>"; };
-		D51D139A2AE51905008D0441 /* gc_10_3_0_rlc_lx6_dram_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_0_rlc_lx6_dram_ucode.bin; sourceTree = "<group>"; };
-		D51D139B2AE51905008D0441 /* gc_10_3_0_se1_tap_delays.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_0_se1_tap_delays.bin; sourceTree = "<group>"; };
-		D51D139C2AE51905008D0441 /* gc_10_3_0_mes_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_0_mes_ucode.bin; sourceTree = "<group>"; };
-		D51D139D2AE51905008D0441 /* gc_10_3_4_rlc_srlist_cntl_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_rlc_srlist_cntl_ucode.bin; sourceTree = "<group>"; };
-		D51D139E2AE51905008D0441 /* gc_10_3_0_rlc_lx6_iram_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_0_rlc_lx6_iram_ucode.bin; sourceTree = "<group>"; };
 		D51D139F2AE51905008D0441 /* psp_sys_drv_navi23.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = psp_sys_drv_navi23.bin; sourceTree = "<group>"; };
 		D51D13A02AE51905008D0441 /* gc_10_3_4_ce_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_ce_ucode.bin; sourceTree = "<group>"; };
 		D51D13A12AE51905008D0441 /* gc_10_3_4_rlc_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_rlc_ucode.bin; sourceTree = "<group>"; };
 		D51D13A22AE51906008D0441 /* psp_key_database_navi21.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = psp_key_database_navi21.bin; sourceTree = "<group>"; };
-		D51D13A32AE51906008D0441 /* gc_10_3_4_mes_stack_data.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_mes_stack_data.bin; sourceTree = "<group>"; };
-		D51D13A42AE51906008D0441 /* gc_10_3_0_pfp_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_0_pfp_ucode.bin; sourceTree = "<group>"; };
 		D51D13A52AE51906008D0441 /* gc_10_3_4_mec_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_mec_ucode.bin; sourceTree = "<group>"; };
-		D51D13A62AE51906008D0441 /* gc_10_3_0_global_tap_delays.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_0_global_tap_delays.bin; sourceTree = "<group>"; };
 		D51D13A72AE51906008D0441 /* gc_10_3_4_global_tap_delays.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_global_tap_delays.bin; sourceTree = "<group>"; };
-		D51D13A82AE51906008D0441 /* gc_10_3_0_rlc_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_0_rlc_ucode.bin; sourceTree = "<group>"; };
-		D51D13A92AE51906008D0441 /* gc_10_3_0_se0_tap_delays.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_0_se0_tap_delays.bin; sourceTree = "<group>"; };
 		D51D13AA2AE51906008D0441 /* gc_10_3_4_rlcp_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_rlcp_ucode.bin; sourceTree = "<group>"; };
-		D51D13AB2AE51906008D0441 /* gc_10_3_0_me_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_0_me_ucode.bin; sourceTree = "<group>"; };
-		D51D13AC2AE51906008D0441 /* gc_10_3_0_se2_tap_delays.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_0_se2_tap_delays.bin; sourceTree = "<group>"; };
 		D51D13AD2AE51906008D0441 /* gc_10_3_4_pfp_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_pfp_ucode.bin; sourceTree = "<group>"; };
 		D51D13AE2AE51906008D0441 /* gc_10_3_4_se1_tap_delays.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_se1_tap_delays.bin; sourceTree = "<group>"; };
 		D51D13AF2AE51906008D0441 /* psp_key_database_navi23.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = psp_key_database_navi23.bin; sourceTree = "<group>"; };
 		D51D13B02AE51906008D0441 /* gc_10_3_4_se0_tap_delays.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_se0_tap_delays.bin; sourceTree = "<group>"; };
 		D51D13B12AE51906008D0441 /* gc_10_3_2_se1_tap_delays.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_se1_tap_delays.bin; sourceTree = "<group>"; };
 		D51D13B22AE51906008D0441 /* psp_tos_spl_navi23.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = psp_tos_spl_navi23.bin; sourceTree = "<group>"; };
-		D51D13B32AE51906008D0441 /* sdma_5_2_0_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sdma_5_2_0_ucode.bin; sourceTree = "<group>"; };
 		D51D13B42AE51906008D0441 /* navi21_smc_firmware.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = navi21_smc_firmware.bin; sourceTree = "<group>"; };
-		D51D13B52AE51906008D0441 /* gc_10_3_0_rlcp_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_0_rlcp_ucode.bin; sourceTree = "<group>"; };
 		D51D13B62AE51906008D0441 /* atidmcub_instruction_dcn302.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = atidmcub_instruction_dcn302.bin; sourceTree = "<group>"; };
-		D51D13B72AE51906008D0441 /* gc_10_3_0_mes_stack_data.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_0_mes_stack_data.bin; sourceTree = "<group>"; };
 		D51D13B82AE51906008D0441 /* gc_10_3_4_rlc_lx6_iram_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_rlc_lx6_iram_ucode.bin; sourceTree = "<group>"; };
 		D51D13B92AE51907008D0441 /* sdma_5_2_4_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sdma_5_2_4_ucode.bin; sourceTree = "<group>"; };
-		D51D13BA2AE51907008D0441 /* gc_10_3_0_rlc_srlist_srm_mem_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_0_rlc_srlist_srm_mem_ucode.bin; sourceTree = "<group>"; };
 		D51D13BB2AE51907008D0441 /* gc_10_3_2_se0_tap_delays.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_se0_tap_delays.bin; sourceTree = "<group>"; };
-		D51D13BC2AE51907008D0441 /* gc_10_3_0_rlc_srlist_gpm_mem_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_0_rlc_srlist_gpm_mem_ucode.bin; sourceTree = "<group>"; };
 		D51D13BD2AE51907008D0441 /* navi23_smc_firmware.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = navi23_smc_firmware.bin; sourceTree = "<group>"; };
-		D51D13BE2AE51907008D0441 /* gc_10_3_0_se3_tap_delays.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_0_se3_tap_delays.bin; sourceTree = "<group>"; };
-		D51D13BF2AE51907008D0441 /* gc_10_3_0_mec_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_0_mec_ucode.bin; sourceTree = "<group>"; };
 		D51D13C02AE51907008D0441 /* psp_tos_spl_navi21.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = psp_tos_spl_navi21.bin; sourceTree = "<group>"; };
-		D51D13C12AE51907008D0441 /* gc_10_3_4_rlc_srlist_gpm_mem_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_rlc_srlist_gpm_mem_ucode.bin; sourceTree = "<group>"; };
-		D51D13C22AE51907008D0441 /* gc_10_3_0_rlc_srlist_cntl_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_0_rlc_srlist_cntl_ucode.bin; sourceTree = "<group>"; };
 		D51D13C32AE51907008D0441 /* gc_10_3_4_me_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_me_ucode.bin; sourceTree = "<group>"; };
 		D51D13C42AE51907008D0441 /* psp_sos_navi23.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = psp_sos_navi23.bin; sourceTree = "<group>"; };
 		D53A4C102AAA620300ADD844 /* psp_sos_navi22.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = psp_sos_navi22.bin; sourceTree = "<group>"; };
@@ -135,9 +134,7 @@
 		D53A4C142AAA620300ADD844 /* gc_10_3_2_mec_jt_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_mec_jt_ucode.bin; sourceTree = "<group>"; };
 		D53A4C152AAA620300ADD844 /* gc_10_3_2_global_tap_delays.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_global_tap_delays.bin; sourceTree = "<group>"; };
 		D53A4C162AAA620300ADD844 /* atidmcub_instruction_dcn30.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = atidmcub_instruction_dcn30.bin; sourceTree = "<group>"; };
-		D53A4C172AAA620300ADD844 /* gc_10_3_2_rlc_srlist_gpm_mem_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_rlc_srlist_gpm_mem_ucode.bin; sourceTree = "<group>"; };
 		D53A4C182AAA620300ADD844 /* gc_10_3_2_mec_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_mec_ucode.bin; sourceTree = "<group>"; };
-		D53A4C192AAA620300ADD844 /* gc_10_3_2_rlc_srlist_cntl_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_rlc_srlist_cntl_ucode.bin; sourceTree = "<group>"; };
 		D53A4C1A2AAA620300ADD844 /* ativvaxy_vcn3.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = ativvaxy_vcn3.dat; sourceTree = "<group>"; };
 		D53A4C1B2AAA620300ADD844 /* gc_10_3_2_ce_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_ce_ucode.bin; sourceTree = "<group>"; };
 		D53A4C1C2AAA620300ADD844 /* psp_hdcp.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = psp_hdcp.bin; sourceTree = "<group>"; };
@@ -145,9 +142,7 @@
 		D53A4C1E2AAA620300ADD844 /* psp_sys_drv_navi22.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = psp_sys_drv_navi22.bin; sourceTree = "<group>"; };
 		D53A4C1F2AAA620300ADD844 /* psp_tos_spl_navi22.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = psp_tos_spl_navi22.bin; sourceTree = "<group>"; };
 		D53A4C202AAA620300ADD844 /* psp_auc.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = psp_auc.bin; sourceTree = "<group>"; };
-		D53A4C212AAA620300ADD844 /* gc_10_3_2_mes_stack_data.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_mes_stack_data.bin; sourceTree = "<group>"; };
 		D53A4C222AAA620300ADD844 /* navi22_smc_firmware.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = navi22_smc_firmware.bin; sourceTree = "<group>"; };
-		D53A4C232AAA620400ADD844 /* gc_10_3_2_se0_tap_delays_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_se0_tap_delays_ucode.bin; sourceTree = "<group>"; };
 		D53A4C242AAA620400ADD844 /* psp_asd.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = psp_asd.bin; sourceTree = "<group>"; };
 		D53A4C252AAA620400ADD844 /* gc_10_3_2_me_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_me_ucode.bin; sourceTree = "<group>"; };
 		D53A4C262AAA620400ADD844 /* gc_10_3_2_rlcp_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_rlcp_ucode.bin; sourceTree = "<group>"; };
@@ -155,9 +150,6 @@
 		D53A4C282AAA620400ADD844 /* gc_10_3_2_rlc_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_rlc_ucode.bin; sourceTree = "<group>"; };
 		D53A4C292AAA620400ADD844 /* psp_fp.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = psp_fp.bin; sourceTree = "<group>"; };
 		D53A4C2A2AAA620400ADD844 /* psp_rap.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = psp_rap.bin; sourceTree = "<group>"; };
-		D53A4C2B2AAA620400ADD844 /* gc_10_3_2_se1_tap_delays_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_se1_tap_delays_ucode.bin; sourceTree = "<group>"; };
-		D53A4C2C2AAA620400ADD844 /* gc_10_3_2_mes_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_mes_ucode.bin; sourceTree = "<group>"; };
-		D53A4C2D2AAA620400ADD844 /* gc_10_3_2_rlc_srlist_srm_mem_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_rlc_srlist_srm_mem_ucode.bin; sourceTree = "<group>"; };
 		D53A4C2E2AAA620400ADD844 /* gc_10_3_2_rlc_lx6_iram_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_rlc_lx6_iram_ucode.bin; sourceTree = "<group>"; };
 		D579D09C2A629F5300A4BCCE /* NootRX.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NootRX.cpp; sourceTree = "<group>"; };
 		D579D09D2A629F5300A4BCCE /* NootRX.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = NootRX.hpp; sourceTree = "<group>"; };
@@ -216,8 +208,6 @@
 				D51187F02A6FBA3B00F23522 /* X6000.hpp */,
 				D51187EB2A6FB70700F23522 /* X6000FB.cpp */,
 				D51187EC2A6FB70700F23522 /* X6000FB.hpp */,
-				D51D138E2AE4FFB7008D0441 /* ZlibAlloc.cpp */,
-				D51D138F2AE4FFB7008D0441 /* ZlibAlloc.hpp */,
 			);
 			path = NootRX;
 			sourceTree = "<group>";
@@ -225,26 +215,23 @@
 		4095294B2A7970ED00923793 /* Firmware */ = {
 			isa = PBXGroup;
 			children = (
+				D53A4C162AAA620300ADD844 /* atidmcub_instruction_dcn30.bin */,
 				D51D13B62AE51906008D0441 /* atidmcub_instruction_dcn302.bin */,
-				D51D13962AE51905008D0441 /* gc_10_3_0_ce_ucode.bin */,
-				D51D13A62AE51906008D0441 /* gc_10_3_0_global_tap_delays.bin */,
-				D51D13AB2AE51906008D0441 /* gc_10_3_0_me_ucode.bin */,
-				D51D13952AE51905008D0441 /* gc_10_3_0_mec_jt_ucode.bin */,
-				D51D13BF2AE51907008D0441 /* gc_10_3_0_mec_ucode.bin */,
-				D51D13B72AE51906008D0441 /* gc_10_3_0_mes_stack_data.bin */,
-				D51D139C2AE51905008D0441 /* gc_10_3_0_mes_ucode.bin */,
-				D51D13A42AE51906008D0441 /* gc_10_3_0_pfp_ucode.bin */,
-				D51D139A2AE51905008D0441 /* gc_10_3_0_rlc_lx6_dram_ucode.bin */,
-				D51D139E2AE51905008D0441 /* gc_10_3_0_rlc_lx6_iram_ucode.bin */,
-				D51D13C22AE51907008D0441 /* gc_10_3_0_rlc_srlist_cntl_ucode.bin */,
-				D51D13BC2AE51907008D0441 /* gc_10_3_0_rlc_srlist_gpm_mem_ucode.bin */,
-				D51D13BA2AE51907008D0441 /* gc_10_3_0_rlc_srlist_srm_mem_ucode.bin */,
-				D51D13A82AE51906008D0441 /* gc_10_3_0_rlc_ucode.bin */,
-				D51D13B52AE51906008D0441 /* gc_10_3_0_rlcp_ucode.bin */,
-				D51D13A92AE51906008D0441 /* gc_10_3_0_se0_tap_delays.bin */,
-				D51D139B2AE51905008D0441 /* gc_10_3_0_se1_tap_delays.bin */,
-				D51D13AC2AE51906008D0441 /* gc_10_3_0_se2_tap_delays.bin */,
-				D51D13BE2AE51907008D0441 /* gc_10_3_0_se3_tap_delays.bin */,
+				D53A4C1A2AAA620300ADD844 /* ativvaxy_vcn3.dat */,
+				404624AC2BD4FAFE00677022 /* Drivers.xml */,
+				D53A4C1B2AAA620300ADD844 /* gc_10_3_2_ce_ucode.bin */,
+				D53A4C152AAA620300ADD844 /* gc_10_3_2_global_tap_delays.bin */,
+				D53A4C252AAA620400ADD844 /* gc_10_3_2_me_ucode.bin */,
+				D53A4C142AAA620300ADD844 /* gc_10_3_2_mec_jt_ucode.bin */,
+				D53A4C182AAA620300ADD844 /* gc_10_3_2_mec_ucode.bin */,
+				D53A4C122AAA620300ADD844 /* gc_10_3_2_pfp_ucode.bin */,
+				D53A4C272AAA620400ADD844 /* gc_10_3_2_rlc_lx6_dram_ucode.bin */,
+				D53A4C2E2AAA620400ADD844 /* gc_10_3_2_rlc_lx6_iram_ucode.bin */,
+				404624B22BD4FAFE00677022 /* gc_10_3_2_rlc_srlist_cntl.bin */,
+				404624B72BD4FAFE00677022 /* gc_10_3_2_rlc_srlist_gpm_mem.bin */,
+				404624BE2BD4FAFE00677022 /* gc_10_3_2_rlc_srlist_srm_mem.bin */,
+				D53A4C282AAA620400ADD844 /* gc_10_3_2_rlc_ucode.bin */,
+				D53A4C262AAA620400ADD844 /* gc_10_3_2_rlcp_ucode.bin */,
 				D51D13BB2AE51907008D0441 /* gc_10_3_2_se0_tap_delays.bin */,
 				D51D13B12AE51906008D0441 /* gc_10_3_2_se1_tap_delays.bin */,
 				D51D13A02AE51905008D0441 /* gc_10_3_4_ce_ucode.bin */,
@@ -252,61 +239,60 @@
 				D51D13C32AE51907008D0441 /* gc_10_3_4_me_ucode.bin */,
 				D51D13982AE51905008D0441 /* gc_10_3_4_mec_jt_ucode.bin */,
 				D51D13A52AE51906008D0441 /* gc_10_3_4_mec_ucode.bin */,
-				D51D13A32AE51906008D0441 /* gc_10_3_4_mes_stack_data.bin */,
-				D51D13922AE51905008D0441 /* gc_10_3_4_mes_ucode.bin */,
 				D51D13AD2AE51906008D0441 /* gc_10_3_4_pfp_ucode.bin */,
 				D51D13932AE51905008D0441 /* gc_10_3_4_rlc_lx6_dram_ucode.bin */,
 				D51D13B82AE51906008D0441 /* gc_10_3_4_rlc_lx6_iram_ucode.bin */,
-				D51D139D2AE51905008D0441 /* gc_10_3_4_rlc_srlist_cntl_ucode.bin */,
-				D51D13C12AE51907008D0441 /* gc_10_3_4_rlc_srlist_gpm_mem_ucode.bin */,
-				D51D13942AE51905008D0441 /* gc_10_3_4_rlc_srlist_srm_mem_ucode.bin */,
+				404624BD2BD4FAFE00677022 /* gc_10_3_4_rlc_srlist_cntl.bin */,
+				404624A32BD4FAFE00677022 /* gc_10_3_4_rlc_srlist_gpm_mem.bin */,
+				404624A72BD4FAFE00677022 /* gc_10_3_4_rlc_srlist_srm_mem.bin */,
 				D51D13A12AE51905008D0441 /* gc_10_3_4_rlc_ucode.bin */,
 				D51D13AA2AE51906008D0441 /* gc_10_3_4_rlcp_ucode.bin */,
 				D51D13B02AE51906008D0441 /* gc_10_3_4_se0_tap_delays.bin */,
 				D51D13AE2AE51906008D0441 /* gc_10_3_4_se1_tap_delays.bin */,
+				404624AA2BD4FAFE00677022 /* gc_10_3_ce_ucode.bin */,
+				404624A52BD4FAFE00677022 /* gc_10_3_global_tap_delays.bin */,
+				404624B52BD4FAFE00677022 /* gc_10_3_me_ucode.bin */,
+				404624BA2BD4FAFE00677022 /* gc_10_3_mec_jt_ucode.bin */,
+				404624B32BD4FAFE00677022 /* gc_10_3_mec_ucode.bin */,
+				404624A92BD4FAFE00677022 /* gc_10_3_pfp_ucode.bin */,
+				404624A82BD4FAFE00677022 /* gc_10_3_rlc_lx6_dram_ucode.bin */,
+				404624AF2BD4FAFE00677022 /* gc_10_3_rlc_lx6_iram_ucode.bin */,
+				404624AE2BD4FAFE00677022 /* gc_10_3_rlc_srlist_cntl.bin */,
+				404624AD2BD4FAFE00677022 /* gc_10_3_rlc_srlist_gpm_mem.bin */,
+				404624A62BD4FAFE00677022 /* gc_10_3_rlc_srlist_srm_mem.bin */,
+				404624B12BD4FAFE00677022 /* gc_10_3_rlc_ucode.bin */,
+				404624BB2BD4FAFE00677022 /* gc_10_3_rlcp_ucode.bin */,
+				404624A42BD4FAFE00677022 /* gc_10_3_se0_tap_delays.bin */,
+				404624AB2BD4FAFE00677022 /* gc_10_3_se1_tap_delays.bin */,
+				404624B02BD4FAFE00677022 /* gc_10_3_se2_tap_delays.bin */,
+				404624B92BD4FAFE00677022 /* gc_10_3_se3_tap_delays.bin */,
+				404624B42BD4FAFE00677022 /* LICENSE */,
+				404624B62BD4FAFE00677022 /* mes_10_3_mes0_data.bin */,
+				404624BC2BD4FAFE00677022 /* mes_10_3_mes0_ucode.bin */,
 				D51D13B42AE51906008D0441 /* navi21_smc_firmware.bin */,
-				D51D13BD2AE51907008D0441 /* navi23_smc_firmware.bin */,
-				D51D13A22AE51906008D0441 /* psp_key_database_navi21.bin */,
-				D51D13AF2AE51906008D0441 /* psp_key_database_navi23.bin */,
-				D51D13992AE51905008D0441 /* psp_sos_navi21.bin */,
-				D51D13C42AE51907008D0441 /* psp_sos_navi23.bin */,
-				D51D13972AE51905008D0441 /* psp_sys_drv_navi21.bin */,
-				D51D139F2AE51905008D0441 /* psp_sys_drv_navi23.bin */,
-				D51D13C02AE51907008D0441 /* psp_tos_spl_navi21.bin */,
-				D51D13B22AE51906008D0441 /* psp_tos_spl_navi23.bin */,
-				D51D13B32AE51906008D0441 /* sdma_5_2_0_ucode.bin */,
-				D51D13B92AE51907008D0441 /* sdma_5_2_4_ucode.bin */,
-				D53A4C162AAA620300ADD844 /* atidmcub_instruction_dcn30.bin */,
-				D53A4C1A2AAA620300ADD844 /* ativvaxy_vcn3.dat */,
-				D53A4C1B2AAA620300ADD844 /* gc_10_3_2_ce_ucode.bin */,
-				D53A4C152AAA620300ADD844 /* gc_10_3_2_global_tap_delays.bin */,
-				D53A4C252AAA620400ADD844 /* gc_10_3_2_me_ucode.bin */,
-				D53A4C142AAA620300ADD844 /* gc_10_3_2_mec_jt_ucode.bin */,
-				D53A4C182AAA620300ADD844 /* gc_10_3_2_mec_ucode.bin */,
-				D53A4C212AAA620300ADD844 /* gc_10_3_2_mes_stack_data.bin */,
-				D53A4C2C2AAA620400ADD844 /* gc_10_3_2_mes_ucode.bin */,
-				D53A4C122AAA620300ADD844 /* gc_10_3_2_pfp_ucode.bin */,
-				D53A4C272AAA620400ADD844 /* gc_10_3_2_rlc_lx6_dram_ucode.bin */,
-				D53A4C2E2AAA620400ADD844 /* gc_10_3_2_rlc_lx6_iram_ucode.bin */,
-				D53A4C192AAA620300ADD844 /* gc_10_3_2_rlc_srlist_cntl_ucode.bin */,
-				D53A4C172AAA620300ADD844 /* gc_10_3_2_rlc_srlist_gpm_mem_ucode.bin */,
-				D53A4C2D2AAA620400ADD844 /* gc_10_3_2_rlc_srlist_srm_mem_ucode.bin */,
-				D53A4C282AAA620400ADD844 /* gc_10_3_2_rlc_ucode.bin */,
-				D53A4C262AAA620400ADD844 /* gc_10_3_2_rlcp_ucode.bin */,
-				D53A4C232AAA620400ADD844 /* gc_10_3_2_se0_tap_delays_ucode.bin */,
-				D53A4C2B2AAA620400ADD844 /* gc_10_3_2_se1_tap_delays_ucode.bin */,
 				D53A4C222AAA620300ADD844 /* navi22_smc_firmware.bin */,
+				D51D13BD2AE51907008D0441 /* navi23_smc_firmware.bin */,
 				D53A4C242AAA620400ADD844 /* psp_asd.bin */,
 				D53A4C202AAA620300ADD844 /* psp_auc.bin */,
 				D53A4C132AAA620300ADD844 /* psp_dtm.bin */,
 				D53A4C292AAA620400ADD844 /* psp_fp.bin */,
 				D53A4C1C2AAA620300ADD844 /* psp_hdcp.bin */,
+				D51D13A22AE51906008D0441 /* psp_key_database_navi21.bin */,
 				D53A4C1D2AAA620300ADD844 /* psp_key_database_navi22.bin */,
+				D51D13AF2AE51906008D0441 /* psp_key_database_navi23.bin */,
 				D53A4C2A2AAA620400ADD844 /* psp_rap.bin */,
+				D51D13992AE51905008D0441 /* psp_sos_navi21.bin */,
 				D53A4C102AAA620300ADD844 /* psp_sos_navi22.bin */,
+				D51D13C42AE51907008D0441 /* psp_sos_navi23.bin */,
+				D51D13972AE51905008D0441 /* psp_sys_drv_navi21.bin */,
 				D53A4C1E2AAA620300ADD844 /* psp_sys_drv_navi22.bin */,
+				D51D139F2AE51905008D0441 /* psp_sys_drv_navi23.bin */,
+				D51D13C02AE51907008D0441 /* psp_tos_spl_navi21.bin */,
 				D53A4C1F2AAA620300ADD844 /* psp_tos_spl_navi22.bin */,
+				D51D13B22AE51906008D0441 /* psp_tos_spl_navi23.bin */,
 				D53A4C112AAA620300ADD844 /* sdma_5_2_2_ucode.bin */,
+				D51D13B92AE51907008D0441 /* sdma_5_2_4_ucode.bin */,
+				404624B82BD4FAFE00677022 /* sdma_5_2_ucode.bin */,
 			);
 			path = Firmware;
 			sourceTree = "<group>";
@@ -367,7 +353,6 @@
 				D579D09F2A629F5300A4BCCE /* NootRX.hpp in Headers */,
 				40B6A67F2A75A2B9002D8B85 /* DYLDPatches.hpp in Headers */,
 				D51187F22A6FBA3B00F23522 /* X6000.hpp in Headers */,
-				D51D13912AE4FFB7008D0441 /* ZlibAlloc.hpp in Headers */,
 				409529522A7971CD00923793 /* Firmware.hpp in Headers */,
 				D51187E82A6FB66800F23522 /* HWLibs.hpp in Headers */,
 				D51187EA2A6FB66800F23522 /* Model.hpp in Headers */,
@@ -482,7 +467,6 @@
 				CE405ED91E4A080700AA0B3D /* plugin_start.cpp in Sources */,
 				1C748C2D1C21952C0024EED2 /* Plugin.cpp in Sources */,
 				409529512A7971CD00923793 /* Firmware.cpp in Sources */,
-				D51D13902AE4FFB7008D0441 /* ZlibAlloc.cpp in Sources */,
 				D51187F12A6FBA3B00F23522 /* X6000.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -602,6 +586,7 @@
 				KERNEL_EXTENSION_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/MacKernelSDK/Headers";
 				KERNEL_FRAMEWORK_HEADERS = "$(PROJECT_DIR)/MacKernelSDK/Headers";
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/MacKernelSDK/Library/x86_64";
+				LLVM_LTO = YES_THIN;
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				OTHER_CFLAGS = (
 					"-Wextra",
@@ -693,7 +678,6 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MacKernelSDK/Library/x86_64",
 				);
-				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MODULE_NAME = com.ChefKissInc.NootRX;
 				MODULE_START = "$(PRODUCT_NAME)_kern_start";
