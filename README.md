@@ -14,7 +14,7 @@ The unsupported AMD rDNA 2 desktop dedicated GPU [Lilu](https://github.com/acida
 The NootRX project is licensed under the `Thou Shalt Not Profit License version 1.5`. See `LICENSE`.
 
 > [!NOTE]
-> This project is under active research and development; There will be some minor issues here and there, but is almost perfectly function.
+> This project is under active research and development; There will be some minor issues here and there, but is almost perfectly functional.
 >
 > See repository issues and [our site](https://ChefKissInc.github.io) for more information.
 
