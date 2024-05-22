@@ -41,87 +41,6 @@
 		</dict>
 		<key>AMDRadeonControllerNavi21</key>
 		<dict>
-			<key>ATY,Belknap</key>
-			<dict>
-				<key>aty_config</key>
-				<dict>
-					<key>CFG_NO_PP</key>
-					<false/>
-					<key>CFG_PTPL2_CNT</key>
-					<integer>16</integer>
-					<key>CFG_PTPL2_MAX</key>
-					<integer>300</integer>
-					<key>CFG_PTPL2_MIN</key>
-					<integer>120</integer>
-				</dict>
-				<key>aty_properties</key>
-				<dict>
-					<key>DalEarlyTps1Pattern</key>
-					<integer>1</integer>
-					<key>PP_DiDtSQStallPatternOverride</key>
-					<integer>16383</integer>
-					<key>PP_DisableDIDT</key>
-					<integer>0</integer>
-					<key>PP_GfxOffControl</key>
-					<integer>1</integer>
-					<key>PP_PhmUseDummyBackEnd</key>
-					<integer>0</integer>
-					<key>PP_Run_DcBTC</key>
-					<integer>0</integer>
-					<key>PP_WorkLoadPolicyMask</key>
-					<integer>16</integer>
-					<key>SMU_DisallowedFeatures</key>
-					<integer>224014029030020</integer>
-				</dict>
-			</dict>
-			<key>ATY,Carswell</key>
-			<dict>
-				<key>aty_config</key>
-				<dict>
-					<key>CFG_NO_PP</key>
-					<false/>
-					<key>CFG_PTPL2_CNT</key>
-					<integer>16</integer>
-					<key>CFG_PTPL2_MAX</key>
-					<integer>200</integer>
-					<key>CFG_PTPL2_MIN</key>
-					<integer>80</integer>
-					<key>PM_PWR_GEMINI_BGT</key>
-					<integer>400</integer>
-				</dict>
-				<key>aty_properties</key>
-				<dict>
-					<key>DalEarlyTps1Pattern</key>
-					<integer>1</integer>
-					<key>PP_DiDtSQStallPatternOverride</key>
-					<integer>16383</integer>
-					<key>PP_DisableDIDT</key>
-					<integer>0</integer>
-					<key>PP_GfxOffControl</key>
-					<integer>1</integer>
-					<key>PP_PhmUseDummyBackEnd</key>
-					<integer>0</integer>
-					<key>PP_WorkLoadPolicyMask</key>
-					<integer>16</integer>
-					<key>SMU_DisallowedFeatures</key>
-					<integer>505489005740676</integer>
-				</dict>
-			</dict>
-			<key>ATY,Deepbay</key>
-			<dict>
-				<key>aty_config</key>
-				<dict>
-					<key>CFG_NO_HDCP</key>
-					<true/>
-				</dict>
-				<key>aty_properties</key>
-				<dict>
-					<key>PP_GfxOffControl</key>
-					<integer>1</integer>
-					<key>PP_PhmUseDummyBackEnd</key>
-					<integer>0</integer>
-				</dict>
-			</dict>
 			<key>CFBundleIdentifier</key>
 			<string>com.apple.kext.AMDRadeonX6000Framebuffer</string>
 			<key>IOClass</key>
@@ -181,55 +100,13 @@
 				<key>PP_ToolsLogSpaceSize</key>
 				<integer>524288</integer>
 				<key>PP_WorkLoadPolicyMask</key>
-				<integer>16</integer>
+				<integer>0</integer>
 				<key>SMU_DisallowedFeatures</key>
 				<integer>4</integer>
 			</dict>
 		</dict>
 		<key>AMDRadeonControllerNavi23</key>
 		<dict>
-			<key>ATY,Henbury</key>
-			<dict>
-				<key>aty_config</key>
-				<dict>
-					<key>CFG_NO_PP</key>
-					<false/>
-					<key>CFG_PTPL2_CNT</key>
-					<integer>16</integer>
-					<key>CFG_PTPL2_MAX</key>
-					<integer>130</integer>
-					<key>CFG_PTPL2_MIN</key>
-					<integer>52</integer>
-				</dict>
-				<key>aty_properties</key>
-				<dict>
-					<key>DalEarlyTps1Pattern</key>
-					<integer>1</integer>
-					<key>DalForceMinDpmLevel</key>
-					<integer>3</integer>
-					<key>PP_DiDtSQStallPatternOverride</key>
-					<integer>16383</integer>
-					<key>PP_DisableDIDT</key>
-					<integer>0</integer>
-					<key>PP_GfxOffControl</key>
-					<integer>1</integer>
-					<key>PP_PhmUseDummyBackEnd</key>
-					<integer>0</integer>
-					<key>PP_WorkLoadPolicyMask</key>
-					<integer>16</integer>
-					<key>SMU_ActivityMonitorTable</key>
-					<data>
-					AAEABAEF6AMAAAoAAAAAAAAAAADAbDwAAAAA
-					AAAAAAAAAAABAQUAAAAAAAAAAAAAAAAAACAS
-					CgA45v//OOb//wAAAAQDBVIDAAAKAAAAAAAA
-					AAAAEAkFAAAAAAAAAAAA0AEBAACWPAAAAAAA
-					AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-					AA==
-					</data>
-					<key>SMU_DisallowedFeatures</key>
-					<integer>1628090377699844</integer>
-				</dict>
-			</dict>
 			<key>CFBundleIdentifier</key>
 			<string>com.apple.kext.AMDRadeonX6000Framebuffer</string>
 			<key>IOClass</key>
@@ -291,7 +168,7 @@
 				<key>PP_ToolsLogSpaceSize</key>
 				<integer>524288</integer>
 				<key>PP_WorkLoadPolicyMask</key>
-				<integer>16</integer>
+				<integer>0</integer>
 				<key>SMU_DisallowedFeatures</key>
 				<integer>4</integer>
 			</dict>
