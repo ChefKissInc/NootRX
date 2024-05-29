@@ -3,9 +3,9 @@
 The unsupported AMD rDNA 2 desktop dedicated GPU [Lilu](https://github.com/acidanthera/Lilu) plug-in. Conflicts with `WhateverGreen` and `NootedRed`.
 
 > [!IMPORTANT]
-> The only official source for this kext is the Actions tab of the `ChefKissInc/NootRX` GitHub repository, provided entirely free of charge.
+> The only official source for this kext is the releases of the `ChefKissInc/NootRX` GitHub repository, provided entirely free of charge.
 >
-> Any other source may include malware, be outdated, etc.
+> Old builds are at the same `ChefKissInc/NootRX` repository, as artefacts of workflow runs (these expire).
 >
 > If you purchased this, demand a refund.
 >
