@@ -300,7 +300,7 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *
         case KernelVersion::BigSur... KernelVersion::Monterey:
             off = 0xAF8;
             break;
-        case KernelVersion::Ventura... KernelVersion::Sonoma:
+        case KernelVersion::Ventura... KernelVersion::Sequoia:
             off = NootRXMain::callback->chipType == ChipType::Navi21 ? 0xAF8 : 0xB48;
             break;
         default:
