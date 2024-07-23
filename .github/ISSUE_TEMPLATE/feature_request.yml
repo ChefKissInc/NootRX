@@ -13,12 +13,13 @@ body:
     id: macos_version
     attributes:
       label: macOS Version
-      description: On which macOS version is the feature missing, if not on all? Versions that do not appear in the dropdown are not supported.
+      description: On which macOS version is the feature missing, if not on all of them? Versions that do not appear in the dropdown are not supported.
       options:
-       - Big Sur (Only Navi 21)
-       - Monterey
-       - Ventura
-       - Sonoma
+        - Big Sur (Only Navi 21)
+        - Monterey
+        - Ventura
+        - Sonoma
+        - Sequoia
     validations:
       required: true
   - type: input

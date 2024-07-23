@@ -13,14 +13,15 @@ body:
     id: macos_version
     attributes:
       label: macOS Version
-      description: On which macOS version is the bug occurring? Versions that do not appear in the dropdown are not supported.
+      description: On which macOS version is the bug occurring, if not all of them? Versions that do not appear in the dropdown are not supported.
       options:
-       - Big Sur (Only Navi 21)
-       - Monterey
-       - Ventura
-       - Sonoma
+        - Big Sur (Only Navi 21)
+        - Monterey
+        - Ventura
+        - Sonoma
+        - Sequoia
     validations:
-      required: true
+      required: false
   - type: input
     id: cpu
     attributes:
