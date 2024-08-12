@@ -16,11 +16,17 @@ enum struct ChipType : UInt32 {
 };
 
 class NootRXMain {
-    public:
+    friend class HWLibs;
+    friend class X6000;
+    friend class X6000FB;
+
     static NootRXMain *callback;
 
+    public:
     void init();
     void processPatcher(KernelPatcher &patcher);
+
+    private:
     void setRMMIOIfNecessary();
     void processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size);
 
@@ -56,6 +62,9 @@ class NootRXMain {
     UInt16 revision {0};
     UInt32 pciRevision {0};
     IOPCIDevice *GPU {nullptr};
+    mach_vm_address_t orgAddDrivers {0};
+
+    static bool wrapAddDrivers(void *that, OSArray *array, bool doNubMatching);
 };
 
 //------ Patches ------//

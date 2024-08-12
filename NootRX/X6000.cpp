@@ -2,8 +2,8 @@
 //! See LICENSE for details.
 
 #include "X6000.hpp"
-#include "HWLibs.hpp"
 #include "NootRX.hpp"
+#include "PatcherPlus.hpp"
 #include <Headers/kern_api.hpp>
 #include <IOKit/IOService.h>
 

@@ -5,7 +5,6 @@
 #include <Headers/kern_api.hpp>
 #include <Headers/kern_version.hpp>
 #include <Headers/plugin_start.hpp>
-#include <IOKit/IOCatalogue.h>
 
 static NootRXMain nrx;
 

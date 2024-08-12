@@ -2,17 +2,16 @@
 //! See LICENSE for details.
 
 #pragma once
-#include "AMDCommon.hpp"
 #include "NootRX.hpp"
-#include "PatcherPlus.hpp"
 #include <Headers/kern_patcher.hpp>
 #include <Headers/kern_util.hpp>
 #include <IOKit/IOService.h>
 #include <IOKit/graphics/IOGraphicsTypes.h>
 
 class X6000 {
-    public:
     static X6000 *callback;
+
+    public:
     void init();
     bool processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size);
 

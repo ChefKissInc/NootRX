@@ -3,6 +3,7 @@
 
 #include "X6000FB.hpp"
 #include "NootRX.hpp"
+#include "PatcherPlus.hpp"
 #include <Headers/kern_api.hpp>
 
 static const char *pathRadeonX6000Framebuffer =

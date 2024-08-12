@@ -4,6 +4,7 @@
 #include "HWLibs.hpp"
 #include "Firmware.hpp"
 #include "NootRX.hpp"
+#include "PatcherPlus.hpp"
 #include <Headers/kern_api.hpp>
 
 static const char *pathRadeonX6000HWServices =

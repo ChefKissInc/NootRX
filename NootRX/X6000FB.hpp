@@ -2,15 +2,14 @@
 //! See LICENSE for details.
 
 #pragma once
-#include "AMDCommon.hpp"
 #include "NootRX.hpp"
-#include "PatcherPlus.hpp"
 #include <Headers/kern_patcher.hpp>
 #include <Headers/kern_util.hpp>
 
 class X6000FB {
-    public:
     static X6000FB *callback;
+
+    public:
     void init();
     bool processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size);
 

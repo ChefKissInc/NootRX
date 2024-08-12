@@ -137,21 +137,87 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
     }
     dyldpatches.processPatcher(patcher);
 
-    if ((lilu.getRunMode() & LiluAPI::RunningInstallerRecovery) || checkKernelArgument("-NRXFBOnly")) { return; }
+    KernelPatcher::RouteRequest request {"__ZN11IOCatalogue10addDriversEP7OSArrayb", wrapAddDrivers,
+        this->orgAddDrivers};
+    PANIC_COND(!patcher.routeMultipleLong(KernelPatcher::KernelID, &request, 1), "NootRX",
+        "Failed to route addDrivers");
+}
 
-    const auto &driversXML = getFWByName("Drivers.xml");
-    auto *dataNull = new char[driversXML.length + 1];
+static const char *getDriverXMLForBundle(const char *bundleIdentifier, size_t *len) {
+    const auto identifierLen = strlen(bundleIdentifier);
+    const auto totalLen = identifierLen + 5;
+    auto *filename = new char[totalLen];
+    memcpy(filename, bundleIdentifier, identifierLen);
+    strlcat(filename, ".xml", totalLen);
+
+    const auto &driversXML = getFWByName(filename);
+    delete[] filename;
+
+    *len = driversXML.length + 1;
+    auto *dataNull = new char[*len];
     memcpy(dataNull, driversXML.data, driversXML.length);
     dataNull[driversXML.length] = 0;
-    OSString *errStr = nullptr;
-    auto *dataUnserialized = OSUnserializeXML(dataNull, driversXML.length + 1, &errStr);
-    delete[] dataNull;
-    PANIC_COND(!dataUnserialized, "NootRX", "Failed to unserialize Drivers.xml: %s",
-        errStr ? errStr->getCStringNoCopy() : "Unspecified");
-    auto *drivers = OSDynamicCast(OSArray, dataUnserialized);
-    PANIC_COND(!drivers, "NootRX", "Failed to cast Drivers.xml data");
-    PANIC_COND(!gIOCatalogue->addDrivers(drivers), "NootRX", "Failed to add drivers");
-    OSSafeReleaseNULL(dataUnserialized);
+
+    return dataNull;
+}
+
+static const char *DriverBundleIdentifiers[] = {
+    "com.apple.kext.AMDRadeonX6000HWServices",
+    "com.apple.kext.AMDRadeonX6000",
+};
+
+bool NootRXMain::wrapAddDrivers(void *that, OSArray *array, bool doNubMatching) {
+    bool matches[arrsize(DriverBundleIdentifiers)];
+    bzero(matches, sizeof(matches));
+
+    auto *iterator = OSCollectionIterator::withCollection(array);
+    OSObject *object;
+    while ((object = iterator->getNextObject())) {
+        auto *dict = OSDynamicCast(OSDictionary, object);
+        if (dict == nullptr) {
+            DBGLOG("NootRX", "Warning: element in addDrivers is not a dictionary.");
+            continue;
+        }
+        auto *bundleIdentifier = OSDynamicCast(OSString, dict->getObject("CFBundleIdentifier"));
+        if (bundleIdentifier == nullptr) {
+            DBGLOG("NootRX", "Warning: element in addDrivers has no bundle identifier.");
+            continue;
+        }
+        for (size_t i = 0; i < arrsize(DriverBundleIdentifiers); i += 1) {
+            if (matches[i]) { continue; }
+
+            auto *matchingIdentifier = DriverBundleIdentifiers[i];
+            if (strcmp(bundleIdentifier->getCStringNoCopy(), matchingIdentifier) == 0) {
+                DBGLOG("NootRX", "Matched %s.", matchingIdentifier);
+                matches[i] = true;
+            }
+        }
+    }
+    OSSafeReleaseNULL(iterator);
+
+    auto res = FunctionCast(wrapAddDrivers, callback->orgAddDrivers)(that, array, doNubMatching);
+    for (size_t i = 0; i < arrsize(DriverBundleIdentifiers); i += 1) {
+        if (!matches[i]) { continue; }
+        auto *identifier = DriverBundleIdentifiers[i];
+        DBGLOG("NootRX", "Injecting personalities for %s.", identifier);
+        size_t len;
+        auto *driverXML = getDriverXMLForBundle(identifier, &len);
+
+        OSString *errStr = nullptr;
+        auto *dataUnserialized = OSUnserializeXML(driverXML, len, &errStr);
+        delete[] driverXML;
+
+        PANIC_COND(!dataUnserialized, "NootRX", "Failed to unserialize driver XML for %s: %s", identifier,
+            errStr ? errStr->getCStringNoCopy() : "(nil)");
+
+        auto *drivers = OSDynamicCast(OSArray, dataUnserialized);
+        PANIC_COND(drivers == nullptr, "NootRX", "Failed to cast %s driver data", identifier);
+        if (!FunctionCast(wrapAddDrivers, callback->orgAddDrivers)(that, drivers, doNubMatching)) {
+            SYSLOG("NootRX", "Error: Failed to inject personalities for %s.", identifier);
+        }
+        dataUnserialized->release();
+    }
+    return res;
 }
 
 void NootRXMain::setRMMIOIfNecessary() {
