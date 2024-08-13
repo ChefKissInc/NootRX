@@ -54,7 +54,6 @@
 		404624A92BD4FAFE00677022 /* gc_10_3_pfp_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_pfp_ucode.bin; sourceTree = "<group>"; };
 		404624AA2BD4FAFE00677022 /* gc_10_3_ce_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_ce_ucode.bin; sourceTree = "<group>"; };
 		404624AB2BD4FAFE00677022 /* gc_10_3_se1_tap_delays.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_se1_tap_delays.bin; sourceTree = "<group>"; };
-		404624AC2BD4FAFE00677022 /* Drivers.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Drivers.xml; sourceTree = "<group>"; };
 		404624AD2BD4FAFE00677022 /* gc_10_3_rlc_srlist_gpm_mem.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_rlc_srlist_gpm_mem.bin; sourceTree = "<group>"; };
 		404624AE2BD4FAFE00677022 /* gc_10_3_rlc_srlist_cntl.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_rlc_srlist_cntl.bin; sourceTree = "<group>"; };
 		404624AF2BD4FAFE00677022 /* gc_10_3_rlc_lx6_iram_ucode.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_rlc_lx6_iram_ucode.bin; sourceTree = "<group>"; };
@@ -75,6 +74,9 @@
 		404624BE2BD4FAFE00677022 /* gc_10_3_2_rlc_srlist_srm_mem.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_2_rlc_srlist_srm_mem.bin; sourceTree = "<group>"; };
 		406889892A229BF600028D22 /* PatcherPlus.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PatcherPlus.cpp; sourceTree = "<group>"; };
 		4068898A2A229BF600028D22 /* PatcherPlus.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PatcherPlus.hpp; sourceTree = "<group>"; };
+		407EC2702C6AE97B00A5BEA4 /* com.apple.kext.AMDRadeonX6000.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = com.apple.kext.AMDRadeonX6000.xml; sourceTree = "<group>"; };
+		407EC2712C6AE97B00A5BEA4 /* com.apple.kext.AMDRadeonX6000Framebuffer.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = com.apple.kext.AMDRadeonX6000Framebuffer.xml; sourceTree = "<group>"; };
+		407EC2722C6AE97B00A5BEA4 /* com.apple.kext.AMDRadeonX6000HWServices.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = com.apple.kext.AMDRadeonX6000HWServices.xml; sourceTree = "<group>"; };
 		4095294F2A7971CD00923793 /* Firmware.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Firmware.cpp; sourceTree = "<group>"; };
 		409529502A7971CD00923793 /* Firmware.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Firmware.hpp; sourceTree = "<group>"; };
 		40B6A67C2A75A2B9002D8B85 /* DYLDPatches.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DYLDPatches.cpp; sourceTree = "<group>"; };
@@ -218,7 +220,9 @@
 				D53A4C162AAA620300ADD844 /* atidmcub_instruction_dcn30.bin */,
 				D51D13B62AE51906008D0441 /* atidmcub_instruction_dcn302.bin */,
 				D53A4C1A2AAA620300ADD844 /* ativvaxy_vcn3.dat */,
-				404624AC2BD4FAFE00677022 /* Drivers.xml */,
+				407EC2702C6AE97B00A5BEA4 /* com.apple.kext.AMDRadeonX6000.xml */,
+				407EC2712C6AE97B00A5BEA4 /* com.apple.kext.AMDRadeonX6000Framebuffer.xml */,
+				407EC2722C6AE97B00A5BEA4 /* com.apple.kext.AMDRadeonX6000HWServices.xml */,
 				D53A4C1B2AAA620300ADD844 /* gc_10_3_2_ce_ucode.bin */,
 				D53A4C152AAA620300ADD844 /* gc_10_3_2_global_tap_delays.bin */,
 				D53A4C252AAA620400ADD844 /* gc_10_3_2_me_ucode.bin */,
