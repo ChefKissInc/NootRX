@@ -207,7 +207,7 @@ bool NootRXMain::wrapAddDrivers(void *that, OSArray *array, bool doNubMatching) 
         auto *dataUnserialized = OSUnserializeXML(driverXML, len, &errStr);
         delete[] driverXML;
 
-        PANIC_COND(!dataUnserialized, "NootRX", "Failed to unserialize driver XML for %s: %s", identifier,
+        PANIC_COND(dataUnserialized == nullptr, "NootRX", "Failed to unserialize driver XML for %s: %s", identifier,
             errStr ? errStr->getCStringNoCopy() : "(nil)");
 
         auto *drivers = OSDynamicCast(OSArray, dataUnserialized);
