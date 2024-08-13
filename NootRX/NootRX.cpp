@@ -1,4 +1,4 @@
-//! Copyright © 2023-2024 ChefKiss Inc. Licensed under the Thou Shalt Not Profit License version 1.5.
+//! Copyright © 2023-2024 ChefKiss. Licensed under the Thou Shalt Not Profit License version 1.5.
 //! See LICENSE for details.
 
 #include "NootRX.hpp"
@@ -27,7 +27,7 @@ static X6000 x6000;
 static DYLDPatches dyldpatches;
 
 void NootRXMain::init() {
-    SYSLOG("NootRX", "Copyright 2023-2024 ChefKiss Inc. If you've paid for this, you've been scammed.");
+    SYSLOG("NootRX", "Copyright 2023-2024 ChefKiss. If you've paid for this, you've been scammed.");
     callback = this;
 
     lilu.onKextLoadForce(&kextAGDP);
