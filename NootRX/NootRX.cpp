@@ -164,13 +164,11 @@ static const char *getDriverXMLForBundle(const char *bundleIdentifier, size_t *l
 static const char *DriverBundleIdentifiers[] = {
     "com.apple.kext.AMDRadeonX6000",
     "com.apple.kext.AMDRadeonX6000HWServices",
-    "com.apple.kext.AMDRadeonX6000Framebuffer",
 };
 
 bool NootRXMain::wrapAddDrivers(void *that, OSArray *array, bool doNubMatching) {
-    size_t driverIndices[arrsize(DriverBundleIdentifiers)];
-    memset(driverIndices, 0xFF, sizeof(driverIndices));
-    size_t indexCount = 0;
+    bool matches[arrsize(DriverBundleIdentifiers)];
+    bzero(matches, sizeof(matches));
 
     auto *iterator = OSCollectionIterator::withCollection(array);
     OSObject *object;
@@ -186,27 +184,21 @@ bool NootRXMain::wrapAddDrivers(void *that, OSArray *array, bool doNubMatching) 
             continue;
         }
         for (size_t i = 0; i < arrsize(DriverBundleIdentifiers); i += 1) {
-            auto cont = false;
-            for (size_t y = 0; y < indexCount; y += 1) {
-                if (driverIndices[y] == i) {
-                    cont = true;
-                    break;
-                }
-            }
-            if (cont) { continue; }
+            if (matches[i]) { continue; }
 
             auto *matchingIdentifier = DriverBundleIdentifiers[i];
             if (strcmp(bundleIdentifier->getCStringNoCopy(), matchingIdentifier) == 0) {
                 DBGLOG("NootRX", "Matched %s.", matchingIdentifier);
-                driverIndices[indexCount++] = i;
+                matches[i] = true;
             }
         }
     }
     OSSafeReleaseNULL(iterator);
 
     auto res = FunctionCast(wrapAddDrivers, callback->orgAddDrivers)(that, array, doNubMatching);
-    for (size_t i = 0; i < indexCount; i += 1) {
-        auto *identifier = DriverBundleIdentifiers[driverIndices[i]];
+    for (size_t i = 0; i < arrsize(DriverBundleIdentifiers); i += 1) {
+        if (!matches[i]) { continue; }
+        auto *identifier = DriverBundleIdentifiers[i];
         DBGLOG("NootRX", "Injecting personalities for %s.", identifier);
         size_t len;
         auto *driverXML = getDriverXMLForBundle(identifier, &len);
@@ -215,7 +207,7 @@ bool NootRXMain::wrapAddDrivers(void *that, OSArray *array, bool doNubMatching) 
         auto *dataUnserialized = OSUnserializeXML(driverXML, len, &errStr);
         delete[] driverXML;
 
-        PANIC_COND(dataUnserialized == nullptr, "NootRX", "Failed to unserialize driver XML for %s: %s", identifier,
+        PANIC_COND(!dataUnserialized, "NootRX", "Failed to unserialize driver XML for %s: %s", identifier,
             errStr ? errStr->getCStringNoCopy() : "(nil)");
 
         auto *drivers = OSDynamicCast(OSArray, dataUnserialized);
