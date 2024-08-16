@@ -1,5 +1,5 @@
-//! Copyright © 2023-2024 ChefKiss. Licensed under the Thou Shalt Not Profit License version 1.5.
-//! See LICENSE for details.
+// Copyright © 2023-2024 ChefKiss. Licensed under the Thou Shalt Not Profit License version 1.5.
+// See LICENSE for details.
 
 #pragma once
 #include <Headers/kern_util.hpp>
@@ -142,9 +142,10 @@ struct CAILIPGoldenRegister {
     const UInt32 orMask;
 } PACKED;
 
-#define GOLDEN_REGISTER(reg, and, or) {.regOffset = reg, .segment = reg##_BASE_IDX, .andMask = and, .orMask = or }
+#define GOLDEN_REGISTER(reg, and, or) \
+    { .regOffset = reg, .segment = reg##_BASE_IDX, .andMask = and, .orMask = or }
 #define GOLDEN_REGISTER_TERMINATOR \
-    {.regOffset = 0xFFFFFFFF, .segment = 0xFFFFFFFF, .andMask = 0xFFFFFFFF, .orMask = 0xFFFFFFFF}
+    { .regOffset = 0xFFFFFFFF, .segment = 0xFFFFFFFF, .andMask = 0xFFFFFFFF, .orMask = 0xFFFFFFFF }
 
 enum CAILIPType : UInt32 {
     kCAILIPTypeUnknown = 0,
@@ -153,16 +154,18 @@ enum CAILIPType : UInt32 {
 
 struct CAILASICGoldenRegisters {
     const CAILIPType ipType;
-    const UInt32 instance;    //! Not sure about that one.
+    const UInt32 instance;    // Not sure about that one.
     const CAILIPGoldenRegister *entries;
 } PACKED;
 
-#define GOLDEN_REGISTERS(type, inst, ents) {.ipType = kCAILIPType##type, .instance = inst, .entries = ents}
+#define GOLDEN_REGISTERS(type, inst, ents) \
+    { .ipType = kCAILIPType##type, .instance = inst, .entries = ents }
 
-#define GOLDEN_REGISTERS_TERMINATOR {.ipType = kCAILIPTypeUnknown, .instance = 0, .entries = nullptr}
+#define GOLDEN_REGISTERS_TERMINATOR \
+    { .ipType = kCAILIPTypeUnknown, .instance = 0, .entries = nullptr }
 
 struct CAILASICGoldenSettings {
-    //! Golden settings for GPUs emulated using the Cadence Palladium Emulation platform. We don't care.
+    // Golden settings for GPUs emulated using the Cadence Palladium Emulation platform. We don't care.
     const CAILASICGoldenRegisters *palladiumGoldenSettings;
     const CAILASICGoldenRegisters *goldenSettings;
 } PACKED;

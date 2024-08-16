@@ -1,5 +1,5 @@
-//! Copyright © 2023-2024 ChefKiss. Licensed under the Thou Shalt Not Profit License version 1.5.
-//! See LICENSE for details.
+// Copyright © 2023-2024 ChefKiss. Licensed under the Thou Shalt Not Profit License version 1.5.
+// See LICENSE for details.
 
 #pragma once
 #include <Headers/kern_patcher.hpp>
@@ -67,7 +67,7 @@ class DYLDPatches {
         const void *data, int *validated_p, int *tainted_p, int *nx_p);
 };
 
-//! VideoToolbox DRM model check
+// VideoToolbox DRM model check
 static const char kVideoToolboxDRMModelOriginal[] = "MacPro5,1\0MacPro6,1\0IOService";
 
 static const char kCoreLSKDMSEPath[] = "/System/Library/PrivateFrameworks/CoreLSKDMSE.framework/Versions/A/CoreLSKDMSE";

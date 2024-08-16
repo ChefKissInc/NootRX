@@ -1,5 +1,5 @@
-//! Copyright © 2023-2024 ChefKiss. Licensed under the Thou Shalt Not Profit License version 1.5.
-//! See LICENSE for details.
+// Copyright © 2023-2024 ChefKiss. Licensed under the Thou Shalt Not Profit License version 1.5.
+// See LICENSE for details.
 
 #include "HWLibs.hpp"
 #include "Firmware.hpp"
@@ -186,27 +186,27 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
                                &dataOffset),
                     "HWLibs", "Failed to find memcpy block 0x%04X&0x%04X", arg1, arg1Mask);
                 auto block = slide + dataOffset;
-                //! 0x0 lea rsi, [rel ...]
-                //! movabs rsi, 0x<FAKECPY_FUNC_ADDR>
+                // 0x0 lea rsi, [rel ...]
+                // movabs rsi, 0x<FAKECPY_FUNC_ADDR>
                 *reinterpret_cast<UInt16 *>(block) = 0xBE48;
                 *reinterpret_cast<UInt64 *>(block + 2) = reinterpret_cast<UInt64>(func);
-                *reinterpret_cast<UInt16 *>(block + 10) = 0xD6FF;    //! call rsi
-                //! 0xC call _memcpy
-                *reinterpret_cast<UInt32 *>(block + 12) = 0x66906690;    //! nop nop
-                *reinterpret_cast<UInt16 *>(block + 15) = 0x6690;        //! nop
-                //! 0xF lea, mov, etc.
+                *reinterpret_cast<UInt16 *>(block + 10) = 0xD6FF;    // call rsi
+                // 0xC call _memcpy
+                *reinterpret_cast<UInt32 *>(block + 12) = 0x66906690;    // nop nop
+                *reinterpret_cast<UInt16 *>(block + 15) = 0x6690;        // nop
+                // 0xF lea, mov, etc.
                 return;
             }
             auto block = slide + dataOffset;
-            //! 0x0 lea rsi, [rel ...]
-            *reinterpret_cast<UInt16 *>(block) = 0xBE48;                                //! movabs rsi,
-            *reinterpret_cast<UInt64 *>(block + 2) = reinterpret_cast<UInt64>(func);    //! 0x<FAKECPY_FUNC_ADDR>
-            *reinterpret_cast<UInt16 *>(block + 10) = 0x6690;                           //! nop
-            //! 0xC mov rdi, ...
-            //! 0xF call _memcpy
-            *reinterpret_cast<UInt16 *>(block + 15) = 0xD6FF;    //! call rsi
-            *reinterpret_cast<UInt16 *>(block + 17) = 0x6690;    //! nop
-            *reinterpret_cast<UInt8 *>(block + 19) = 0x90;       //! nop
+            // 0x0 lea rsi, [rel ...]
+            *reinterpret_cast<UInt16 *>(block) = 0xBE48;                                // movabs rsi,
+            *reinterpret_cast<UInt64 *>(block + 2) = reinterpret_cast<UInt64>(func);    // 0x<FAKECPY_FUNC_ADDR>
+            *reinterpret_cast<UInt16 *>(block + 10) = 0x6690;                           // nop
+            // 0xC mov rdi, ...
+            // 0xF call _memcpy
+            *reinterpret_cast<UInt16 *>(block + 15) = 0xD6FF;    // call rsi
+            *reinterpret_cast<UInt16 *>(block + 17) = 0x6690;    // nop
+            *reinterpret_cast<UInt8 *>(block + 19) = 0x90;       // nop
         };
 
         PANIC_COND(MachInfo::setKernelWriting(true, KernelPatcher::kernelWriteLock) != KERN_SUCCESS, "HWLibs",

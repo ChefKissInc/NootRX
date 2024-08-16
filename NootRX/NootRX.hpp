@@ -1,5 +1,5 @@
-//! Copyright © 2023-2024 ChefKiss. Licensed under the Thou Shalt Not Profit License version 1.5.
-//! See LICENSE for details.
+// Copyright © 2023-2024 ChefKiss. Licensed under the Thou Shalt Not Profit License version 1.5.
+// See LICENSE for details.
 
 #pragma once
 #include "AMDCommon.hpp"
@@ -69,6 +69,6 @@ class NootRXMain {
 
 //------ Patches ------//
 
-//! Neutralise access to AGDP configuration by board identifier.
+// Neutralise access to AGDP configuration by board identifier.
 static const UInt8 kAGDPBoardIDKeyOriginal[] = "board-id";
 static const UInt8 kAGDPBoardIDKeyPatched[] = "applehax";

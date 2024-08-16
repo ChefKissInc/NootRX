@@ -1,10 +1,8 @@
-//! Copyright © 2022-2024 ChefKiss. Licensed under the Thou Shalt Not Profit License version 1.5.
-//! See LICENSE for details.
+// Copyright © 2022-2024 ChefKiss. Licensed under the Thou Shalt Not Profit License version 1.5.
+// See LICENSE for details.
 
 #pragma once
 #include <Headers/kern_util.hpp>
-#include <libkern/c++/OSData.h>
-#include <libkern/zlib.h>
 
 struct FWDescriptor {
     const char *name;
