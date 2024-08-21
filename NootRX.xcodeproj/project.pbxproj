@@ -75,7 +75,6 @@
 		406889892A229BF600028D22 /* PatcherPlus.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PatcherPlus.cpp; sourceTree = "<group>"; };
 		4068898A2A229BF600028D22 /* PatcherPlus.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PatcherPlus.hpp; sourceTree = "<group>"; };
 		407EC2702C6AE97B00A5BEA4 /* com.apple.kext.AMDRadeonX6000.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = com.apple.kext.AMDRadeonX6000.xml; sourceTree = "<group>"; };
-		407EC2712C6AE97B00A5BEA4 /* com.apple.kext.AMDRadeonX6000Framebuffer.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = com.apple.kext.AMDRadeonX6000Framebuffer.xml; sourceTree = "<group>"; };
 		407EC2722C6AE97B00A5BEA4 /* com.apple.kext.AMDRadeonX6000HWServices.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = com.apple.kext.AMDRadeonX6000HWServices.xml; sourceTree = "<group>"; };
 		4095294F2A7971CD00923793 /* Firmware.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Firmware.cpp; sourceTree = "<group>"; };
 		409529502A7971CD00923793 /* Firmware.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Firmware.hpp; sourceTree = "<group>"; };
@@ -221,7 +220,6 @@
 				D51D13B62AE51906008D0441 /* atidmcub_instruction_dcn302.bin */,
 				D53A4C1A2AAA620300ADD844 /* ativvaxy_vcn3.dat */,
 				407EC2702C6AE97B00A5BEA4 /* com.apple.kext.AMDRadeonX6000.xml */,
-				407EC2712C6AE97B00A5BEA4 /* com.apple.kext.AMDRadeonX6000Framebuffer.xml */,
 				407EC2722C6AE97B00A5BEA4 /* com.apple.kext.AMDRadeonX6000HWServices.xml */,
 				D53A4C1B2AAA620300ADD844 /* gc_10_3_2_ce_ucode.bin */,
 				D53A4C152AAA620300ADD844 /* gc_10_3_2_global_tap_delays.bin */,
