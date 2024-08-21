@@ -190,6 +190,7 @@ bool NootRXMain::wrapAddDrivers(void *that, OSArray *array, bool doNubMatching) 
             if (strcmp(bundleIdentifier->getCStringNoCopy(), matchingIdentifier) == 0) {
                 DBGLOG("NootRX", "Matched %s.", matchingIdentifier);
                 matches[i] = true;
+                break;
             }
         }
     }
