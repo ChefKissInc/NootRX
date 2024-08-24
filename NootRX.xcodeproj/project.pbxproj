@@ -45,6 +45,7 @@
 		1C748C271C21952C0024EED2 /* NootRX.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NootRX.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C748C2C1C21952C0024EED2 /* Plugin.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Plugin.cpp; sourceTree = "<group>"; };
 		1C748C2E1C21952C0024EED2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4043B2012C7A0ABA005F31D1 /* com.apple.kext.AMDRadeonX6000Framebuffer.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = com.apple.kext.AMDRadeonX6000Framebuffer.xml; sourceTree = "<group>"; };
 		404624A32BD4FAFE00677022 /* gc_10_3_4_rlc_srlist_gpm_mem.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_4_rlc_srlist_gpm_mem.bin; sourceTree = "<group>"; };
 		404624A42BD4FAFE00677022 /* gc_10_3_se0_tap_delays.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_se0_tap_delays.bin; sourceTree = "<group>"; };
 		404624A52BD4FAFE00677022 /* gc_10_3_global_tap_delays.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = gc_10_3_global_tap_delays.bin; sourceTree = "<group>"; };
@@ -220,6 +221,7 @@
 				D51D13B62AE51906008D0441 /* atidmcub_instruction_dcn302.bin */,
 				D53A4C1A2AAA620300ADD844 /* ativvaxy_vcn3.dat */,
 				407EC2702C6AE97B00A5BEA4 /* com.apple.kext.AMDRadeonX6000.xml */,
+				4043B2012C7A0ABA005F31D1 /* com.apple.kext.AMDRadeonX6000Framebuffer.xml */,
 				407EC2722C6AE97B00A5BEA4 /* com.apple.kext.AMDRadeonX6000HWServices.xml */,
 				D53A4C1B2AAA620300ADD844 /* gc_10_3_2_ce_ucode.bin */,
 				D53A4C152AAA620300ADD844 /* gc_10_3_2_global_tap_delays.bin */,
