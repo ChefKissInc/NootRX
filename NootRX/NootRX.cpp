@@ -12,8 +12,14 @@
 static const char *pathAGDP = "/System/Library/Extensions/AppleGraphicsControl.kext/Contents/PlugIns/"
                               "AppleGraphicsDevicePolicy.kext/Contents/MacOS/AppleGraphicsDevicePolicy";
 
-static KernelPatcher::KextInfo kextAGDP {"com.apple.driver.AppleGraphicsDevicePolicy", &pathAGDP, 1, {true}, {},
-    KernelPatcher::KextInfo::Unloaded};
+static KernelPatcher::KextInfo kextAGDP {
+    "com.apple.driver.AppleGraphicsDevicePolicy",
+    &pathAGDP,
+    1,
+    {true},
+    {},
+    KernelPatcher::KextInfo::Unloaded,
+};
 
 NootRXMain *NootRXMain::callback = nullptr;
 

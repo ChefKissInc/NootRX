@@ -9,8 +9,14 @@
 
 static const char *pathRadeonX6000 = "/System/Library/Extensions/AMDRadeonX6000.kext/Contents/MacOS/AMDRadeonX6000";
 
-static KernelPatcher::KextInfo kextRadeonX6000 {"com.apple.kext.AMDRadeonX6000", &pathRadeonX6000, 1, {}, {},
-    KernelPatcher::KextInfo::Unloaded};
+static KernelPatcher::KextInfo kextRadeonX6000 {
+    "com.apple.kext.AMDRadeonX6000",
+    &pathRadeonX6000,
+    1,
+    {},
+    {},
+    KernelPatcher::KextInfo::Unloaded,
+};
 
 X6000 *X6000::callback = nullptr;
 
