@@ -221,14 +221,14 @@ bool NootRXMain::wrapAddDrivers(void *that, OSArray *array, bool doNubMatching) 
     return FunctionCast(wrapAddDrivers, callback->orgAddDrivers)(that, array, doNubMatching);
 }
 
-void NootRXMain::setRMMIOIfNecessary() {
-    if (UNLIKELY(!this->rmmio || !this->rmmio->getLength())) {
-        OSSafeReleaseNULL(this->rmmio);
-        this->rmmio = this->GPU->mapDeviceMemoryWithRegister(kIOPCIConfigBaseAddress5);
-        PANIC_COND(UNLIKELY(!this->rmmio || !this->rmmio->getLength()), "NootRX", "Failed to map RMMIO");
-        this->rmmioPtr = reinterpret_cast<UInt32 *>(this->rmmio->getVirtualAddress());
-        this->revision = (this->readReg32(0xD31) & 0xF000000) >> 0x18;
-    }
+void NootRXMain::ensureRMMIO() {
+    if (this->rmmio != nullptr && this->rmmio->getLength() != 0) { return; }
+
+    OSSafeReleaseNULL(this->rmmio);
+    this->rmmio = this->GPU->mapDeviceMemoryWithRegister(kIOPCIConfigBaseAddress5, kIOMapInhibitCache | kIOMapAnywhere);
+    PANIC_COND(this->rmmio == nullptr || this->rmmio->getLength() == 0, "NootRX", "Failed to map RMMIO");
+    this->rmmioPtr = reinterpret_cast<UInt32 *>(this->rmmio->getVirtualAddress());
+    this->devRevision = (this->readReg32(0xD31) & 0xF000000) >> 0x18;
 }
 
 void NootRXMain::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size) {

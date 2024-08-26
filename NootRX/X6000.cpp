@@ -21,7 +21,7 @@ void X6000::init() {
 
 bool X6000::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size) {
     if (kextRadeonX6000.loadIndex == id) {
-        NootRXMain::callback->setRMMIOIfNecessary();
+        NootRXMain::callback->ensureRMMIO();
 
         if (!checkKernelArgument("-NRXNoVCN")) {
             RouteRequestPlus request {"__ZN35AMDRadeonX6000_AMDAccelVideoContext9getHWInfoEP13sHardwareInfo",

@@ -61,7 +61,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
             wrapGetMatchProperty};
         PANIC_COND(!request.route(patcher, id, slide, size), "HWServices", "Failed to route getMatchProperty");
     } else if ((kextRadeonX6810HWLibs.loadIndex == id) || (kextRadeonX6800HWLibs.loadIndex == id)) {
-        NootRXMain::callback->setRMMIOIfNecessary();
+        NootRXMain::callback->ensureRMMIO();
 
         CAILAsicCapsEntry *orgCapsTable = nullptr;
         CAILDeviceTypeEntry *orgDeviceTypeTable = nullptr;

@@ -27,7 +27,7 @@ class NootRXMain {
     void processPatcher(KernelPatcher &patcher);
 
     private:
-    void setRMMIOIfNecessary();
+    void ensureRMMIO();
     void processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size);
 
     UInt32 readReg32(UInt32 reg) {
