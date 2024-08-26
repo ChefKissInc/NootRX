@@ -85,9 +85,15 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
     auto *model = getBranding(this->deviceID, this->pciRevision);
     auto modelLen = static_cast<UInt32>(strlen(model) + 1);
     this->GPU->setProperty("model", const_cast<char *>(model), modelLen);
-    this->GPU->setProperty("ATY,FamilyName", const_cast<char *>("Radeon RX"), 10);
-    this->GPU->setProperty("ATY,DeviceName", const_cast<char *>(model) + 14,
-        modelLen - 14);    // 6600 XT...
+    if (model[11] == 'P' && model[12] == 'r' && model[13] == 'o' && model[14] == ' ') {
+        this->GPU->setProperty("ATY,FamilyName", const_cast<char *>("Radeon Pro"), 11);
+        // Without AMD Radeon Pro prefix
+        this->GPU->setProperty("ATY,DeviceName", const_cast<char *>(model) + 15, modelLen - 15);
+    } else {
+        this->GPU->setProperty("ATY,FamilyName", const_cast<char *>("Radeon RX"), 10);
+        // Without AMD Radeon RX prefix
+        this->GPU->setProperty("ATY,DeviceName", const_cast<char *>(model) + 14, modelLen - 14);
+    }
 
     switch (this->deviceID) {
         case 0x73A2 ... 0x73A3:
