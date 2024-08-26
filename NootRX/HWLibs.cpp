@@ -110,24 +110,24 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
             "Failed to enable kernel writing");
 
         *orgDeviceTypeTable = {
-            .deviceId = NootRXMain::callback->deviceId,
+            .deviceId = NootRXMain::callback->deviceID,
             .deviceType = (kextRadeonX6800HWLibs.loadIndex == id) ? 6U : 8,
         };
 
         UInt32 targetDeviceId = NootRXMain::callback->chipType == ChipType::Navi21 ? 0x73BF : 0x73FF;
         for (; orgCapsTable->deviceId != 0xFFFFFFFF; orgCapsTable++) {
             if (orgCapsTable->familyId == AMDGPU_FAMILY_NAVI && orgCapsTable->deviceId == targetDeviceId) {
-                orgCapsTable->deviceId = NootRXMain::callback->deviceId;
-                orgCapsTable->revision = NootRXMain::callback->revision;
+                orgCapsTable->deviceId = NootRXMain::callback->deviceID;
+                orgCapsTable->revision = NootRXMain::callback->devRevision;
                 orgCapsTable->extRevision =
-                    static_cast<UInt32>(NootRXMain::callback->enumRevision) + NootRXMain::callback->revision;
+                    static_cast<UInt32>(NootRXMain::callback->enumRevision) + NootRXMain::callback->devRevision;
                 orgCapsTable->pciRevision = NootRXMain::callback->pciRevision;
                 orgCapsTable->caps = ddiCapsNavi2Universal;
                 if (orgCapsInitTable) {
                     *orgCapsInitTable = {
                         .familyId = AMDGPU_FAMILY_NAVI,
-                        .deviceId = NootRXMain::callback->deviceId,
-                        .revision = NootRXMain::callback->revision,
+                        .deviceId = NootRXMain::callback->deviceID,
+                        .revision = NootRXMain::callback->devRevision,
                         .extRevision = static_cast<UInt32>(orgCapsTable->extRevision),
                         .pciRevision = NootRXMain::callback->pciRevision,
                         .caps = orgCapsTable->caps,
@@ -140,9 +140,9 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
 
         for (; orgDevCapTable->familyId; orgDevCapTable++) {
             if (orgDevCapTable->familyId == AMDGPU_FAMILY_NAVI && orgDevCapTable->deviceId == targetDeviceId) {
-                orgDevCapTable->deviceId = NootRXMain::callback->deviceId;
+                orgDevCapTable->deviceId = NootRXMain::callback->deviceID;
                 orgDevCapTable->extRevision =
-                    static_cast<UInt64>(NootRXMain::callback->enumRevision) + NootRXMain::callback->revision;
+                    static_cast<UInt64>(NootRXMain::callback->enumRevision) + NootRXMain::callback->devRevision;
                 orgDevCapTable->revision = DEVICE_CAP_ENTRY_REV_DONT_CARE;
                 orgDevCapTable->enumRevision = DEVICE_CAP_ENTRY_REV_DONT_CARE;
                 switch (NootRXMain::callback->chipType) {

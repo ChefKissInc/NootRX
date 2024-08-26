@@ -57,9 +57,9 @@ class NootRXMain {
     ChipType chipType {ChipType::Unknown};
     IOMemoryMap *rmmio {nullptr};
     volatile UInt32 *rmmioPtr {nullptr};
-    UInt32 deviceId {0};
+    UInt32 deviceID {0};
     UInt16 enumRevision {0};
-    UInt16 revision {0};
+    UInt16 devRevision {0};
     UInt32 pciRevision {0};
     IOPCIDevice *GPU {nullptr};
     mach_vm_address_t orgAddDrivers {0};

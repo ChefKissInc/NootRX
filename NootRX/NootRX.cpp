@@ -48,93 +48,91 @@ void NootRXMain::init() {
 
 void NootRXMain::processPatcher(KernelPatcher &patcher) {
     auto *devInfo = DeviceInfo::create();
-    if (devInfo) {
-        devInfo->processSwitchOff();
-        char name[256] = {0};
-        for (size_t i = 0, ii = 0; i < devInfo->videoExternal.size(); i++) {
-            auto *device = OSDynamicCast(IOPCIDevice, devInfo->videoExternal[i].video);
-            if (!device) { continue; }
-            auto devid = WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigDeviceID) & 0xFF00;
-            if (WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigVendorID) == WIOKit::VendorID::ATIAMD &&
-                devid == 0x7300) {
-                this->GPU = device;
-                snprintf(name, arrsize(name), "GFX%zu", ii++);
-                WIOKit::renameDevice(device, name);
-                WIOKit::awaitPublishing(device);
-                if (!device->getProperty("AAPL,slot-name")) {
-                    snprintf(name, sizeof(name), "Slot-%zu", ii++);
-                    device->setProperty("AAPL,slot-name", name, sizeof("Slot-1"));
-                }
-                break;
+    PANIC_COND(devInfo == nullptr, "NootRX", "DeviceInfo::create failed");
+    devInfo->processSwitchOff();
+    char name[256] = {0};
+    for (size_t i = 0, ii = 0; i < devInfo->videoExternal.size(); i++) {
+        auto *device = OSDynamicCast(IOPCIDevice, devInfo->videoExternal[i].video);
+        if (!device) { continue; }
+        auto devid = WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigDeviceID) & 0xFF00;
+        if (WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigVendorID) == WIOKit::VendorID::ATIAMD &&
+            devid == 0x7300) {
+            this->GPU = device;
+            snprintf(name, arrsize(name), "GFX%zu", ii++);
+            WIOKit::renameDevice(device, name);
+            WIOKit::awaitPublishing(device);
+            if (!device->getProperty("AAPL,slot-name")) {
+                snprintf(name, sizeof(name), "Slot-%zu", ii++);
+                device->setProperty("AAPL,slot-name", name, sizeof("Slot-1"));
             }
+            break;
         }
+    }
 
-        PANIC_COND(!this->GPU, "NootRX", "Failed to find a compatible GPU");
+    PANIC_COND(!this->GPU, "NootRX", "Failed to find a compatible GPU");
 
-        if (!GPU->getProperty("built-in")) {
-            static UInt8 builtin[] = {0x00};
-            this->GPU->setProperty("built-in", builtin, arrsize(builtin));
+    if (!GPU->getProperty("built-in")) {
+        static UInt8 builtin[] = {0x00};
+        this->GPU->setProperty("built-in", builtin, arrsize(builtin));
+    }
+
+    this->deviceID = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigDeviceID);
+    this->pciRevision = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigRevisionID);
+    if (!this->GPU->getProperty("model")) {
+        auto *model = getBranding(this->deviceID, this->pciRevision);
+        auto modelLen = static_cast<UInt32>(strlen(model) + 1);
+        if (model) {
+            this->GPU->setProperty("model", const_cast<char *>(model), modelLen);
+            this->GPU->setProperty("ATY,FamilyName", const_cast<char *>("Radeon RX"), 10);
+            this->GPU->setProperty("ATY,DeviceName", const_cast<char *>(model) + 14,
+                modelLen - 14);    // 6600 XT...
         }
+    }
 
-        this->deviceId = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigDeviceID);
-        this->pciRevision = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigRevisionID);
-        if (!this->GPU->getProperty("model")) {
-            auto *model = getBranding(this->deviceId, this->pciRevision);
-            auto modelLen = static_cast<UInt32>(strlen(model) + 1);
-            if (model) {
-                this->GPU->setProperty("model", const_cast<char *>(model), modelLen);
-                this->GPU->setProperty("ATY,FamilyName", const_cast<char *>("Radeon RX"), 10);
-                this->GPU->setProperty("ATY,DeviceName", const_cast<char *>(model) + 14,
-                    modelLen - 14);    // 6600 XT...
-            }
-        }
-
-        switch (this->deviceId) {
-            case 0x73A2 ... 0x73A3:
-                [[fallthrough]];
-            case 0x73A5:
-                [[fallthrough]];
-            case 0x73AB:
-                [[fallthrough]];
-            case 0x73AF:
-                [[fallthrough]];
-            case 0x73BF:
-                this->chipType = ChipType::Navi21;
-                this->enumRevision = 0x28;
-                break;
-            case 0x73DF:
+    switch (this->deviceID) {
+        case 0x73A2 ... 0x73A3:
+            [[fallthrough]];
+        case 0x73A5:
+            [[fallthrough]];
+        case 0x73AB:
+            [[fallthrough]];
+        case 0x73AF:
+            [[fallthrough]];
+        case 0x73BF:
+            this->chipType = ChipType::Navi21;
+            this->enumRevision = 0x28;
+            break;
+        case 0x73DF:
+            PANIC_COND(getKernelVersion() < KernelVersion::Monterey, "NootRX",
+                "Unsupported macOS version; Navi 22 requires macOS Monterey or newer");
+            this->chipType = ChipType::Navi22;
+            this->enumRevision = 0x32;
+            break;
+        case 0x73E0 ... 0x73E1:
+            [[fallthrough]];
+        case 0x73E3:
+            [[fallthrough]];
+        case 0x73EF:
+            [[fallthrough]];
+        case 0x73FF:
+            if (this->pciRevision == 0xDF) {
                 PANIC_COND(getKernelVersion() < KernelVersion::Monterey, "NootRX",
                     "Unsupported macOS version; Navi 22 requires macOS Monterey or newer");
                 this->chipType = ChipType::Navi22;
                 this->enumRevision = 0x32;
                 break;
-            case 0x73E0 ... 0x73E1:
-                [[fallthrough]];
-            case 0x73E3:
-                [[fallthrough]];
-            case 0x73EF:
-                [[fallthrough]];
-            case 0x73FF:
-                if (this->pciRevision == 0xDF) {
-                    PANIC_COND(getKernelVersion() < KernelVersion::Monterey, "NootRX",
-                        "Unsupported macOS version; Navi 22 requires macOS Monterey or newer");
-                    this->chipType = ChipType::Navi22;
-                    this->enumRevision = 0x32;
-                    break;
-                }
-                PANIC_COND(getKernelVersion() < KernelVersion::Monterey, "NootRX",
-                    "Unsupported macOS version; Navi 23 requires macOS Monterey or newer");
-                this->chipType = ChipType::Navi23;
-                this->enumRevision = 0x3C;
-                break;
-            default:
-                PANIC("NootRX", "Unknown device ID");
-        }
-
-        DeviceInfo::deleter(devInfo);
-    } else {
-        SYSLOG("NootRX", "Failed to create DeviceInfo");
+            }
+            PANIC_COND(getKernelVersion() < KernelVersion::Monterey, "NootRX",
+                "Unsupported macOS version; Navi 23 requires macOS Monterey or newer");
+            this->chipType = ChipType::Navi23;
+            this->enumRevision = 0x3C;
+            break;
+        default:
+            PANIC("NootRX", "Unknown device ID");
     }
+
+    DeviceInfo::deleter(devInfo);
+
     dyldpatches.processPatcher(patcher);
 
     KernelPatcher::RouteRequest request {"__ZN11IOCatalogue10addDriversEP7OSArrayb", wrapAddDrivers,

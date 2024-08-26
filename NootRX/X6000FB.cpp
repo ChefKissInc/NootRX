@@ -58,9 +58,9 @@ bool X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t s
 
         *orgAsicCapsTable = {
             .familyId = AMDGPU_FAMILY_NAVI,
-            .deviceId = NootRXMain::callback->deviceId,
-            .revision = NootRXMain::callback->revision,
-            .extRevision = static_cast<UInt32>(NootRXMain::callback->enumRevision) + NootRXMain::callback->revision,
+            .deviceId = NootRXMain::callback->deviceID,
+            .revision = NootRXMain::callback->devRevision,
+            .extRevision = static_cast<UInt32>(NootRXMain::callback->enumRevision) + NootRXMain::callback->devRevision,
             .pciRevision = NootRXMain::callback->pciRevision,
             .caps = ddiCapsNavi2Universal,
         };
