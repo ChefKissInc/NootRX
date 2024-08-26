@@ -237,11 +237,13 @@ void NootRXMain::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_
 
         const LookupPatchPlus patch {&kextAGDP, kAGDPBoardIDKeyOriginal, kAGDPBoardIDKeyPatched, 1};
         PANIC_COND(!patch.apply(patcher, slide, size), "NootRX", "Failed to apply AGDP patch");
-    } else if (x6000fb.processKext(patcher, id, slide, size)) {
-        DBGLOG("NootRX", "Processed AMDRadeonX6000Framebuffer");
-    } else if (hwlibs.processKext(patcher, id, slide, size)) {
-        DBGLOG("NootRX", "Processed AMDRadeonX68x0HWLibs");
-    } else if (x6000.processKext(patcher, id, slide, size)) {
-        DBGLOG("NootRX", "Processed AMDRadeonX6000");
+
+        DBGLOG("NootRX", "Processed Apple Graphics Device Policy");
+    } else if (this->x6000fb.processKext(patcher, id, slide, size)) {
+        DBGLOG("NootRX", "Processed Framebuffer");
+    } else if (this->hwlibs.processKext(patcher, id, slide, size)) {
+        DBGLOG("NootRX", "Processed HW Library");
+    } else if (this->x6000.processKext(patcher, id, slide, size)) {
+        DBGLOG("NootRX", "Processed Accelerator");
     }
 }
