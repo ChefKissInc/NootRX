@@ -2,13 +2,9 @@
 // See LICENSE for details.
 
 #include "NootRX.hpp"
-#include "DYLDPatches.hpp"
 #include "Firmware.hpp"
-#include "HWLibs.hpp"
 #include "Model.hpp"
 #include "PatcherPlus.hpp"
-#include "X6000.hpp"
-#include "X6000FB.hpp"
 #include <Headers/kern_api.hpp>
 #include <Headers/kern_devinfo.hpp>
 #include <IOKit/IOCatalogue.h>
@@ -21,20 +17,15 @@ static KernelPatcher::KextInfo kextAGDP {"com.apple.driver.AppleGraphicsDevicePo
 
 NootRXMain *NootRXMain::callback = nullptr;
 
-static X6000FB x6000fb;
-static HWLibs hwlibs;
-static X6000 x6000;
-static DYLDPatches dyldpatches;
-
 void NootRXMain::init() {
     SYSLOG("NootRX", "Copyright 2023-2024 ChefKiss. If you've paid for this, you've been scammed.");
     callback = this;
 
     lilu.onKextLoadForce(&kextAGDP);
-    dyldpatches.init();
-    x6000fb.init();
-    hwlibs.init();
-    x6000.init();
+    this->dyldpatches.init();
+    this->x6000fb.init();
+    this->hwlibs.init();
+    this->x6000.init();
 
     lilu.onPatcherLoadForce(
         [](void *user, KernelPatcher &patcher) { static_cast<NootRXMain *>(user)->processPatcher(patcher); }, this);
@@ -133,7 +124,7 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
 
     DeviceInfo::deleter(devInfo);
 
-    dyldpatches.processPatcher(patcher);
+    this->dyldpatches.processPatcher(patcher);
 
     KernelPatcher::RouteRequest request {"__ZN11IOCatalogue10addDriversEP7OSArrayb", wrapAddDrivers,
         this->orgAddDrivers};

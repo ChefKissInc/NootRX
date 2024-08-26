@@ -3,6 +3,10 @@
 
 #pragma once
 #include "AMDCommon.hpp"
+#include "DYLDPatches.hpp"
+#include "HWLibs.hpp"
+#include "X6000.hpp"
+#include "X6000FB.hpp"
 #include <Headers/kern_patcher.hpp>
 #include <IOKit/acpi/IOACPIPlatformExpert.h>
 #include <IOKit/graphics/IOFramebuffer.h>
@@ -63,6 +67,10 @@ class NootRXMain {
     UInt32 pciRevision {0};
     IOPCIDevice *GPU {nullptr};
     mach_vm_address_t orgAddDrivers {0};
+    X6000FB x6000fb {};
+    HWLibs hwlibs {};
+    X6000 x6000 {};
+    DYLDPatches dyldpatches {};
 
     static bool wrapAddDrivers(void *that, OSArray *array, bool doNubMatching);
 };
