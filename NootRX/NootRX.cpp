@@ -64,7 +64,7 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
             if (device->getProperty("AAPL,slot-name") == nullptr) {
                 snprintf(slotName, sizeof(slotName), "Slot-%zu", ii++);
                 device->setProperty("AAPL,slot-name", slotName,
-                    static_cast<UInt32>(strnlen(slotName, sizeof(slotName))) + 1);
+                    static_cast<UInt32>(strnlen(slotName, sizeof(slotName)) + 1));
             }
             break;
         }
@@ -79,16 +79,15 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
 
     this->deviceID = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigDeviceID);
     this->pciRevision = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigRevisionID);
-    if (this->GPU->getProperty("model") == nullptr) {
-        auto *model = getBranding(this->deviceID, this->pciRevision);
-        auto modelLen = static_cast<UInt32>(strlen(model) + 1);
-        if (model) {
-            this->GPU->setProperty("model", const_cast<char *>(model), modelLen);
-            this->GPU->setProperty("ATY,FamilyName", const_cast<char *>("Radeon RX"), 10);
-            this->GPU->setProperty("ATY,DeviceName", const_cast<char *>(model) + 14,
-                modelLen - 14);    // 6600 XT...
-        }
-    }
+
+    SYSLOG_COND(this->GPU->getProperty("model") != nullptr, "NootRX",
+        "WARNING!!! Attempted to manually override the model, this is no longer supported!!");
+    auto *model = getBranding(this->deviceID, this->pciRevision);
+    auto modelLen = static_cast<UInt32>(strlen(model) + 1);
+    this->GPU->setProperty("model", const_cast<char *>(model), modelLen);
+    this->GPU->setProperty("ATY,FamilyName", const_cast<char *>("Radeon RX"), 10);
+    this->GPU->setProperty("ATY,DeviceName", const_cast<char *>(model) + 14,
+        modelLen - 14);    // 6600 XT...
 
     switch (this->deviceID) {
         case 0x73A2 ... 0x73A3:
