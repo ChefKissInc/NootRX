@@ -217,9 +217,8 @@ bool NootRXMain::wrapAddDrivers(void *that, OSArray *array, bool doNubMatching) 
 }
 
 void NootRXMain::ensureRMMIO() {
-    if (this->rmmio != nullptr && this->rmmio->getLength() != 0) { return; }
+    if (this->rmmio != nullptr) { return; }
 
-    OSSafeReleaseNULL(this->rmmio);
     this->rmmio = this->GPU->mapDeviceMemoryWithRegister(kIOPCIConfigBaseAddress5, kIOMapInhibitCache | kIOMapAnywhere);
     PANIC_COND(this->rmmio == nullptr || this->rmmio->getLength() == 0, "NootRX", "Failed to map RMMIO");
     this->rmmioPtr = reinterpret_cast<UInt32 *>(this->rmmio->getVirtualAddress());
