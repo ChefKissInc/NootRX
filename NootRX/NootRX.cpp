@@ -232,8 +232,7 @@ void NootRXMain::ensureRMMIO() {
 void NootRXMain::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size) {
     if (kextAGDP.loadIndex == id) {
         // Don't apply AGDP patch on MacPro7,1
-        auto boardId = BaseDeviceInfo::get().boardIdentifier;
-        if (!strncmp("Mac-27AD2F918AE68F61", boardId, 21)) { return; }
+        if (!strncmp("Mac-27AD2F918AE68F61", BaseDeviceInfo::get().boardIdentifier, 21)) { return; }
 
         const LookupPatchPlus patch {&kextAGDP, kAGDPBoardIDKeyOriginal, kAGDPBoardIDKeyPatched, 1};
         PANIC_COND(!patch.apply(patcher, slide, size), "NootRX", "Failed to apply AGDP patch");
