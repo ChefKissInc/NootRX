@@ -46,8 +46,11 @@ void NootRXMain::init() {
 void NootRXMain::processPatcher(KernelPatcher &patcher) {
     auto *devInfo = DeviceInfo::create();
     PANIC_COND(devInfo == nullptr, "NootRX", "DeviceInfo::create failed");
+
     devInfo->processSwitchOff();
-    char name[256] = {0};
+
+    char slotName[256];
+    bzero(slotName, sizeof(slotName));
     for (size_t i = 0, ii = 0; i < devInfo->videoExternal.size(); i++) {
         auto *device = OSDynamicCast(IOPCIDevice, devInfo->videoExternal[i].video);
         if (!device) { continue; }
@@ -55,27 +58,28 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
         if (WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigVendorID) == WIOKit::VendorID::ATIAMD &&
             devid == 0x7300) {
             this->GPU = device;
-            snprintf(name, arrsize(name), "GFX%zu", ii++);
-            WIOKit::renameDevice(device, name);
+            snprintf(slotName, arrsize(slotName), "GFX%zu", ii++);
+            WIOKit::renameDevice(device, slotName);
             WIOKit::awaitPublishing(device);
-            if (!device->getProperty("AAPL,slot-name")) {
-                snprintf(name, sizeof(name), "Slot-%zu", ii++);
-                device->setProperty("AAPL,slot-name", name, sizeof("Slot-1"));
+            if (device->getProperty("AAPL,slot-name") == nullptr) {
+                snprintf(slotName, sizeof(slotName), "Slot-%zu", ii++);
+                device->setProperty("AAPL,slot-name", slotName,
+                    static_cast<UInt32>(strnlen(slotName, sizeof(slotName))) + 1);
             }
             break;
         }
     }
 
-    PANIC_COND(!this->GPU, "NootRX", "Failed to find a compatible GPU");
+    PANIC_COND(this->GPU == nullptr, "NootRX", "Failed to find a compatible GPU");
 
-    if (!GPU->getProperty("built-in")) {
-        static UInt8 builtin[] = {0x00};
-        this->GPU->setProperty("built-in", builtin, arrsize(builtin));
+    if (this->GPU->getProperty("built-in") == nullptr) {
+        static UInt8 builtIn[] = {0x00};
+        this->GPU->setProperty("built-in", builtIn, arrsize(builtIn));
     }
 
     this->deviceID = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigDeviceID);
     this->pciRevision = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigRevisionID);
-    if (!this->GPU->getProperty("model")) {
+    if (this->GPU->getProperty("model") == nullptr) {
         auto *model = getBranding(this->deviceID, this->pciRevision);
         auto modelLen = static_cast<UInt32>(strlen(model) + 1);
         if (model) {
