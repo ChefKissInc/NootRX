@@ -3,7 +3,7 @@
 
 #pragma once
 #include "AMDCommon.hpp"
-#include "NootRX.hpp"
+#include <Headers/kern_patcher.hpp>
 #include <Headers/kern_util.hpp>
 
 class HWLibs {

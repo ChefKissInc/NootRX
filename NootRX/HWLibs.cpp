@@ -340,7 +340,7 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *
             break;
         }
         case kPSPCommandLoadIPFW: {
-            auto *prefix = NootRXMain::getGCPrefix();
+            auto *prefix = NootRXMain::callback->getGCPrefix();
             auto uCodeID = getMember<AMDUCodeID>(cmd, 0x10);
             switch (uCodeID) {
                 case kUCodeSMU:

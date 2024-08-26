@@ -237,3 +237,27 @@ void NootRXMain::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_
         DBGLOG("NootRX", "Processed Accelerator");
     }
 }
+
+UInt32 NootRXMain::readReg32(UInt32 reg) {
+    if ((reg * 4) < this->rmmio->getLength()) {
+        return this->rmmioPtr[reg];
+    } else {
+        this->rmmioPtr[mmPCIE_INDEX2] = reg;
+        return this->rmmioPtr[mmPCIE_DATA2];
+    }
+}
+
+void NootRXMain::writeReg32(UInt32 reg, UInt32 val) {
+    if ((reg * 4) < this->rmmio->getLength()) {
+        this->rmmioPtr[reg] = val;
+    } else {
+        this->rmmioPtr[mmPCIE_INDEX2] = reg;
+        this->rmmioPtr[mmPCIE_DATA2] = val;
+    }
+}
+
+const char *NootRXMain::getGCPrefix() {
+    PANIC_COND(callback->chipType == ChipType::Unknown, "NootRX", "Unknown chip type");
+    static const char *gcPrefixes[] = {"gc_10_3_", "gc_10_3_2_", "gc_10_3_4_"};
+    return gcPrefixes[static_cast<int>(callback->chipType)];
+}

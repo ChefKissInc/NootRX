@@ -2,7 +2,6 @@
 // See LICENSE for details.
 
 #pragma once
-#include "AMDCommon.hpp"
 #include "DYLDPatches.hpp"
 #include "HWLibs.hpp"
 #include "X6000.hpp"
@@ -34,29 +33,9 @@ class NootRXMain {
     void ensureRMMIO();
     void processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size);
 
-    UInt32 readReg32(UInt32 reg) {
-        if ((reg * 4) < this->rmmio->getLength()) {
-            return this->rmmioPtr[reg];
-        } else {
-            this->rmmioPtr[mmPCIE_INDEX2] = reg;
-            return this->rmmioPtr[mmPCIE_DATA2];
-        }
-    }
-
-    void writeReg32(UInt32 reg, UInt32 val) {
-        if ((reg * 4) < this->rmmio->getLength()) {
-            this->rmmioPtr[reg] = val;
-        } else {
-            this->rmmioPtr[mmPCIE_INDEX2] = reg;
-            this->rmmioPtr[mmPCIE_DATA2] = val;
-        }
-    }
-
-    static const char *getGCPrefix() {
-        PANIC_COND(callback->chipType == ChipType::Unknown, "NootRX", "Unknown chip type");
-        static const char *gcPrefixes[] = {"gc_10_3_", "gc_10_3_2_", "gc_10_3_4_"};
-        return gcPrefixes[static_cast<int>(callback->chipType)];
-    }
+    UInt32 readReg32(UInt32 reg);
+    void writeReg32(UInt32 reg, UInt32 val);
+    const char *getGCPrefix();
 
     ChipType chipType {ChipType::Unknown};
     IOMemoryMap *rmmio {nullptr};
@@ -67,6 +46,7 @@ class NootRXMain {
     UInt32 pciRevision {0};
     IOPCIDevice *GPU {nullptr};
     mach_vm_address_t orgAddDrivers {0};
+
     X6000FB x6000fb {};
     HWLibs hwlibs {};
     X6000 x6000 {};
