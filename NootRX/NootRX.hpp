@@ -11,11 +11,33 @@
 #include <IOKit/graphics/IOFramebuffer.h>
 #include <IOKit/pci/IOPCIDevice.h>
 
-enum struct ChipType : UInt32 {
-    Navi21 = 0,
-    Navi22,
-    Navi23,
-    Unknown,
+class NootRXAttributes {
+    UInt8 value {0};
+
+    static constexpr UInt8 VCNEnabled = (1U << 0);
+    static constexpr UInt8 BeforeMonterey = (1U << 1);
+    static constexpr UInt8 VenturaAndLater = (1U << 2);
+    static constexpr UInt8 Sonoma1404AndLater = (1U << 3);
+    static constexpr UInt8 Navi21 = (1U << 4);
+    static constexpr UInt8 Navi22 = (1U << 5);
+    static constexpr UInt8 Navi23 = (1U << 6);
+
+    public:
+    inline bool isVCNEnabled() { return (this->value & VCNEnabled) != 0; }
+    inline bool isBeforeMonterey() { return (this->value & BeforeMonterey) != 0; }
+    inline bool isVenturaAndLater() { return (this->value & VenturaAndLater) != 0; }
+    inline bool isSonoma1404AndLater() { return (this->value & Sonoma1404AndLater) != 0; }
+    inline bool isNavi21() { return (this->value & Navi21) != 0; }
+    inline bool isNavi22() { return (this->value & Navi22) != 0; }
+    inline bool isNavi23() { return (this->value & Navi23) != 0; }
+
+    inline void setVCNEnabled() { this->value |= VCNEnabled; }
+    inline void setBeforeMonterey() { this->value |= BeforeMonterey; }
+    inline void setVenturaAndLater() { this->value |= VenturaAndLater; }
+    inline void setSonoma1404AndLater() { this->value |= Sonoma1404AndLater; }
+    inline void setNavi21() { this->value |= Navi21; }
+    inline void setNavi22() { this->value |= Navi22; }
+    inline void setNavi23() { this->value |= Navi23; }
 };
 
 class NootRXMain {
@@ -37,7 +59,7 @@ class NootRXMain {
     void writeReg32(UInt32 reg, UInt32 val);
     const char *getGCPrefix();
 
-    ChipType chipType {ChipType::Unknown};
+    NootRXAttributes attributes {};
     IOMemoryMap *rmmio {nullptr};
     volatile UInt32 *rmmioPtr {nullptr};
     UInt32 deviceID {0};

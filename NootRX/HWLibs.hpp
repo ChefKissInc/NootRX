@@ -3,6 +3,7 @@
 
 #pragma once
 #include "AMDCommon.hpp"
+#include "ObjectField.hpp"
 #include <Headers/kern_patcher.hpp>
 #include <Headers/kern_util.hpp>
 
@@ -14,11 +15,13 @@ class HWLibs {
     bool processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size);
 
     private:
+    ObjectField<UInt8 *> pspCommandDataField {};
+
     mach_vm_address_t orgPspCmdKmSubmit {0};
     mach_vm_address_t orgSmu1107SendMessageWithParameter {0};
 
     static const char *wrapGetMatchProperty(void);
-    static CAILResult wrapPspCmdKmSubmit(void *ctx, void *cmd, void *param3, void *param4);
+    static CAILResult wrapPspCmdKmSubmit(void *ctx, void *cmd, void *outData, void *outResponse);
     static CAILResult wrapSmu1107SendMessageWithParameter(void *smum, UInt32 msgId, UInt32 param);
 };
 

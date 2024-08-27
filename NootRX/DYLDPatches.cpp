@@ -10,7 +10,7 @@ DYLDPatches *DYLDPatches::callback = nullptr;
 void DYLDPatches::init() { callback = this; }
 
 void DYLDPatches::processPatcher(KernelPatcher &patcher) {
-    if (!(lilu.getRunMode() & LiluAPI::RunningNormal) || checkKernelArgument("-NRXNoVCN")) { return; }
+    if (!(lilu.getRunMode() & LiluAPI::RunningNormal)) { return; }
 
     KernelPatcher::RouteRequest request {"_cs_validate_page", wrapCsValidatePage, this->orgCsValidatePage};
 

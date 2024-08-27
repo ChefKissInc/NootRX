@@ -25,10 +25,37 @@ NootRXMain *NootRXMain::callback = nullptr;
 
 void NootRXMain::init() {
     SYSLOG("NootRX", "Copyright 2023-2024 ChefKiss. If you've paid for this, you've been scammed.");
+
+    if (!checkKernelArgument("-NRXNoVCN")) { this->attributes.setVCNEnabled(); }
+
+    switch (getKernelVersion()) {
+        case KernelVersion::BigSur:
+            this->attributes.setBeforeMonterey();
+            break;
+        case KernelVersion::Monterey:
+            break;
+        case KernelVersion::Ventura:
+            this->attributes.setVenturaAndLater();
+            break;
+        case KernelVersion::Sonoma:
+            this->attributes.setVenturaAndLater();
+            if (getKernelMinorVersion() >= 4) { this->attributes.setSonoma1404AndLater(); }
+            break;
+        case KernelVersion::Sequoia:
+            this->attributes.setVenturaAndLater();
+            this->attributes.setSonoma1404AndLater();
+            break;
+        default:
+            PANIC("NootRX", "Unsupported kernel version %d", getKernelVersion());
+    }
+
+    SYSLOG("NootRX", "Module initialised");
+
     callback = this;
 
     lilu.onKextLoadForce(&kextAGDP);
-    this->dyldpatches.init();
+
+    if (NootRXMain::callback->attributes.isVCNEnabled()) { this->dyldpatches.init(); }
     this->x6000fb.init();
     this->hwlibs.init();
     this->x6000.init();
@@ -53,21 +80,21 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
     bzero(slotName, sizeof(slotName));
     for (size_t i = 0, ii = 0; i < devInfo->videoExternal.size(); i++) {
         auto *device = OSDynamicCast(IOPCIDevice, devInfo->videoExternal[i].video);
-        if (!device) { continue; }
-        auto devid = WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigDeviceID) & 0xFF00;
-        if (WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigVendorID) == WIOKit::VendorID::ATIAMD &&
-            devid == 0x7300) {
-            this->GPU = device;
-            snprintf(slotName, arrsize(slotName), "GFX%zu", ii++);
-            WIOKit::renameDevice(device, slotName);
-            WIOKit::awaitPublishing(device);
-            if (device->getProperty("AAPL,slot-name") == nullptr) {
-                snprintf(slotName, sizeof(slotName), "Slot-%zu", ii++);
-                device->setProperty("AAPL,slot-name", slotName,
-                    static_cast<UInt32>(strnlen(slotName, sizeof(slotName)) + 1));
-            }
-            break;
+        if (device == nullptr) { continue; }
+        if (WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigVendorID) != WIOKit::VendorID::ATIAMD ||
+            (WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigDeviceID) & 0xFF00) != 0x7300) {
+            continue;
         }
+        this->GPU = device;
+        snprintf(slotName, arrsize(slotName), "GFX%zu", ii++);
+        WIOKit::renameDevice(device, slotName);
+        WIOKit::awaitPublishing(device);
+        if (device->getProperty("AAPL,slot-name") == nullptr) {
+            snprintf(slotName, sizeof(slotName), "Slot-%zu", ii++);
+            device->setProperty("AAPL,slot-name", slotName,
+                static_cast<UInt32>(strnlen(slotName, sizeof(slotName)) + 1));
+        }
+        break;
     }
 
     PANIC_COND(this->GPU == nullptr, "NootRX", "Failed to find a compatible GPU");
@@ -96,50 +123,41 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
     }
 
     switch (this->deviceID) {
-        case 0x73A2 ... 0x73A3:
-            [[fallthrough]];
+        case 0x73A2:
+        case 0x73A3:
         case 0x73A5:
-            [[fallthrough]];
         case 0x73AB:
-            [[fallthrough]];
         case 0x73AF:
-            [[fallthrough]];
         case 0x73BF:
-            this->chipType = ChipType::Navi21;
+            this->attributes.setNavi21();
             this->enumRevision = 0x28;
             break;
         case 0x73DF:
-            PANIC_COND(getKernelVersion() < KernelVersion::Monterey, "NootRX",
-                "Unsupported macOS version; Navi 22 requires macOS Monterey or newer");
-            this->chipType = ChipType::Navi22;
+            PANIC_COND(this->attributes.isBeforeMonterey(), "NootRX", "Your GPU requires macOS 12 and newer");
+            this->attributes.setNavi22();
             this->enumRevision = 0x32;
             break;
-        case 0x73E0 ... 0x73E1:
-            [[fallthrough]];
+        case 0x73E0:
+        case 0x73E1:
         case 0x73E3:
-            [[fallthrough]];
         case 0x73EF:
-            [[fallthrough]];
         case 0x73FF:
+            PANIC_COND(this->attributes.isBeforeMonterey(), "NootRX", "Your GPU requires macOS 12 and newer");
             if (this->pciRevision == 0xDF) {
-                PANIC_COND(getKernelVersion() < KernelVersion::Monterey, "NootRX",
-                    "Unsupported macOS version; Navi 22 requires macOS Monterey or newer");
-                this->chipType = ChipType::Navi22;
+                this->attributes.setNavi22();
                 this->enumRevision = 0x32;
-                break;
+            } else {
+                this->attributes.setNavi23();
+                this->enumRevision = 0x3C;
             }
-            PANIC_COND(getKernelVersion() < KernelVersion::Monterey, "NootRX",
-                "Unsupported macOS version; Navi 23 requires macOS Monterey or newer");
-            this->chipType = ChipType::Navi23;
-            this->enumRevision = 0x3C;
             break;
         default:
-            PANIC("NootRX", "Unknown device ID");
+            PANIC("NootRX", "Unknown device ID: 0x%04X", this->deviceID);
     }
 
     DeviceInfo::deleter(devInfo);
 
-    this->dyldpatches.processPatcher(patcher);
+    if (NootRXMain::callback->attributes.isVCNEnabled()) { this->dyldpatches.processPatcher(patcher); }
 
     KernelPatcher::RouteRequest request {"__ZN11IOCatalogue10addDriversEP7OSArrayb", wrapAddDrivers,
         this->orgAddDrivers};
@@ -237,7 +255,7 @@ void NootRXMain::ensureRMMIO() {
 void NootRXMain::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t slide, size_t size) {
     if (kextAGDP.loadIndex == id) {
         // Don't apply AGDP patch on MacPro7,1
-        if (!strncmp("Mac-27AD2F918AE68F61", BaseDeviceInfo::get().boardIdentifier, 21)) { return; }
+        if (strncmp("Mac-27AD2F918AE68F61", BaseDeviceInfo::get().boardIdentifier, 21) == 0) { return; }
 
         const LookupPatchPlus patch {&kextAGDP, kAGDPBoardIDKeyOriginal, kAGDPBoardIDKeyPatched, 1};
         PANIC_COND(!patch.apply(patcher, slide, size), "NootRX", "Failed to apply AGDP patch");
@@ -271,7 +289,13 @@ void NootRXMain::writeReg32(UInt32 reg, UInt32 val) {
 }
 
 const char *NootRXMain::getGCPrefix() {
-    PANIC_COND(callback->chipType == ChipType::Unknown, "NootRX", "Unknown chip type");
-    static const char *gcPrefixes[] = {"gc_10_3_", "gc_10_3_2_", "gc_10_3_4_"};
-    return gcPrefixes[static_cast<int>(callback->chipType)];
+    if (this->attributes.isNavi21()) {
+        return "gc_10_3_";
+    } else if (this->attributes.isNavi22()) {
+        return "gc_10_3_2_";
+    } else if (this->attributes.isNavi23()) {
+        return "gc_10_3_4_";
+    } else {
+        UNREACHABLE();
+    }
 }

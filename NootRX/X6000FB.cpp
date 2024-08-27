@@ -21,7 +21,10 @@ static KernelPatcher::KextInfo kextRadeonX6000Framebuffer {
 X6000FB *X6000FB::callback = nullptr;
 
 void X6000FB::init() {
+    SYSLOG("X6000FB", "Module initialised");
+
     callback = this;
+
     lilu.onKextLoadForce(&kextRadeonX6000Framebuffer);
 }
 
@@ -37,7 +40,7 @@ bool X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t s
         PANIC_COND(!SolveRequestPlus::solveAll(patcher, id, solveRequests, slide, size), "X6000FB",
             "Failed to resolve CailAsicCapsTable");
 
-        if (NootRXMain::callback->chipType == ChipType::Navi22) {
+        if (NootRXMain::callback->attributes.isNavi22()) {
             RouteRequestPlus request {"__ZNK32AMDRadeonX6000_AmdAsicInfoNavi2327getEnumeratedRevisionNumberEv",
                 wrapGetEnumeratedRevision};
             PANIC_COND(!request.route(patcher, id, slide, size), "X6000FB",
@@ -103,9 +106,10 @@ void X6000FB::wrapDmLoggerWrite(void *, UInt32 logType, char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
     auto *ns = new char[0x10000];
+    bzero(ns, 0x10000);
     vsnprintf(ns, 0x10000, fmt, args);
     va_end(args);
-    const char *logTypeStr = arrsize(LogTypes) > logType ? LogTypes[logType] : "Info";
+    const char *logTypeStr = logType < arrsize(LogTypes) ? LogTypes[logType] : "Info";
     kprintf("[%s] %s", logTypeStr, ns);
     delete[] ns;
 }

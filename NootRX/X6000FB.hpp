@@ -18,7 +18,7 @@ class X6000FB {
     static UInt16 wrapGetEnumeratedRevision();
     static bool wrapInitWithPciInfo(void *that, void *param1);
     static void wrapDoGPUPanic();
-    static void wrapDmLoggerWrite([[maybe_unused]] void *dalLogger, UInt32 logType, char *fmt, ...);
+    static void wrapDmLoggerWrite(void *dalLogger, UInt32 logType, char *fmt, ...);
 };
 
 //------ Patterns ------//
