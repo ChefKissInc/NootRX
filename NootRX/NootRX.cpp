@@ -189,9 +189,9 @@ static const char *DriverBundleIdentifiers[] = {
     "com.apple.kext.AMDRadeonX6000Framebuffer",
 };
 
-bool NootRXMain::wrapAddDrivers(void *that, OSArray *array, bool doNubMatching) {
-    UInt8 matched = 0;
+static UInt8 matchedDrivers = 0;
 
+bool NootRXMain::wrapAddDrivers(void *that, OSArray *array, bool doNubMatching) {
     UInt32 driverCount = array->getCount();
     for (UInt32 driverIndex = 0; driverIndex < driverCount; driverIndex += 1) {
         OSObject *object = array->getObject(driverIndex);
@@ -204,10 +204,10 @@ bool NootRXMain::wrapAddDrivers(void *that, OSArray *array, bool doNubMatching) 
         if (bundleIdentifierCStr == nullptr) { continue; }
 
         for (size_t identifierIndex = 0; identifierIndex < arrsize(DriverBundleIdentifiers); identifierIndex += 1) {
-            if ((matched & (1U << identifierIndex)) != 0) { continue; }
+            if ((matchedDrivers & (1U << identifierIndex)) != 0) { continue; }
 
             if (strcmp(bundleIdentifierCStr, DriverBundleIdentifiers[identifierIndex]) == 0) {
-                matched |= (1U << identifierIndex);
+                matchedDrivers |= (1U << identifierIndex);
 
                 DBGLOG("NootRX", "Matched %s, injecting.", bundleIdentifierCStr);
 
