@@ -16,7 +16,7 @@ static KernelPatcher::KextInfo kextAGDP {
     "com.apple.driver.AppleGraphicsDevicePolicy",
     &pathAGDP,
     1,
-    {true},
+    {},
     {},
     KernelPatcher::KextInfo::Unloaded,
 };
