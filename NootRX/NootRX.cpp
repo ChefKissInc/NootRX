@@ -188,6 +188,12 @@ static const char *DriverBundleIdentifiers[] = {
     "com.apple.kext.AMDRadeonX6000HWServices",
     "com.apple.kext.AMDRadeonX6000Framebuffer",
 };
+static const char *DriverBundleXMLsBigSur[] = {
+    nullptr,
+    nullptr,
+    "com.apple.kext.AMDRadeonX6000Framebuffer_BigSur",
+};
+static_assert(arrsize(DriverBundleIdentifiers) == arrsize(DriverBundleXMLsBigSur));
 
 static UInt8 matchedDrivers = 0;
 
@@ -212,7 +218,10 @@ bool NootRXMain::wrapAddDrivers(void *that, OSArray *array, bool doNubMatching) 
                 DBGLOG("NootRX", "Matched %s, injecting.", bundleIdentifierCStr);
 
                 size_t len;
-                auto *driverXML = getDriverXMLForBundle(bundleIdentifierCStr, &len);
+                auto *driverBundle = callback->attributes.isBeforeMonterey() ? DriverBundleXMLsBigSur[identifierIndex] :
+                                                                               bundleIdentifierCStr;
+                if (driverBundle == nullptr) { driverBundle = bundleIdentifierCStr; }
+                auto *driverXML = getDriverXMLForBundle(driverBundle, &len);
 
                 OSString *errStr = nullptr;
                 auto *dataUnserialized = OSUnserializeXML(driverXML, len, &errStr);
