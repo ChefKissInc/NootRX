@@ -215,6 +215,17 @@ enum AMDUCodeID : UInt32 {
     kUCodeVCN1 = 0x2A,
 };
 
+struct CosReadConfigurationSettingInput {
+    const char *settingName;
+    uint32_t settingType;
+    uint32_t outLen;
+    void *outPtr;
+};
+
+struct CosReadConfigurationSettingOutput {
+    uint32_t settingLen;
+};
+
 //-------- AMD Catalyst Constants --------//
 
 constexpr UInt64 DEVICE_CAP_ENTRY_REV_DONT_CARE = 0xDEADCAFEU;
