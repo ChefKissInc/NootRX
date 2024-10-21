@@ -30,7 +30,7 @@ void NootRXMain::init() {
 
     switch (getKernelVersion()) {
         case KernelVersion::BigSur:
-            this->attributes.setBeforeMonterey();
+            this->attributes.setBigSur();
             break;
         case KernelVersion::Monterey:
             break;
@@ -133,7 +133,7 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
             this->enumRevision = 0x28;
             break;
         case 0x73DF:
-            PANIC_COND(this->attributes.isBeforeMonterey(), "NootRX", "Your GPU requires macOS 12 and newer");
+            PANIC_COND(this->attributes.isBigSur(), "NootRX", "Your GPU requires macOS 12 and newer");
             this->attributes.setNavi22();
             this->enumRevision = 0x32;
             break;
@@ -142,7 +142,7 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
         case 0x73E3:
         case 0x73EF:
         case 0x73FF:
-            PANIC_COND(this->attributes.isBeforeMonterey(), "NootRX", "Your GPU requires macOS 12 and newer");
+            PANIC_COND(this->attributes.isBigSur(), "NootRX", "Your GPU requires macOS 12 and newer");
             if (this->pciRevision == 0xDF) {
                 this->attributes.setNavi22();
                 this->enumRevision = 0x32;
@@ -218,8 +218,8 @@ bool NootRXMain::wrapAddDrivers(void *that, OSArray *array, bool doNubMatching) 
                 DBGLOG("NootRX", "Matched %s, injecting.", bundleIdentifierCStr);
 
                 size_t len;
-                auto *driverBundle = callback->attributes.isBeforeMonterey() ? DriverBundleXMLsBigSur[identifierIndex] :
-                                                                               bundleIdentifierCStr;
+                auto *driverBundle =
+                    callback->attributes.isBigSur() ? DriverBundleXMLsBigSur[identifierIndex] : bundleIdentifierCStr;
                 if (driverBundle == nullptr) { driverBundle = bundleIdentifierCStr; }
                 auto *driverXML = getDriverXMLForBundle(driverBundle, &len);
 
