@@ -87,7 +87,11 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         RouteRequestPlus request {"__ZN38AMDRadeonX6000_AMDRadeonHWServicesNavi16getMatchPropertyEv",
             wrapGetMatchProperty};
         PANIC_COND(!request.route(patcher, id, slide, size), "HWServices", "Failed to route getMatchProperty");
-    } else if ((kextRadeonX6810HWLibs.loadIndex == id) || (kextRadeonX6800HWLibs.loadIndex == id)) {
+
+        return true;
+    }
+
+    if (kextRadeonX6810HWLibs.loadIndex == id || kextRadeonX6800HWLibs.loadIndex == id) {
         NootRXMain::callback->ensureRMMIO();
 
         CAILAsicCapsEntry *orgCapsTable = nullptr;
