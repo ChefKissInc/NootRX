@@ -326,7 +326,8 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
 }
 
 const char *HWLibs::wrapGetMatchProperty() {
-    return NootRXMain::callback->attributes.isNavi21() ? "Load6800" : "Load6810";
+    if (NootRXMain::callback->attributes.isNavi21()) { return "Load6800"; }
+    return "Load6810";
 }
 
 CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *outData, void *outResponse) {
