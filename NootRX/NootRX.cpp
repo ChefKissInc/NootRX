@@ -99,10 +99,8 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
 
     PANIC_COND(this->GPU == nullptr, "NootRX", "Failed to find a compatible GPU");
 
-    if (this->GPU->getProperty("built-in") == nullptr) {
-        static UInt8 builtIn[] = {0x00};
-        this->GPU->setProperty("built-in", builtIn, arrsize(builtIn));
-    }
+    UInt8 builtIn[] = {0x00};
+    this->GPU->setProperty("built-in", builtIn, arrsize(builtIn));
 
     this->deviceID = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigDeviceID);
     this->pciRevision = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigRevisionID);
