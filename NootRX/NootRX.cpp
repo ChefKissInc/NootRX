@@ -49,6 +49,11 @@ void NootRXMain::init() {
             PANIC("NootRX", "Unsupported kernel version %d", getKernelVersion());
     }
 
+    DBGLOG("NootRX", "isVCNEnabled: %s", this->attributes.isVCNEnabled() ? "yes" : "no");
+    DBGLOG("NootRX", "isBigSur: %s", this->attributes.isBigSur() ? "yes" : "no");
+    DBGLOG("NootRX", "isVenturaAndLater: %s", this->attributes.isVenturaAndLater() ? "yes" : "no");
+    DBGLOG("NootRX", "isSonoma1404AndLater: %s", this->attributes.isSonoma1404AndLater() ? "yes" : "no");
+
     SYSLOG("NootRX", "Module initialised");
 
     callback = this;
@@ -151,6 +156,13 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
         default:
             PANIC("NootRX", "Unknown device ID: 0x%04X", this->deviceId);
     }
+
+    DBGLOG("NootRX", "deviceId: 0x%04X", this->deviceId);
+    DBGLOG("NootRX", "pciRevision: 0x%X", this->pciRevision);
+    DBGLOG("NootRX", "enumRevision: 0x%X", this->enumRevision);
+    DBGLOG("NootRX", "isNavi21: %s", this->attributes.isNavi21() ? "yes" : "no");
+    DBGLOG("NootRX", "isNavi22: %s", this->attributes.isNavi22() ? "yes" : "no");
+    DBGLOG("NootRX", "isNavi23: %s", this->attributes.isNavi23() ? "yes" : "no");
 
     DeviceInfo::deleter(devInfo);
 
