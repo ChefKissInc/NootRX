@@ -34,13 +34,10 @@ bool X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t s
 
         CAILAsicCapsEntry *orgAsicCapsTable = nullptr;
 
-        SolveRequestPlus solveRequests[] = {
-            {"__ZL20CAIL_ASIC_CAPS_TABLE", orgAsicCapsTable, kCailAsicCapsTablePattern},
-        };
-        PANIC_COND(!SolveRequestPlus::solveAll(patcher, id, solveRequests, slide, size), "X6000FB",
-            "Failed to resolve CailAsicCapsTable");
+        SolveRequestPlus solveRequest {"__ZL20CAIL_ASIC_CAPS_TABLE", orgAsicCapsTable, kCailAsicCapsTablePattern};
+        PANIC_COND(!solveRequest.solve(patcher, id, slide, size), "X6000FB", "Failed to resolve CAIL_ASIC_CAPS_TABLE");
 
-        if (NootRXMain::callback->attributes.isNavi22()) {
+        if (!NootRXMain::callback->attributes.isNavi21()) {
             RouteRequestPlus request {"__ZNK32AMDRadeonX6000_AmdAsicInfoNavi2327getEnumeratedRevisionNumberEv",
                 wrapGetEnumeratedRevision};
             PANIC_COND(!request.route(patcher, id, slide, size), "X6000FB",
@@ -60,14 +57,13 @@ bool X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t s
 
         PANIC_COND(MachInfo::setKernelWriting(true, KernelPatcher::kernelWriteLock) != KERN_SUCCESS, "X6000FB",
             "Failed to enable kernel writing");
-        *orgAsicCapsTable = {
-            .familyId = AMDGPU_FAMILY_NAVI,
-            .deviceId = NootRXMain::callback->deviceID,
-            .revision = NootRXMain::callback->devRevision,
-            .extRevision = static_cast<UInt32>(NootRXMain::callback->enumRevision) + NootRXMain::callback->devRevision,
-            .pciRevision = NootRXMain::callback->pciRevision,
-            .caps = ddiCapsNavi2Universal,
-        };
+        orgAsicCapsTable[0].familyId = AMDGPU_FAMILY_NAVI;
+        orgAsicCapsTable[0].deviceId = NootRXMain::callback->deviceId;
+        orgAsicCapsTable[0].revNo = NootRXMain::callback->devRevision;
+        orgAsicCapsTable[0].emulatedRevNo =
+            static_cast<UInt32>(NootRXMain::callback->enumRevision) + NootRXMain::callback->devRevision;
+        orgAsicCapsTable[0].revId = NootRXMain::callback->pciRevision;
+        orgAsicCapsTable[0].caps = ddiCapsNavi2Universal;
         MachInfo::setKernelWriting(false, KernelPatcher::kernelWriteLock);
         DBGLOG("X6000FB", "Applied DDI Caps patches");
 
@@ -108,7 +104,7 @@ bool X6000FB::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t s
     return false;
 }
 
-UInt16 X6000FB::wrapGetEnumeratedRevision() { return NootRXMain::callback->enumRevision; }
+UInt32 X6000FB::wrapGetEnumeratedRevision(void *) { return NootRXMain::callback->enumRevision; }
 
 bool X6000FB::wrapInitWithPciInfo(void *that, void *pciDevice) {
     auto ret = FunctionCast(wrapInitWithPciInfo, callback->orgInitWithPciInfo)(that, pciDevice);

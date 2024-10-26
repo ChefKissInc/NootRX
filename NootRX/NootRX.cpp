@@ -81,46 +81,45 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
     for (size_t i = 0, ii = 0; i < devInfo->videoExternal.size(); i++) {
         auto *device = OSDynamicCast(IOPCIDevice, devInfo->videoExternal[i].video);
         if (device == nullptr) { continue; }
-        if (WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigVendorID) != WIOKit::VendorID::ATIAMD ||
-            (WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigDeviceID) & 0xFF00) != 0x7300) {
-            continue;
+        if (WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigVendorID) == WIOKit::VendorID::ATIAMD &&
+            (WIOKit::readPCIConfigValue(device, WIOKit::kIOPCIConfigDeviceID) & 0xFF00) == 0x7300) {
+            this->dGPU = device;
+            snprintf(slotName, arrsize(slotName), "GFX%zu", ii++);
+            WIOKit::renameDevice(device, slotName);
+            WIOKit::awaitPublishing(device);
+            if (device->getProperty("AAPL,slot-name") == nullptr) {
+                snprintf(slotName, sizeof(slotName), "Slot-%zu", ii++);
+                device->setProperty("AAPL,slot-name", slotName,
+                    static_cast<UInt32>(strnlen(slotName, sizeof(slotName)) + 1));
+            }
+            break;
         }
-        this->GPU = device;
-        snprintf(slotName, arrsize(slotName), "GFX%zu", ii++);
-        WIOKit::renameDevice(device, slotName);
-        WIOKit::awaitPublishing(device);
-        if (device->getProperty("AAPL,slot-name") == nullptr) {
-            snprintf(slotName, sizeof(slotName), "Slot-%zu", ii++);
-            device->setProperty("AAPL,slot-name", slotName,
-                static_cast<UInt32>(strnlen(slotName, sizeof(slotName)) + 1));
-        }
-        break;
     }
 
-    PANIC_COND(this->GPU == nullptr, "NootRX", "Failed to find a compatible GPU");
+    PANIC_COND(this->dGPU == nullptr, "NootRX", "Failed to find a compatible GPU");
 
     UInt8 builtIn[] = {0x00};
-    this->GPU->setProperty("built-in", builtIn, arrsize(builtIn));
+    this->dGPU->setProperty("built-in", builtIn, arrsize(builtIn));
 
-    this->deviceID = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigDeviceID);
-    this->pciRevision = WIOKit::readPCIConfigValue(this->GPU, WIOKit::kIOPCIConfigRevisionID);
+    this->deviceId = WIOKit::readPCIConfigValue(this->dGPU, WIOKit::kIOPCIConfigDeviceID);
+    this->pciRevision = WIOKit::readPCIConfigValue(this->dGPU, WIOKit::kIOPCIConfigRevisionID);
 
-    SYSLOG_COND(this->GPU->getProperty("model") != nullptr, "NootRX",
+    SYSLOG_COND(this->dGPU->getProperty("model") != nullptr, "NootRX",
         "WARNING!!! Attempted to manually override the model, this is no longer supported!!");
-    auto *model = getBranding(this->deviceID, this->pciRevision);
+    auto *model = getBranding(this->deviceId, this->pciRevision);
     auto modelLen = static_cast<UInt32>(strlen(model) + 1);
-    this->GPU->setProperty("model", const_cast<char *>(model), modelLen);
+    this->dGPU->setProperty("model", const_cast<char *>(model), modelLen);
     if (model[11] == 'P' && model[12] == 'r' && model[13] == 'o' && model[14] == ' ') {
-        this->GPU->setProperty("ATY,FamilyName", const_cast<char *>("Radeon Pro"), 11);
+        this->dGPU->setProperty("ATY,FamilyName", const_cast<char *>("Radeon Pro"), 11);
         // Without AMD Radeon Pro prefix
-        this->GPU->setProperty("ATY,DeviceName", const_cast<char *>(model) + 15, modelLen - 15);
+        this->dGPU->setProperty("ATY,DeviceName", const_cast<char *>(model) + 15, modelLen - 15);
     } else {
-        this->GPU->setProperty("ATY,FamilyName", const_cast<char *>("Radeon RX"), 10);
+        this->dGPU->setProperty("ATY,FamilyName", const_cast<char *>("Radeon RX"), 10);
         // Without AMD Radeon RX prefix
-        this->GPU->setProperty("ATY,DeviceName", const_cast<char *>(model) + 14, modelLen - 14);
+        this->dGPU->setProperty("ATY,DeviceName", const_cast<char *>(model) + 14, modelLen - 14);
     }
 
-    switch (this->deviceID) {
+    switch (this->deviceId) {
         case 0x73A2:
         case 0x73A3:
         case 0x73A5:
@@ -150,7 +149,7 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
             }
             break;
         default:
-            PANIC("NootRX", "Unknown device ID: 0x%04X", this->deviceID);
+            PANIC("NootRX", "Unknown device ID: 0x%04X", this->deviceId);
     }
 
     DeviceInfo::deleter(devInfo);
@@ -253,7 +252,8 @@ bool NootRXMain::wrapAddDrivers(void *that, OSArray *array, bool doNubMatching) 
 void NootRXMain::ensureRMMIO() {
     if (this->rmmio != nullptr) { return; }
 
-    this->rmmio = this->GPU->mapDeviceMemoryWithRegister(kIOPCIConfigBaseAddress5, kIOMapInhibitCache | kIOMapAnywhere);
+    this->rmmio =
+        this->dGPU->mapDeviceMemoryWithRegister(kIOPCIConfigBaseAddress5, kIOMapInhibitCache | kIOMapAnywhere);
     PANIC_COND(this->rmmio == nullptr || this->rmmio->getLength() == 0, "NootRX", "Failed to map RMMIO");
     this->rmmioPtr = reinterpret_cast<UInt32 *>(this->rmmio->getVirtualAddress());
     this->devRevision = (this->readReg32(0xD31) & 0xF000000) >> 0x18;

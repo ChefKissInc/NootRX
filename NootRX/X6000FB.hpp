@@ -15,7 +15,7 @@ class X6000FB {
     private:
     mach_vm_address_t orgInitWithPciInfo {0};
 
-    static UInt16 wrapGetEnumeratedRevision();
+    static UInt32 wrapGetEnumeratedRevision(void *that);
     static bool wrapInitWithPciInfo(void *that, void *pciDevice);
     static void wrapDoGPUPanic(void *that, char const *fmt, ...);
     static void wrapDmLoggerWrite(void *logger, const UInt32 logType, const char *fmt, ...);

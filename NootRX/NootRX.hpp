@@ -62,11 +62,11 @@ class NootRXMain {
     NootRXAttributes attributes {};
     IOMemoryMap *rmmio {nullptr};
     volatile UInt32 *rmmioPtr {nullptr};
-    UInt32 deviceID {0};
+    UInt32 deviceId {0};
     UInt16 enumRevision {0};
     UInt16 devRevision {0};
     UInt32 pciRevision {0};
-    IOPCIDevice *GPU {nullptr};
+    IOPCIDevice *dGPU {nullptr};
     mach_vm_address_t orgAddDrivers {0};
 
     X6000FB x6000fb {};

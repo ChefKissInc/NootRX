@@ -148,7 +148,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
             "Failed to enable kernel writing");
 
         *orgDeviceTypeTable = {
-            .deviceId = NootRXMain::callback->deviceID,
+            .deviceId = NootRXMain::callback->deviceId,
             .deviceType = (kextRadeonX6800HWLibs.loadIndex == id) ? 6U : 8,
         };
 
@@ -159,18 +159,18 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
                 orgCapsTable += 1;
                 continue;
             }
-            orgCapsTable->deviceId = NootRXMain::callback->deviceID;
-            orgCapsTable->revision = NootRXMain::callback->devRevision;
-            orgCapsTable->extRevision =
+            orgCapsTable->deviceId = NootRXMain::callback->deviceId;
+            orgCapsTable->revNo = NootRXMain::callback->devRevision;
+            orgCapsTable->emulatedRevNo =
                 static_cast<UInt32>(NootRXMain::callback->enumRevision) + NootRXMain::callback->devRevision;
-            orgCapsTable->pciRevision = NootRXMain::callback->pciRevision;
+            orgCapsTable->revId = NootRXMain::callback->pciRevision;
             orgCapsTable->caps = ddiCapsNavi2Universal;
             if (orgCapsInitTable) {
                 *orgCapsInitTable = {
                     .familyId = AMDGPU_FAMILY_NAVI,
-                    .deviceId = NootRXMain::callback->deviceID,
+                    .deviceId = NootRXMain::callback->deviceId,
                     .revision = NootRXMain::callback->devRevision,
-                    .extRevision = static_cast<UInt32>(orgCapsTable->extRevision),
+                    .extRevision = static_cast<UInt32>(orgCapsTable->emulatedRevNo),
                     .pciRevision = NootRXMain::callback->pciRevision,
                     .caps = orgCapsTable->caps,
                 };
@@ -184,7 +184,7 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
                 orgDevCapTable += 1;
                 continue;
             }
-            orgDevCapTable->deviceId = NootRXMain::callback->deviceID;
+            orgDevCapTable->deviceId = NootRXMain::callback->deviceId;
             orgDevCapTable->extRevision =
                 static_cast<UInt64>(NootRXMain::callback->enumRevision) + NootRXMain::callback->devRevision;
             orgDevCapTable->revision = DEVICE_CAP_ENTRY_REV_DONT_CARE;

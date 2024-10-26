@@ -6,7 +6,7 @@
 #include <Headers/kern_version.hpp>
 #include <Headers/plugin_start.hpp>
 
-static NootRXMain nrx;
+static NootRXMain nrx {};
 
 static const char *bootargDebug = "-NRXDebug";
 
