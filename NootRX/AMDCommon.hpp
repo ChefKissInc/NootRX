@@ -217,13 +217,13 @@ enum AMDUCodeID : UInt32 {
 
 struct CosReadConfigurationSettingInput {
     const char *settingName;
-    uint32_t settingType;
-    uint32_t outLen;
+    UInt32 settingType;
+    UInt32 outLen;
     void *outPtr;
 };
 
 struct CosReadConfigurationSettingOutput {
-    uint32_t settingLen;
+    UInt32 settingLen;
 };
 
 //-------- AMD Catalyst Constants --------//
