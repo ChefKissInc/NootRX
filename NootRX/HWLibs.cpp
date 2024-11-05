@@ -46,12 +46,6 @@ static KernelPatcher::KextInfo kextRadeonX6800HWLibs {
 HWLibs *HWLibs::callback = nullptr;
 
 void HWLibs::init() {
-    if (NootRXMain::callback->attributes.isNavi21() || !NootRXMain::callback->attributes.isVenturaAndLater()) {
-        this->pspCommandDataField = 0xAF8;
-    } else {
-        this->pspCommandDataField = 0xB48;
-    }
-
     SYSLOG("HWLibs", "Module initialised");
 
     callback = this;
@@ -93,6 +87,12 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
 
     if (kextRadeonX6810HWLibs.loadIndex == id || kextRadeonX6800HWLibs.loadIndex == id) {
         NootRXMain::callback->ensureRMMIO();
+
+        if (NootRXMain::callback->attributes.isNavi21() || !NootRXMain::callback->attributes.isVenturaAndLater()) {
+            this->pspCommandDataField = 0xAF8;
+        } else {
+            this->pspCommandDataField = 0xB48;
+        }
 
         CAILAsicCapsEntry *orgCapsTable = nullptr;
         CAILDeviceTypeEntry *orgDeviceTypeTable = nullptr;
