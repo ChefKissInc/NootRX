@@ -26,8 +26,6 @@ NootRXMain *NootRXMain::callback = nullptr;
 void NootRXMain::init() {
     SYSLOG("NootRX", "Copyright 2023-2024 ChefKiss. If you've paid for this, you've been scammed.");
 
-    if (!checkKernelArgument("-NRXNoVCN")) { this->attributes.setVCNEnabled(); }
-
     switch (getKernelVersion()) {
         case KernelVersion::BigSur:
             this->attributes.setBigSur();
@@ -49,7 +47,6 @@ void NootRXMain::init() {
             PANIC("NootRX", "Unsupported kernel version %d", getKernelVersion());
     }
 
-    DBGLOG("NootRX", "isVCNEnabled: %s", this->attributes.isVCNEnabled() ? "yes" : "no");
     DBGLOG("NootRX", "isBigSur: %s", this->attributes.isBigSur() ? "yes" : "no");
     DBGLOG("NootRX", "isVenturaAndLater: %s", this->attributes.isVenturaAndLater() ? "yes" : "no");
     DBGLOG("NootRX", "isSonoma1404AndLater: %s", this->attributes.isSonoma1404AndLater() ? "yes" : "no");
@@ -60,7 +57,7 @@ void NootRXMain::init() {
 
     lilu.onKextLoadForce(&kextAGDP);
 
-    if (NootRXMain::callback->attributes.isVCNEnabled()) { this->dyldpatches.init(); }
+    this->dyldpatches.init();
     this->x6000fb.init();
     this->hwlibs.init();
     this->x6000.init();
@@ -166,7 +163,7 @@ void NootRXMain::processPatcher(KernelPatcher &patcher) {
 
     DeviceInfo::deleter(devInfo);
 
-    if (NootRXMain::callback->attributes.isVCNEnabled()) { this->dyldpatches.processPatcher(patcher); }
+    this->dyldpatches.processPatcher(patcher);
 
     KernelPatcher::RouteRequest request {"__ZN11IOCatalogue10addDriversEP7OSArrayb", wrapAddDrivers,
         this->orgAddDrivers};

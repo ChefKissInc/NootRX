@@ -32,11 +32,9 @@ bool X6000::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sli
     if (kextRadeonX6000.loadIndex == id) {
         NootRXMain::callback->ensureRMMIO();
 
-        if (NootRXMain::callback->attributes.isVCNEnabled()) {
-            RouteRequestPlus request {"__ZN35AMDRadeonX6000_AMDAccelVideoContext9getHWInfoEP13sHardwareInfo",
-                wrapGetHWInfo, this->orgGetHWInfo};
-            PANIC_COND(!request.route(patcher, id, slide, size), "X6000", "Failed to route getHWInfo");
-        }
+        RouteRequestPlus request {"__ZN35AMDRadeonX6000_AMDAccelVideoContext9getHWInfoEP13sHardwareInfo", wrapGetHWInfo,
+            this->orgGetHWInfo};
+        PANIC_COND(!request.route(patcher, id, slide, size), "X6000", "Failed to route getHWInfo");
 
         if (NootRXMain::callback->attributes.isNavi22() && NootRXMain::callback->attributes.isVenturaAndLater()) {
             const LookupPatchPlus patch = {&kextRadeonX6000, kHwlConvertChipFamilyOriginal,
