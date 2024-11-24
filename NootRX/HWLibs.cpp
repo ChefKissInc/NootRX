@@ -263,15 +263,32 @@ bool HWLibs::processKext(KernelPatcher &patcher, size_t id, mach_vm_address_t sl
         MachInfo::setKernelWriting(false, KernelPatcher::kernelWriteLock);
         DBGLOG("HWLibs", "Applied PSP memcpy firmware patches");
 
+        if (NootRXMain::callback->attributes.isNavi21()) {
+            if (NootRXMain::callback->attributes.isBigSur()) {
+                const LookupPatchPlus patch {&kextRadeonX6800HWLibs, kSmu1107CheckFwVersionNavi21Original,
+                    kSmu1107CheckFwVersionNavi21OriginalMask, kSmu1107CheckFwVersionNavi21Patched,
+                    kSmu1107CheckFwVersionNavi21PatchedMask, 1};
+                PANIC_COND(!patch.apply(patcher, slide, size), "HWLibs",
+                    "Failed to apply smu_11_0_7_check_fw_version patch (11.0)");
+            } else {
+                const LookupPatchPlus patch {&kextRadeonX6800HWLibs, kSmu1107CheckFwVersionNavi21Original_12,
+                    kSmu1107CheckFwVersionNavi21OriginalMask_12, kSmu1107CheckFwVersionNavi21Patched_12,
+                    kSmu1107CheckFwVersionNavi21PatchedMask_12, 1};
+                PANIC_COND(!patch.apply(patcher, slide, size), "HWLibs",
+                    "Failed to apply smu_11_0_7_check_fw_version patch (12.0+)");
+            }
+        } else {
+            const LookupPatchPlus patch {&kextRadeonX6810HWLibs, kSmu1107CheckFwVersionOriginal,
+                kSmu1107CheckFwVersionOriginalMask, kSmu1107CheckFwVersionPatched, kSmu1107CheckFwVersionPatchedMask,
+                1};
+            PANIC_COND(!patch.apply(patcher, slide, size), "HWLibs",
+                "Failed to apply smu_11_0_7_check_fw_version patch");
+        }
+
         if (NootRXMain::callback->attributes.isNavi22()) {
-            const LookupPatchPlus patches[] = {
-                {&kextRadeonX6810HWLibs, kGcSwInitOriginal, kGcSwInitOriginalMask, kGcSwInitPatched,
-                    kGcSwInitPatchedMask, 1},
-                {&kextRadeonX6810HWLibs, kSmu1107CheckFwVersionOriginal, kSmu1107CheckFwVersionOriginalMask,
-                    kSmu1107CheckFwVersionPatched, kSmu1107CheckFwVersionPatchedMask, 1},
-            };
-            PANIC_COND(!LookupPatchPlus::applyAll(patcher, patches, slide, size), "HWLibs",
-                "Failed to apply Navi 22 patches (all vers)");
+            const LookupPatchPlus patch {&kextRadeonX6810HWLibs, kGcSwInitOriginal, kGcSwInitOriginalMask,
+                kGcSwInitPatched, kGcSwInitPatchedMask, 1};
+            PANIC_COND(!patch.apply(patcher, slide, size), "HWLibs", "Failed to apply Navi 22 gc_sw_init patch");
             if (NootRXMain::callback->attributes.isSonoma1404AndLater()) {
                 const LookupPatchPlus patches[] = {
                     {&kextRadeonX6810HWLibs, kGcSetFwEntryInfoOriginal14_4, kGcSetFwEntryInfoOriginalMask14_4,
@@ -373,8 +390,7 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *outData, void 
             switch (uCodeID) {
                 case kUCodeSMU:
                     if (NootRXMain::callback->attributes.isNavi21()) {
-                        return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(ctx, cmd, outData,
-                            outResponse);
+                        strncpy(filename, "navi21_smc_firmware.bin", 24);
                     } else if (NootRXMain::callback->attributes.isNavi22()) {
                         strncpy(filename, "navi22_smc_firmware.bin", 24);
                     } else {
