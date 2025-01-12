@@ -52,8 +52,6 @@
 		</dict>
 		<key>aty_properties</key>
 		<dict>
-			<key>DalEarlyTps1Pattern</key>
-			<integer>1</integer>
 			<key>DalDisableDisplayID2</key>
 			<integer>1</integer>
 			<key>DalDisableLTTPR</key>
@@ -121,16 +119,12 @@
 		</dict>
 		<key>aty_properties</key>
 		<dict>
-			<key>DalEarlyTps1Pattern</key>
-			<integer>1</integer>
 			<key>DalDisableDisplayID2</key>
 			<integer>1</integer>
 			<key>DalDisableLTTPR</key>
 			<integer>1</integer>
 			<key>DalEnablePspFwLoad</key>
 			<integer>0</integer>
-			<key>DalForceEnumEDP</key>
-			<integer>1</integer>
 			<key>DalSkipDetectionLT</key>
 			<integer>1</integer>
 			<key>PP_DisableClockStretcher</key>

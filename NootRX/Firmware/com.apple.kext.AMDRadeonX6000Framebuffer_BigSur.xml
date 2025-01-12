@@ -52,8 +52,6 @@
 		</dict>
 		<key>aty_properties</key>
 		<dict>
-			<key>DalEarlyTps1Pattern</key>
-			<integer>1</integer>
 			<key>DalDisableDisplayID2</key>
 			<integer>1</integer>
 			<key>DalDisableLTTPR</key>
