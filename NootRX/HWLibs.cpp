@@ -407,14 +407,10 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *outData, void 
                     snprintf(filename, sizeof(filename), "%sme_ucode.bin", prefix);
                     break;
                 case kUCodeMEC1:
-                    snprintf(filename, sizeof(filename), "%smec_ucode.bin", prefix);
-                    break;
                 case kUCodeMEC2:
                     snprintf(filename, sizeof(filename), "%smec_ucode.bin", prefix);
                     break;
                 case kUCodeMEC1JT:
-                    snprintf(filename, sizeof(filename), "%smec_jt_ucode.bin", prefix);
-                    break;
                 case kUCodeMEC2JT:
                     snprintf(filename, sizeof(filename), "%smec_jt_ucode.bin", prefix);
                     break;
@@ -437,8 +433,6 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *outData, void 
                     }
                     break;
                 case kUCodeVCN0:
-                    strncpy(filename, "ativvaxy_vcn3.dat", 18);
-                    break;
                 case kUCodeVCN1:
                     strncpy(filename, "ativvaxy_vcn3.dat", 18);
                     break;
