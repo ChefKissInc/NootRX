@@ -19,13 +19,10 @@ class HWLibs {
 
     mach_vm_address_t orgPspCmdKmSubmit {0};
     mach_vm_address_t orgSmu1107SendMessageWithParameter {0};
-    mach_vm_address_t orgCosReadConfigurationSetting {0};
 
     static const char *wrapGetMatchProperty(void);
     static CAILResult wrapPspCmdKmSubmit(void *ctx, void *cmd, void *outData, void *outResponse);
     static CAILResult wrapSmu1107SendMessageWithParameter(void *smum, UInt32 msgId, UInt32 param);
-    static CAILResult wrapCosReadConfigurationSetting(void *cosHandle, CosReadConfigurationSettingInput *readCfgInput,
-        CosReadConfigurationSettingOutput *readCfgOutput);
 };
 
 //------ Patterns ------//
