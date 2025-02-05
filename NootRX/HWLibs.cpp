@@ -371,10 +371,9 @@ CAILResult HWLibs::wrapPspCmdKmSubmit(void *ctx, void *cmd, void *outData, void 
 
             return FunctionCast(wrapPspCmdKmSubmit, callback->orgPspCmdKmSubmit)(ctx, cmd, outData, outResponse);
         }
-        case kPSPCommandLoadASD: {
+        case kPSPCommandLoadASD:
             strncpy(filename, "psp_asd.bin", 12);
             break;
-        }
         case kPSPCommandLoadIPFW: {
             auto *prefix = NootRXMain::callback->getGCPrefix();
             auto uCodeID = getMember<AMDUCodeID>(cmd, 0x10);
