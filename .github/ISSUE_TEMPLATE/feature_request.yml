@@ -1,6 +1,6 @@
 name: Feature Request
 description: Request a feature be added to NootRX
-labels: ["Enhancement"]
+type: "Feature"
 projects: ["ChefKissInc/7"]
 assignees:
   - VisualEhrmanntraut

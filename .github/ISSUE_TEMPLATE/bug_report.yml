@@ -1,6 +1,6 @@
 name: Bug Report
 description: Report an issue caused by NootRX
-labels: ["Bug"]
+type: "Bug"
 projects: ["ChefKissInc/7"]
 assignees:
   - VisualEhrmanntraut
