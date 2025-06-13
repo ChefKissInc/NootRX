@@ -21,6 +21,6 @@ PluginConfiguration ADDPR(config) {
     nullptr,
     0,
     KernelVersion::BigSur,
-    KernelVersion::Sequoia,
+    KernelVersion::Tahoe,
     []() { nrx.init(); },
 };

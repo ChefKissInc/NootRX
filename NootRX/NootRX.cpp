@@ -40,6 +40,7 @@ void NootRXMain::init() {
             if (getKernelMinorVersion() >= 4) { this->attributes.setSonoma1404AndLater(); }
             break;
         case KernelVersion::Sequoia:
+        case KernelVersion::Tahoe:
             this->attributes.setVenturaAndLater();
             this->attributes.setSonoma1404AndLater();
             break;
