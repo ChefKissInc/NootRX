@@ -7,6 +7,6 @@ The NootRX project is Copyright © 2023-2024 ChefKiss. The NootRX project is lic
 > [!NOTE]
 > This project is under active research and development; There will be some minor issues here and there, but is almost perfectly functional.
 >
-> See repository issues and [our site](https://chefkissinc.github.io/applehax/nootrx) for more information.
+> See repository issues and [our site](https://chefkiss.dev/applehax/nootrx) for more information.
 
 Thanks [Acidanthera](https://github.com/Acidanthera) for the UnfairGVA patches in [WhateverGreen](https://github.com/Acidanthera/WhateverGreen).
